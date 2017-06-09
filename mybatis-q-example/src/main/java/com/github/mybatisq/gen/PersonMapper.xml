@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.mybatisq.gen.PersonMapper">
+	
+    <select id="count" resultType="java.lang.Integer">
+        select count(0) <include refid="com.github.mybatisq.gen.QMapper.countFrom"/>
+    </select>
+	
+    <select id="select" resultType="com.github.mybatisq.entity.Person">
+        select ${tableAlias}.pid,${tableAlias}.personName,${tableAlias}.createDate <include refid="com.github.mybatisq.gen.QMapper.selectFrom"/>
+    </select>
+</mapper>

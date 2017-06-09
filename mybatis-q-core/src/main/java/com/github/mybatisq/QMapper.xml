@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" ><mapper namespace="com.github.mybatisq.QMapper">
+    <sql id="from">from ${tableName} ${tableAlias}</sql>
+    <sql id="join">
+        <if test="joins != null">
+            <foreach collection="joins" item="j">${j.type} join ${j.tableName2} ${j.tableAlias2} on <foreach collection="j.ons" item="o" separator=" and ">
+                    <if test="o.operator == 'eq'">${j.tableAlias1}.${o.columnName1}=${j.tableAlias2}.${o.columnName2}</if>
+                </foreach>
+                <if test="j.wheres != null">
+                    <foreach collection="j.wheres" item="w">
+                        <if test="w.operator == 'eq'"> and ${j.tableAlias2}.${w.columnName}=#{w.queryValue}</if>
+                        <if test="w.operator == 'gt'"> and ${j.tableAlias2}.${w.columnName}&gt;#{w.queryValue}</if>
+                        <if test="w.operator == 'ge'"> and ${j.tableAlias2}.${w.columnName}&gt;=#{w.queryValue}</if>
+                        <if test="w.operator == 'lt'"> and ${j.tableAlias2}.${w.columnName}&lt;#{w.queryValue}</if>
+                        <if test="w.operator == 'le'"> and ${j.tableAlias2}.${w.columnName}&lt;=#{w.queryValue}</if>
+                        <if test="w.operator == 'between'"> and ${j.tableAlias2}.${w.columnName} between #{w.queryValue} and #{w.queryValue2}</if>
+                        <if test="w.operator == 'in'"> and ${j.tableAlias2}.${w.columnName} in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
+                        <if test="w.operator == 'startWith'"> and ${j.tableAlias2}.${w.columnName} like concat('%', #{w.queryValue})</if>
+                    </foreach>
+                </if>
+            </foreach>
+        </if>
+    </sql>
+    <sql id="where">
+        <if test="where != null">where <if test="where.operator == 'eq'">${tableAlias}.${where.columnName}=#{where.queryValue}</if>
+            <if test="where.operator == 'gt'">${tableAlias}.${where.columnName}&gt;#{where.queryValue}</if>
+            <if test="where.operator == 'ge'">${tableAlias}.${where.columnName}&gt;=#{where.queryValue}</if>
+            <if test="where.operator == 'lt'">${tableAlias}.${where.columnName}&lt;#{where.queryValue}</if>
+            <if test="where.operator == 'le'">${tableAlias}.${where.columnName}&lt;=#{where.queryValue}</if>
+            <if test="where.operator == 'between'">${tableAlias}.${where.columnName} between #{where.queryValue} and #{where.queryValue2}</if>
+            <if test="where.operator == 'in'">${tableAlias}.${where.columnName} in<foreach collection="where.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
+            <if test="where.operator == 'startWith'">${tableAlias}.${where.columnName} like concat('%', #{where.queryValue})</if>
+            <if test="where.wheres != null">
+                <foreach collection="where.wheres" item="w">
+                    <if test="w.operator == 'eq'"> and ${tableAlias}.${w.columnName}=#{w.queryValue}</if>
+                    <if test="w.operator == 'gt'"> and ${tableAlias}.${w.columnName}&gt;#{w.queryValue}</if>
+                    <if test="w.operator == 'ge'"> and ${tableAlias}.${w.columnName}&gt;=#{w.queryValue}</if>
+                    <if test="w.operator == 'lt'"> and ${tableAlias}.${w.columnName}&lt;#{w.queryValue}</if>
+                    <if test="w.operator == 'le'"> and ${tableAlias}.${w.columnName}&lt;=#{w.queryValue}</if>
+                    <if test="w.operator == 'between'"> and ${tableAlias}.${w.columnName} between #{w.queryValue} and #{w.queryValue2}</if>
+                    <if test="w.operator == 'in'"> and ${tableAlias}.${w.columnName} in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
+                    <if test="w.operator == 'startWith'"> and ${tableAlias}.${w.columnName} like concat('%', #{w.queryValue})</if>
+                </foreach>
+            </if>
+        </if>
+    </sql>
+    <sql id="orderBy">
+        <if test="orderBy != null">order by ${tableAlias}.${orderBy.columnName} ${orderBy.direction}<if test="orderBy.orderBys != null">
+                <foreach collection="orderBy.orderBys" item="o">,${tableAlias}.${o.columnName} ${o.direction}</foreach>
+            </if>
+        </if>
+    </sql>
+    <sql id="limit">
+        <trim prefix="limit ">
+            <if test="skip != null">${skip},</if>
+            <if test="limit != null">${limit}</if>
+        </trim>
+    </sql>
+    <sql id="countFrom">
+        <include refid="com.github.mybatisq.QMapper.from"/> 
+        <include refid="com.github.mybatisq.QMapper.join"/> 
+        <include refid="com.github.mybatisq.QMapper.where"/>
+    </sql>
+    <sql id="selectFrom">
+        <include refid="com.github.mybatisq.QMapper.from"/> 
+        <include refid="com.github.mybatisq.QMapper.join"/> 
+        <include refid="com.github.mybatisq.QMapper.where"/> 
+        <include refid="com.github.mybatisq.QMapper.orderBy"/> 
+        <include refid="com.github.mybatisq.QMapper.limit"/>
+    </sql>
+</mapper>

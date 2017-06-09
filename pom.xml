@@ -8,8 +8,8 @@
     <packaging>pom</packaging>
     <modules>
     	<module>mybatis-q-core</module>
-    
     	<module>mybatis-q-maven-plugin</module>
+    	<module>mybatis-q-example</module>
     </modules>
     <build>
         <plugins>
@@ -51,4 +51,17 @@
             </plugin>
         </plugins>
     </build>
+    <dependencyManagement>
+    	<dependencies>
+    		<dependency>
+    			<groupId>org.mybatis</groupId>
+    			<artifactId>mybatis</artifactId>
+    			<version>${mybatis.version}</version>
+    		</dependency>
+    	</dependencies>
+    </dependencyManagement>
+    <properties>
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<mybatis.version>3.4.4</mybatis.version>
+    </properties>
 </project>
