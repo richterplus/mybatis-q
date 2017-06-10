@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.mybatisq.mapper.QMapper">
+    <sql id="from">from ${tableName} ${tableAlias}</sql>
+    <sql id="join">
+        <foreach collection="joins" item="j" separator=" ">
+            ${j.type} join ${j.tableName2} ${j.tableAlias2}
+            <foreach collection="j.ons" item="o" open="on " separator=" and ">
+                <if test="o.operator == 'eq'">${j.tableAlias1}.${o.columnName1}=${j.tableAlias2}.${o.columnName2}</if>
+            </foreach>
+            <foreach collection="j.wheres" item="w" open="and " separator=" and ">
+                <if test="w.operator == 'eq'">${j.tableAlias2}.${w.columnName}=#{w.queryValue}</if>
+                <if test="w.operator == 'gt'">${j.tableAlias2}.${w.columnName}&gt;#{w.queryValue}</if>
+                <if test="w.operator == 'ge'">${j.tableAlias2}.${w.columnName}&gt;=#{w.queryValue}</if>
+                <if test="w.operator == 'lt'">${j.tableAlias2}.${w.columnName}&lt;#{w.queryValue}</if>
+                <if test="w.operator == 'le'">${j.tableAlias2}.${w.columnName}&lt;=#{w.queryValue}</if>
+                <if test="w.operator == 'between'">${j.tableAlias2}.${w.columnName} between #{w.queryValue} and #{w.queryValue2}</if>
+                <if test="w.operator == 'in'">${j.tableAlias2}.${w.columnName} in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
+                <if test="w.operator == 'startWith'">${j.tableAlias2}.${w.columnName} like concat('%', #{w.queryValue})</if>
+            </foreach>
+        </foreach>
+    </sql>
+    <sql id="where">
+        <foreach collection="wheres" item="w" open="where " separator=" and ">
+            <if test="w.operator == 'eq'">${tableAlias}.${w.columnName}=#{w.queryValue}</if>
+            <if test="w.operator == 'gt'">${tableAlias}.${w.columnName}&gt;#{w.queryValue}</if>
+            <if test="w.operator == 'ge'">${tableAlias}.${w.columnName}&gt;=#{w.queryValue}</if>
+            <if test="w.operator == 'lt'">${tableAlias}.${w.columnName}&lt;#{w.queryValue}</if>
+            <if test="w.operator == 'le'">${tableAlias}.${w.columnName}&lt;=#{w.queryValue}</if>
+            <if test="w.operator == 'between'">${tableAlias}.${w.columnName} between #{w.queryValue} and #{w.queryValue2}</if>
+            <if test="w.operator == 'in'">${tableAlias}.${w.columnName} in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
+            <if test="w.operator == 'startWith'">${tableAlias}.${w.columnName} like concat('%', #{w.queryValue})</if>
+        </foreach>
+    </sql>
+    <sql id="orderBy">
+        <foreach collection="orderBys" open="order by " separator="," item="o">
+            ${tableAlias}.${o.columnName} ${o.direction}
+        </foreach>
+    </sql>
+    <sql id="limit">
+        <trim prefix="limit ">
+            <if test="skip != null">${skip},</if>
+            <if test="limit != null">${limit}</if>
+        </trim>
+    </sql>
+    <sql id="countFrom">
+        <include refid="com.github.mybatisq.mapper.QMapper.from"/> 
+        <include refid="com.github.mybatisq.mapper.QMapper.join"/> 
+        <include refid="com.github.mybatisq.mapper.QMapper.where"/>
+    </sql>
+    <sql id="selectFrom">
+        <include refid="com.github.mybatisq.mapper.QMapper.from"/> 
+        <include refid="com.github.mybatisq.mapper.QMapper.join"/> 
+        <include refid="com.github.mybatisq.mapper.QMapper.where"/> 
+        <include refid="com.github.mybatisq.mapper.QMapper.orderBy"/> 
+        <include refid="com.github.mybatisq.mapper.QMapper.limit"/>
+    </sql>
+</mapper>

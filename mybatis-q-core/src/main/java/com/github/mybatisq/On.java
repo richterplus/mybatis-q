@@ -24,17 +24,17 @@ public class On<T1 extends Table, T2 extends Table> {
     /**
      * 列名1
      */
-    private String columnName1;
+    private final String columnName1;
 
     /**
      * 操作符
      */
-    private String operator;
+    private final String operator;
 
     /**
      * 列名2
      */
-    private String columnName2;
+    private final String columnName2;
 
     /**
      * 获取列名1

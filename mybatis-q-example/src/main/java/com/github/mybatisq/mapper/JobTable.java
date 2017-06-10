@@ -1,4 +1,4 @@
-package com.github.mybatisq.gen;
+package com.github.mybatisq.mapper;
 
 import com.github.mybatisq.Column;
 import com.github.mybatisq.Join;

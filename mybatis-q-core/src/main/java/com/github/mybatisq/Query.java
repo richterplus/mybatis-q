@@ -87,22 +87,22 @@ public class Query<T extends Table> {
     /**
      * 表名称
      */
-    private String tableName;
+    private final String tableName;
 
     /**
      * 表别名
      */
-    private String tableAlias;
+    private final String tableAlias;
 
     /**
      * where条件
      */
-    private Collection<Where<T>> wheres;
+    private final Collection<Where<T>> wheres;
 
     /**
      * 排序
      */
-    private Collection<OrderBy<T>> orderBys;
+    private final Collection<OrderBy<T>> orderBys;
 
     /**
      * 限制的数据行数
@@ -117,7 +117,7 @@ public class Query<T extends Table> {
     /**
      * 连接
      */
-    private Collection<Join<T, ?>> joins;
+    private final Collection<Join<T, ?>> joins;
 
     /**
      * 获取表名称

@@ -2,6 +2,7 @@ package com.github.mybatisq;
 
 /**
  * 排序项
+ * @param <T> 表类型
  */
 public class OrderBy<T extends Table> {
 
@@ -19,12 +20,12 @@ public class OrderBy<T extends Table> {
     /**
      * 列名
      */
-    private String columnName;
+    private final String columnName;
 
     /**
      * 排序方向
      */
-    private String direction;
+    private final String direction;
 
     /**
      * 获取列名

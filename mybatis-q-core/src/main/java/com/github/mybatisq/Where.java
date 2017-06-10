@@ -36,22 +36,22 @@ public class Where<T extends Table> {
     /**
      * 列名
      */
-    private String columnName;
+    private final String columnName;
 
     /**
      * 操作符
      */
-    private String operator;
+    private final String operator;
 
     /**
      * 查询值
      */
-    private Object queryValue;
+    private final Object queryValue;
 
     /**
      * 第二个查询值
      */
-    private Object queryValue2;
+    private final Object queryValue2;
 
     /**
      * 获取列名

@@ -1,4 +1,4 @@
-package com.github.mybatisq.gen;
+package com.github.mybatisq.mapper;
 
 import java.util.List;
 
@@ -19,5 +19,6 @@ public interface PersonMapper {
 
     int update(Person person);
 
-    int delete(@Param("pid") int pid);
+    int delete(@Param("pid") Integer pid);
+
 }

@@ -63,32 +63,32 @@ public class Join<T1 extends Table, T2 extends Table> {
     /**
      * 连接类型
      */
-    private String type;
+    private final String type;
 
     /**
      * 表别名1
      */
-    private String tableAlias1;
+    private final String tableAlias1;
 
     /**
      * 表名2
      */
-    private String tableName2;
+    private final String tableName2;
 
     /**
      * 表别名2
      */
-    private String tableAlias2;
+    private final String tableAlias2;
 
     /**
      * 连接对象集合
      */
-    private Collection<On<T1, T2>> ons;
+    private final Collection<On<T1, T2>> ons;
 
     /**
      * where集合
      */
-    private Collection<Where<T2>> wheres;
+    private final Collection<Where<T2>> wheres;
 
     /**
      * 获取连接类型

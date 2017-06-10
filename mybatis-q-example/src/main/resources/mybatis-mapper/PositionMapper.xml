@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.mybatisq.mapper.PositionMapper">
+    <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
+        select count(0) <include refid="com.github.mybatisq.mapper.QMapper.countFrom"/>
+    </select>
+
+    <select id="select" parameterType="com.github.mybatisq.Query" resultType="com.github.mybatisq.entity.Position">
+        select ${tableAlias}.poid,${tableAlias}.positionTitle,${tableAlias}.pid <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    </select>
+
+    <insert id="insert" parameterType="com.github.mybatisq.entity.Position" useGeneratedKeys="true" keyProperty="poid">
+        <trim prefix="insert position (" suffix=")" suffixOverrides=",">
+            <if test="poid != null">poid,</if>
+            <if test="positionTitle != null">positionTitle,</if>
+            <if test="pid != null">pid,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="poid != null">#{poid},</if>
+            <if test="positionTitle != null">#{positionTitle},</if>
+            <if test="pid != null">#{pid},</if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.github.mybatisq.entity.Position">
+        <trim prefix="update position set" suffix="where poid=#{poid}" suffixOverrides=",">
+            <if test="poid != null">poid=#{poid},</if>
+            <if test="positionTitle != null">positionTitle=#{positionTitle},</if>
+            <if test="pid != null">pid=#{pid},</if>
+        </trim>
+    </update>
+
+    <delete id="delete">
+        delete from position where poid=#{poid}
+    </delete>
+</mapper>

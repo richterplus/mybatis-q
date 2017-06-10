@@ -1,6 +1,4 @@
-package com.github.mybatisq.gen;
-
-import java.util.Date;
+package com.github.mybatisq.mapper;
 
 import com.github.mybatisq.Column;
 import com.github.mybatisq.Join;
@@ -19,13 +17,13 @@ public class PersonTable extends Table {
         return new Query<>(Person);
     }
 
-    public <T extends Table> Join<PersonTable, T> inner(T j) {
-        return new Join<>("inner", this, j);
+    public <T extends Table> Join<PersonTable, T> inner(T p) {
+        return new Join<>("inner", this, p);
     }
 
     public Column<PersonTable, Integer> pid = new Column<>("pid");
 
     public Column<PersonTable, String> personName = new Column<>("personName");
 
-    public Column<PersonTable, Date> createDate = new Column<>("createDate");
+    public Column<PersonTable, java.util.Date> createDate = new Column<>("createDate");
 }

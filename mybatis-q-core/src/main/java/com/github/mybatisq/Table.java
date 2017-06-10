@@ -19,12 +19,12 @@ public abstract class Table {
     /**
      * 名称
      */
-    private String name;
+    private final String name;
 
     /**
      * 别名
      */
-    private String alias;
+    private final String alias;
 
     /**
      * 获取名称

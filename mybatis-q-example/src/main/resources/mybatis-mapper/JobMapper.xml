@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.mybatisq.mapper.JobMapper">
+    <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
+        select count(0) <include refid="com.github.mybatisq.mapper.QMapper.countFrom"/>
+    </select>
+
+    <select id="select" parameterType="com.github.mybatisq.Query" resultType="com.github.mybatisq.entity.Job">
+        select ${tableAlias}.jid,${tableAlias}.jobTitle,${tableAlias}.pid <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    </select>
+
+    <insert id="insert" parameterType="com.github.mybatisq.entity.Job" useGeneratedKeys="true" keyProperty="jid">
+        <trim prefix="insert job (" suffix=")" suffixOverrides=",">
+            <if test="jid != null">jid,</if>
+            <if test="jobTitle != null">jobTitle,</if>
+            <if test="pid != null">pid,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="jid != null">#{jid},</if>
+            <if test="jobTitle != null">#{jobTitle},</if>
+            <if test="pid != null">#{pid},</if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.github.mybatisq.entity.Job">
+        <trim prefix="update job set" suffix="where jid=#{jid}" suffixOverrides=",">
+            <if test="jid != null">jid=#{jid},</if>
+            <if test="jobTitle != null">jobTitle=#{jobTitle},</if>
+            <if test="pid != null">pid=#{pid},</if>
+        </trim>
+    </update>
+
+    <delete id="delete">
+        delete from job where jid=#{jid}
+    </delete>
+</mapper>

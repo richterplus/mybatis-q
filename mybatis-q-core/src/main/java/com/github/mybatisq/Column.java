@@ -145,7 +145,7 @@ public class Column<T extends Table, D> {
     /**
      * 名称
      */
-    private String name;
+    private final String name;
 
     /**
      * 获取名称

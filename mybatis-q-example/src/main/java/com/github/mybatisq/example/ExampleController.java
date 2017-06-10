@@ -1,57 +1,68 @@
 package com.github.mybatisq.example;
 
-import java.util.Arrays;
-import java.util.Date;
+import com.github.mybatisq.entity.Person;
+import com.github.mybatisq.mapper.JobTable;
+import com.github.mybatisq.mapper.PersonMapper;
+import com.github.mybatisq.mapper.PersonTable;
+import com.github.mybatisq.mapper.PositionTable;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.mybatisq.entity.Person;
-import com.github.mybatisq.gen.JobTable;
-import com.github.mybatisq.gen.PersonMapper;
-import com.github.mybatisq.gen.PersonTable;
-import com.github.mybatisq.gen.PositionTable;
-
 @RestController
-@RequestMapping("/exp")
+@RequestMapping("/mybatisq")
 public class ExampleController {
 
     @Autowired
     private PersonMapper personMapper;
 
-    @RequestMapping("/p1")
-    public List<Person> p1() {
+    @RequestMapping("/query")
+    public List<Person> query() {
         PersonTable p = PersonTable.Person;
         JobTable j = JobTable.Job;
         PositionTable po = PositionTable.Position;
-
-        List<Person> persons = personMapper.select(p.query()
-                .join(p.inner(j)
-                        .on(p.pid.eq(j.pid))
-                        .and(j.jobTitle.eq("总裁"))
-                        .and(j.jid.ge(0))
-                        .and(j.jid.le(10))
-                        .and(j.pid.gt(150))
-                        .and(j.pid.lt(200)))
-                .join(p.inner(po).on(p.pid.eq(po.pid)))
-                .where(p.personName.eq("陈洁"))
-                .where(p.createDate.between(new Date(1483200000000L), new Date()))
-                .where(p.pid.in(Arrays.asList(1, 2, 3)))
-                .where(p.personName.startWith("王"))
-                .orderBy(p.pid.asc())
-                .orderBy(p.createDate.desc())
-                .limit(5)
-                .skip(10));
-
-        persons = personMapper.select(p.query()
-                .where(p.pid.eq(1))
-                .where(p.personName.eq("陈洁"))
-                .where(p.createDate.eq(new Date(1496246400000L))));
-
-        personMapper.count(p.query().join(p.inner(j).on(p.pid.eq(j.pid))));
+        List<Person> persons = personMapper.select(
+                p.query()
+                        .join(p.inner(j)
+                                .on(p.pid.eq(j.jid))
+                                .on(p.pid.eq(j.pid))
+                                .and(j.jid.eq(5))
+                                .and(j.jobTitle.eq("总裁")))
+                        .join(p.inner(po).on(p.pid.eq(po.pid)))
+                        .where(p.pid.eq(1))
+                        .where(p.personName.eq("陈洁"))
+                        .orderBy(p.createDate.asc())
+                        .orderBy(p.personName.desc())
+                        .limit(10)
+                        .skip(5));
 
         return persons;
+    }
+    
+    @RequestMapping("/insert")
+    public Person insert(@RequestBody Person person) {
+        personMapper.insert(person);
+        return person;
+    }
+    
+    @RequestMapping("/update")
+    public Person update(@RequestBody Person person) {
+        personMapper.update(person);
+        return person;
+    }
+    
+    @RequestMapping("/delete")
+    public Person insert(Integer pid) {
+        PersonTable p = PersonTable.Person;
+        List<Person> persons = personMapper.select(
+                p.query()
+                        .where(p.pid.eq(pid)));
+        Person person = persons.size() > 0 ? persons.get(0) : null;
+        
+        personMapper.delete(pid);
+        
+        return person;
     }
 }

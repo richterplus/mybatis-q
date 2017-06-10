@@ -4,6 +4,7 @@ package com.github.mybatisq;
  * 子查询
  *
  * @param <T> 表类型
+ * @param <D> 数据类型
  */
 public class Select<T extends Table, D> {
 
@@ -72,12 +73,12 @@ public class Select<T extends Table, D> {
     /**
      * 表名称
      */
-    private String tableName;
+    private final String tableName;
 
     /**
      * 表别名
      */
-    private String tableAlias;
+    private final String tableAlias;
 
     /**
      * where条件
@@ -102,7 +103,7 @@ public class Select<T extends Table, D> {
     /**
      * 列名
      */
-    private String columnName;
+    private final String columnName;
 
     /**
      * 获取表名称
