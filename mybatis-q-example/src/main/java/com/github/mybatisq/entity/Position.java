@@ -1,26 +1,26 @@
 package com.github.mybatisq.entity;
 
-/*
+/**
  * 岗位
  */
 public class Position {
 
-    /*
+    /**
      * 岗位id
      */
     private Integer postId;
 
-    /*
+    /**
      * 岗位编号
      */
     private String postNo;
 
-    /*
+    /**
      * 岗位名称
      */
     private String postName;
 
-    /*
+    /**
      * 获取岗位id
      * @return 岗位id
      */
@@ -28,7 +28,7 @@ public class Position {
         return postId;
     }
 
-    /*
+    /**
      * 设置岗位id
      * @param postId 岗位id
      */
@@ -36,7 +36,7 @@ public class Position {
         this.postId = postId;
     }
 
-    /*
+    /**
      * 获取岗位编号
      * @return 岗位编号
      */
@@ -44,7 +44,7 @@ public class Position {
         return postNo;
     }
 
-    /*
+    /**
      * 设置岗位编号
      * @param postNo 岗位编号
      */
@@ -52,7 +52,7 @@ public class Position {
         this.postNo = postNo;
     }
 
-    /*
+    /**
      * 获取岗位名称
      * @return 岗位名称
      */
@@ -60,7 +60,7 @@ public class Position {
         return postName;
     }
 
-    /*
+    /**
      * 设置岗位名称
      * @param postName 岗位名称
      */

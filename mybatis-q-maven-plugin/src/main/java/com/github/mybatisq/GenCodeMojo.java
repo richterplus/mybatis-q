@@ -300,14 +300,14 @@ public class GenCodeMojo extends AbstractMojo {
             		builder.append("package " + entityPackage + ";" + newLine(2));
             		String className = t.getName();
             		if (t.getComment() != null && t.getComment().length() > 0) {
-            			builder.append("/*" + newLine());
+            			builder.append("/**" + newLine());
             			builder.append(" * " + t.getComment() + newLine());
             			builder.append(" */" + newLine());
             		}
             		builder.append("public class " + className + " {" + newLine(2));
             		t.getColumns().forEach(c -> {
             			if (c.getComment() != null && c.getComment().length() > 0) {
-            				builder.append(space(4) + "/*" + newLine());
+            				builder.append(space(4) + "/**" + newLine());
             				builder.append(space(4) + " * " + c.getComment() + newLine());
             				builder.append(space(4) + " */" + newLine());
             			}
@@ -315,7 +315,7 @@ public class GenCodeMojo extends AbstractMojo {
             		});
             		t.getColumns().forEach(c -> {
             			if (c.getComment() != null && c.getComment().length() > 0) {
-            				builder.append(space(4) + "/*" + newLine());
+            				builder.append(space(4) + "/**" + newLine());
             				builder.append(space(4) + " * 获取" + c.getComment() + newLine());
             				builder.append(space(4) + " * @return " + c.getComment() + newLine());
             				builder.append(space(4) + " */" + newLine());
@@ -324,7 +324,7 @@ public class GenCodeMojo extends AbstractMojo {
             			builder.append(space(8) + "return " + c.getName() + ";" + newLine());
             			builder.append(space(4) + "}" + newLine(2));
             			if (c.getComment() != null && c.getComment().length() > 0) {
-            				builder.append(space(4) + "/*" + newLine());
+            				builder.append(space(4) + "/**" + newLine());
             				builder.append(space(4) + " * 设置" + c.getComment() + newLine());
             				builder.append(space(4) + " * @param " + c.getName() + " " + c.getComment() + newLine());
             				builder.append(space(4) + " */" + newLine());
@@ -368,7 +368,7 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(space(4) + "}" + newLine());
                 t.getColumns().forEach(c -> {
                 	if (c.getComment() != null && c.getComment().trim().length() > 0) {
-                		builder.append(newLine() + space(4) + "/*" + newLine());
+                		builder.append(newLine() + space(4) + "/**" + newLine());
                 		builder.append(space(4) + " * " + c.getComment() + newLine());
                 		builder.append(space(4) + " */");
                 	}

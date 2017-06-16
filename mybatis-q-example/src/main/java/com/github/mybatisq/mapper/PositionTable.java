@@ -21,17 +21,17 @@ public class PositionTable extends Table {
         return new Join<>("inner", this, p);
     }
 
-    /*
+    /**
      * 岗位id
      */
     public Column<PositionTable, Integer> postId = new Column<>("postId");
 
-    /*
+    /**
      * 岗位编号
      */
     public Column<PositionTable, String> postNo = new Column<>("postNo");
 
-    /*
+    /**
      * 岗位名称
      */
     public Column<PositionTable, String> postName = new Column<>("postName");

@@ -1,66 +1,66 @@
 package com.github.mybatisq.entity;
 
-/*
+/**
  * 人员
  */
 public class Employee {
 
-    /*
+    /**
      * 员工id
      */
     private Integer empId;
 
-    /*
+    /**
      * 工号
      */
     private String empNo;
 
-    /*
+    /**
      * 员工姓名
      */
     private String empName;
 
-    /*
+    /**
      * 是否全职
      */
     private Boolean isFulltime;
 
-    /*
+    /**
      * 序列号
      */
     private Long serialNo;
 
-    /*
+    /**
      * 性别（1:男，2:女）
      */
     private Integer gender;
 
-    /*
+    /**
      * 出生年月
      */
     private java.util.Date birthday;
 
-    /*
+    /**
      * 身高
      */
     private Float height;
 
-    /*
+    /**
      * 体重
      */
     private Double weight;
 
-    /*
+    /**
      * 薪资
      */
     private java.math.BigDecimal salary;
 
-    /*
+    /**
      * 创建日期
      */
     private java.util.Date createDate;
 
-    /*
+    /**
      * 获取员工id
      * @return 员工id
      */
@@ -68,7 +68,7 @@ public class Employee {
         return empId;
     }
 
-    /*
+    /**
      * 设置员工id
      * @param empId 员工id
      */
@@ -76,7 +76,7 @@ public class Employee {
         this.empId = empId;
     }
 
-    /*
+    /**
      * 获取工号
      * @return 工号
      */
@@ -84,7 +84,7 @@ public class Employee {
         return empNo;
     }
 
-    /*
+    /**
      * 设置工号
      * @param empNo 工号
      */
@@ -92,7 +92,7 @@ public class Employee {
         this.empNo = empNo;
     }
 
-    /*
+    /**
      * 获取员工姓名
      * @return 员工姓名
      */
@@ -100,7 +100,7 @@ public class Employee {
         return empName;
     }
 
-    /*
+    /**
      * 设置员工姓名
      * @param empName 员工姓名
      */
@@ -108,7 +108,7 @@ public class Employee {
         this.empName = empName;
     }
 
-    /*
+    /**
      * 获取是否全职
      * @return 是否全职
      */
@@ -116,7 +116,7 @@ public class Employee {
         return isFulltime;
     }
 
-    /*
+    /**
      * 设置是否全职
      * @param isFulltime 是否全职
      */
@@ -124,7 +124,7 @@ public class Employee {
         this.isFulltime = isFulltime;
     }
 
-    /*
+    /**
      * 获取序列号
      * @return 序列号
      */
@@ -132,7 +132,7 @@ public class Employee {
         return serialNo;
     }
 
-    /*
+    /**
      * 设置序列号
      * @param serialNo 序列号
      */
@@ -140,7 +140,7 @@ public class Employee {
         this.serialNo = serialNo;
     }
 
-    /*
+    /**
      * 获取性别（1:男，2:女）
      * @return 性别（1:男，2:女）
      */
@@ -148,7 +148,7 @@ public class Employee {
         return gender;
     }
 
-    /*
+    /**
      * 设置性别（1:男，2:女）
      * @param gender 性别（1:男，2:女）
      */
@@ -156,7 +156,7 @@ public class Employee {
         this.gender = gender;
     }
 
-    /*
+    /**
      * 获取出生年月
      * @return 出生年月
      */
@@ -164,7 +164,7 @@ public class Employee {
         return birthday;
     }
 
-    /*
+    /**
      * 设置出生年月
      * @param birthday 出生年月
      */
@@ -172,7 +172,7 @@ public class Employee {
         this.birthday = birthday;
     }
 
-    /*
+    /**
      * 获取身高
      * @return 身高
      */
@@ -180,7 +180,7 @@ public class Employee {
         return height;
     }
 
-    /*
+    /**
      * 设置身高
      * @param height 身高
      */
@@ -188,7 +188,7 @@ public class Employee {
         this.height = height;
     }
 
-    /*
+    /**
      * 获取体重
      * @return 体重
      */
@@ -196,7 +196,7 @@ public class Employee {
         return weight;
     }
 
-    /*
+    /**
      * 设置体重
      * @param weight 体重
      */
@@ -204,7 +204,7 @@ public class Employee {
         this.weight = weight;
     }
 
-    /*
+    /**
      * 获取薪资
      * @return 薪资
      */
@@ -212,7 +212,7 @@ public class Employee {
         return salary;
     }
 
-    /*
+    /**
      * 设置薪资
      * @param salary 薪资
      */
@@ -220,7 +220,7 @@ public class Employee {
         this.salary = salary;
     }
 
-    /*
+    /**
      * 获取创建日期
      * @return 创建日期
      */
@@ -228,7 +228,7 @@ public class Employee {
         return createDate;
     }
 
-    /*
+    /**
      * 设置创建日期
      * @param createDate 创建日期
      */

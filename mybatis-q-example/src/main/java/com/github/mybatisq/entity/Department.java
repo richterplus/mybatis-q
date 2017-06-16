@@ -1,31 +1,31 @@
 package com.github.mybatisq.entity;
 
-/*
+/**
  * 部门
  */
 public class Department {
 
-    /*
+    /**
      * 部门id
      */
     private Integer deptId;
 
-    /*
+    /**
      * 部门编号
      */
     private String deptNo;
 
-    /*
+    /**
      * 部门名称
      */
     private String deptName;
 
-    /*
+    /**
      * 创建日期
      */
     private java.util.Date createDate;
 
-    /*
+    /**
      * 获取部门id
      * @return 部门id
      */
@@ -33,7 +33,7 @@ public class Department {
         return deptId;
     }
 
-    /*
+    /**
      * 设置部门id
      * @param deptId 部门id
      */
@@ -41,7 +41,7 @@ public class Department {
         this.deptId = deptId;
     }
 
-    /*
+    /**
      * 获取部门编号
      * @return 部门编号
      */
@@ -49,7 +49,7 @@ public class Department {
         return deptNo;
     }
 
-    /*
+    /**
      * 设置部门编号
      * @param deptNo 部门编号
      */
@@ -57,7 +57,7 @@ public class Department {
         this.deptNo = deptNo;
     }
 
-    /*
+    /**
      * 获取部门名称
      * @return 部门名称
      */
@@ -65,7 +65,7 @@ public class Department {
         return deptName;
     }
 
-    /*
+    /**
      * 设置部门名称
      * @param deptName 部门名称
      */
@@ -73,7 +73,7 @@ public class Department {
         this.deptName = deptName;
     }
 
-    /*
+    /**
      * 获取创建日期
      * @return 创建日期
      */
@@ -81,7 +81,7 @@ public class Department {
         return createDate;
     }
 
-    /*
+    /**
      * 设置创建日期
      * @param createDate 创建日期
      */

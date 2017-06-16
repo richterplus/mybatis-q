@@ -21,22 +21,22 @@ public class DepartmentTable extends Table {
         return new Join<>("inner", this, d);
     }
 
-    /*
+    /**
      * 部门id
      */
     public Column<DepartmentTable, Integer> deptId = new Column<>("deptId");
 
-    /*
+    /**
      * 部门编号
      */
     public Column<DepartmentTable, String> deptNo = new Column<>("deptNo");
 
-    /*
+    /**
      * 部门名称
      */
     public Column<DepartmentTable, String> deptName = new Column<>("deptName");
 
-    /*
+    /**
      * 创建日期
      */
     public Column<DepartmentTable, java.util.Date> createDate = new Column<>("createDate");
