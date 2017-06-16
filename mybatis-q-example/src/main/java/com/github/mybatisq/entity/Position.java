@@ -1,34 +1,71 @@
 package com.github.mybatisq.entity;
 
+/*
+ * 岗位
+ */
 public class Position {
 
-    private Integer poid;
+    /*
+     * 岗位id
+     */
+    private Integer postId;
 
-    private String positionTitle;
+    /*
+     * 岗位编号
+     */
+    private String postNo;
 
-    private Integer pid;
+    /*
+     * 岗位名称
+     */
+    private String postName;
 
-    public Integer getPoid() {
-        return poid;
+    /*
+     * 获取岗位id
+     * @return 岗位id
+     */
+    public Integer getPostId() {
+        return postId;
     }
 
-    public void setPoid(Integer poid) {
-        this.poid = poid;
+    /*
+     * 设置岗位id
+     * @param postId 岗位id
+     */
+    public void setPostId(Integer postId) {
+        this.postId = postId;
     }
 
-    public String getPositionTitle() {
-        return positionTitle;
+    /*
+     * 获取岗位编号
+     * @return 岗位编号
+     */
+    public String getPostNo() {
+        return postNo;
     }
 
-    public void setPositionTitle(String positionTitle) {
-        this.positionTitle = positionTitle;
+    /*
+     * 设置岗位编号
+     * @param postNo 岗位编号
+     */
+    public void setPostNo(String postNo) {
+        this.postNo = postNo;
     }
 
-    public Integer getPid() {
-        return pid;
+    /*
+     * 获取岗位名称
+     * @return 岗位名称
+     */
+    public String getPostName() {
+        return postName;
     }
 
-    public void setPid(Integer pid) {
-        this.pid = pid;
+    /*
+     * 设置岗位名称
+     * @param postName 岗位名称
+     */
+    public void setPostName(String postName) {
+        this.postName = postName;
     }
+
 }

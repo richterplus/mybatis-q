@@ -19,6 +19,6 @@ public interface PositionMapper {
 
     int update(Position position);
 
-    int delete(@Param("poid") Integer poid);
+    int delete(@Param("postId") Integer postId);
 
 }

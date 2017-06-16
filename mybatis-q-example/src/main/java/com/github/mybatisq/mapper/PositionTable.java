@@ -8,22 +8,31 @@ import com.github.mybatisq.Table;
 public class PositionTable extends Table {
 
     PositionTable() {
-        super("position", "p0");
+        super("position", "p");
     }
 
-    public static final PositionTable Position = new PositionTable();
+    public static final PositionTable position = new PositionTable();
 
     public Query<PositionTable> query() {
-        return new Query<>(Position);
+        return new Query<>(position);
     }
 
-    public <T extends Table> Join<PositionTable, T> inner(T p0) {
-        return new Join<>("inner", this, p0);
+    public <T extends Table> Join<PositionTable, T> inner(T p) {
+        return new Join<>("inner", this, p);
     }
 
-    public Column<PositionTable, Integer> poid = new Column<>("poid");
+    /*
+     * 岗位id
+     */
+    public Column<PositionTable, Integer> postId = new Column<>("postId");
 
-    public Column<PositionTable, String> positionTitle = new Column<>("positionTitle");
+    /*
+     * 岗位编号
+     */
+    public Column<PositionTable, String> postNo = new Column<>("postNo");
 
-    public Column<PositionTable, Integer> pid = new Column<>("pid");
+    /*
+     * 岗位名称
+     */
+    public Column<PositionTable, String> postName = new Column<>("postName");
 }

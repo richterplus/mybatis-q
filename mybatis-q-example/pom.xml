@@ -60,10 +60,23 @@
                 <groupId>com.github</groupId>
                 <artifactId>mybatis-q-maven-plugin</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
+                <dependencies>
+                	<dependency>
+                		<groupId>mysql</groupId>
+                		<artifactId>mysql-connector-java</artifactId>
+                		<version>5.1.42</version>
+                	</dependency>
+                </dependencies>
                 <configuration>
                     <entityPackage>com.github.mybatisq.entity</entityPackage>
                     <genPackage>com.github.mybatisq.mapper</genPackage>
                     <mapperFolder>mybatis-mapper</mapperFolder>
+                    <datasource>
+                    	<driverClassName>com.mysql.jdbc.Driver</driverClassName>
+                    	<url>jdbc:mysql://127.0.0.1:3306/test?useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8</url>
+                    	<username>root</username>
+                    	<password>iamchenjie</password>
+                    </datasource>
                 </configuration>
             </plugin>
         </plugins>

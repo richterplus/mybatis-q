@@ -6,31 +6,30 @@
     </select>
 
     <select id="select" parameterType="com.github.mybatisq.Query" resultType="com.github.mybatisq.entity.Position">
-        select ${tableAlias}.poid,${tableAlias}.positionTitle,${tableAlias}.pid <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+        select ${tableAlias}.postId,${tableAlias}.postNo,${tableAlias}.postName <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
     </select>
 
-    <insert id="insert" parameterType="com.github.mybatisq.entity.Position" useGeneratedKeys="true" keyProperty="poid">
+    <insert id="insert" parameterType="com.github.mybatisq.entity.Position" useGeneratedKeys="true" keyProperty="postId">
         <trim prefix="insert position (" suffix=")" suffixOverrides=",">
-            <if test="poid != null">poid,</if>
-            <if test="positionTitle != null">positionTitle,</if>
-            <if test="pid != null">pid,</if>
+            <if test="postId != null">postId,</if>
+            <if test="postNo != null">postNo,</if>
+            <if test="postName != null">postName,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="poid != null">#{poid},</if>
-            <if test="positionTitle != null">#{positionTitle},</if>
-            <if test="pid != null">#{pid},</if>
+            <if test="postId != null">#{postId},</if>
+            <if test="postNo != null">#{postNo},</if>
+            <if test="postName != null">#{postName},</if>
         </trim>
     </insert>
 
     <update id="update" parameterType="com.github.mybatisq.entity.Position">
-        <trim prefix="update position set" suffix="where poid=#{poid}" suffixOverrides=",">
-            <if test="poid != null">poid=#{poid},</if>
-            <if test="positionTitle != null">positionTitle=#{positionTitle},</if>
-            <if test="pid != null">pid=#{pid},</if>
+        <trim prefix="update position set" suffix="where postId=#{postId}" suffixOverrides=",">
+            <if test="postNo != null">postNo=#{postNo},</if>
+            <if test="postName != null">postName=#{postName},</if>
         </trim>
     </update>
 
     <delete id="delete">
-        delete from position where poid=#{poid}
+        delete from position where postId=#{postId}
     </delete>
 </mapper>
