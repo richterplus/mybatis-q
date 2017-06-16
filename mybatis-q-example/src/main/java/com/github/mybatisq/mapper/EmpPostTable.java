@@ -17,8 +17,8 @@ public class EmpPostTable extends Table {
         return new Query<>(empPost);
     }
 
-    public <T extends Table> Join<EmpPostTable, T> inner(T e0) {
-        return new Join<>("inner", this, e0);
+    public <T extends Table> Join<EmpPostTable, T> inner(T table) {
+        return new Join<>("inner", this, table);
     }
 
     /**

@@ -17,8 +17,8 @@ public class EmpDeptTable extends Table {
         return new Query<>(empDept);
     }
 
-    public <T extends Table> Join<EmpDeptTable, T> inner(T e) {
-        return new Join<>("inner", this, e);
+    public <T extends Table> Join<EmpDeptTable, T> inner(T table) {
+        return new Join<>("inner", this, table);
     }
 
     /**

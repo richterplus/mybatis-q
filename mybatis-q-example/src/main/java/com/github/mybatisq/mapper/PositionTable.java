@@ -17,8 +17,8 @@ public class PositionTable extends Table {
         return new Query<>(position);
     }
 
-    public <T extends Table> Join<PositionTable, T> inner(T p) {
-        return new Join<>("inner", this, p);
+    public <T extends Table> Join<PositionTable, T> inner(T table) {
+        return new Join<>("inner", this, table);
     }
 
     /**
