@@ -8,7 +8,7 @@ import com.github.mybatisq.Table;
 public class EmployeeTable extends Table {
 
     EmployeeTable() {
-        super("employee", "e");
+        super("employee", "e1");
     }
 
     public static final EmployeeTable employee = new EmployeeTable();
@@ -17,8 +17,8 @@ public class EmployeeTable extends Table {
         return new Query<>(employee);
     }
 
-    public <T extends Table> Join<EmployeeTable, T> inner(T e) {
-        return new Join<>("inner", this, e);
+    public <T extends Table> Join<EmployeeTable, T> inner(T e1) {
+        return new Join<>("inner", this, e1);
     }
 
     /**

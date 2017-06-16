@@ -363,7 +363,7 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(newLine() + space(4) + "public Query<" + className + "> query() {" + newLine());
                 builder.append(space(8) + "return new Query<>(" + tableName + ");" + newLine());
                 builder.append(space(4) + "}" + newLine());
-                builder.append(newLine() + space(4) + "public <T extends Table> Join<" + className + ", T> inner(T " + tableAlias + ") {" + newLine());
+                builder.append(newLine() + space(4) + "public <T extends Table> Join<" + className + ", T> inner(T table) {" + newLine());
                 builder.append(space(8) + "return new Join<>(\"inner\", this, " + tableAlias + ");" + newLine());
                 builder.append(space(4) + "}" + newLine());
                 t.getColumns().forEach(c -> {

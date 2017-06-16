@@ -79,7 +79,7 @@ public class Query<T extends Table> {
      * @param innerJoin 连接
      * @return 查询
      */
-    public Query<T> join(Join<T, ?> innerJoin) {
+    public Query<T> join(Join<? extends Table, ? extends Table> innerJoin) {
         this.joins.add(innerJoin);
         return this;
     }
@@ -117,7 +117,7 @@ public class Query<T extends Table> {
     /**
      * 连接
      */
-    private final Collection<Join<T, ?>> joins;
+    private final Collection<Join<? extends Table, ? extends Table>> joins;
 
     /**
      * 获取表名称
@@ -160,7 +160,7 @@ public class Query<T extends Table> {
      *
      * @return 连接
      */
-    public Collection<Join<T, ?>> getJoins() {
+    public Collection<Join<? extends Table, ? extends Table>> getJoins() {
         return joins;
     }
 }
