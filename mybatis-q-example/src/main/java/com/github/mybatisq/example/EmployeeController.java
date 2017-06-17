@@ -32,23 +32,23 @@ public class EmployeeController {
 	
 	@RequestMapping("/list")
 	public List<Employee> list() {
-		EmployeeTable emp = EmployeeTable.employee;
-		DepartmentTable dept = DepartmentTable.department;
-		PositionTable post = PositionTable.position;
-		EmpDeptTable empDept = EmpDeptTable.empDept;
-		EmpPostTable empPost = EmpPostTable.empPost;
+		EmployeeTable e = EmployeeTable.employee;
+		DepartmentTable d = DepartmentTable.department;
+		PositionTable p = PositionTable.position;
+		EmpDeptTable ed = EmpDeptTable.empDept;
+		EmpPostTable ep = EmpPostTable.empPost;
 		
-		return employeeMapper.select(emp.query()
-				.join(emp.inner(empDept)
-						.on(emp.empId.eq(empDept.empId)))
-				.join(emp.inner(empPost)
-						.on(emp.empId.eq(empPost.empId)))
-				.join(empPost.inner(post)
-						.on(empPost.postId.eq(post.postId))
-						.and(post.postId.eq(1)))
-				.join(empDept.inner(dept)
-						.on(empDept.deptId.eq(dept.deptId))
-						.and(dept.deptId.eq(1))));
+		return employeeMapper.select(e.query()
+				.join(e.inner(ed)
+						.on(e.empId.eq(ed.empId)))
+				.join(e.inner(ep)
+						.on(e.empId.eq(ep.empId)))
+				.join(ep.inner(p)
+						.on(ep.postId.eq(p.postId))
+						.and(p.postId.eq(1)))
+				.join(ed.inner(d)
+						.on(ed.deptId.eq(d.deptId))
+						.and(d.deptId.eq(1))));
 	}
 	
 	@RequestMapping("/update")
