@@ -19,6 +19,6 @@ public interface EmpPostMapper {
 
     int update(EmpPost empPost);
 
-    int delete(@Param("epid") Integer epid);
+    int delete(@Param("epId") Integer epId);
 
 }

@@ -8,7 +8,7 @@ public class EmpDept {
     /**
      * id
      */
-    private Integer edid;
+    private Integer edId;
 
     /**
      * 员工id
@@ -24,16 +24,16 @@ public class EmpDept {
      * 获取id
      * @return id
      */
-    public Integer getEdid() {
-        return edid;
+    public Integer getEdId() {
+        return edId;
     }
 
     /**
      * 设置id
-     * @param edid id
+     * @param edId id
      */
-    public void setEdid(Integer edid) {
-        this.edid = edid;
+    public void setEdId(Integer edId) {
+        this.edId = edId;
     }
 
     /**

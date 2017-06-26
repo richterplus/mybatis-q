@@ -7,7 +7,10 @@ spring:
     
 logging:
   level:
-    root: INFO
+    root: DEBUG
     
 mybatis:
   mapper-locations: classpath*:/mybatis-mapper/*Mapper.xml
+  
+server:
+  port: 8081

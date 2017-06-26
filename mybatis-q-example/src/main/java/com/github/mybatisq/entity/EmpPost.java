@@ -8,7 +8,7 @@ public class EmpPost {
     /**
      * id
      */
-    private Integer epid;
+    private Integer epId;
 
     /**
      * 员工id
@@ -24,16 +24,16 @@ public class EmpPost {
      * 获取id
      * @return id
      */
-    public Integer getEpid() {
-        return epid;
+    public Integer getEpId() {
+        return epId;
     }
 
     /**
      * 设置id
-     * @param epid id
+     * @param epId id
      */
-    public void setEpid(Integer epid) {
-        this.epid = epid;
+    public void setEpId(Integer epId) {
+        this.epId = epId;
     }
 
     /**

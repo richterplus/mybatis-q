@@ -24,15 +24,15 @@ public class PositionTable extends Table {
     /**
      * 岗位id
      */
-    public Column<PositionTable, Integer> postId = new Column<>("postId");
+    public Column<PositionTable, Integer> post_id = new Column<>("post_id");
 
     /**
      * 岗位编号
      */
-    public Column<PositionTable, String> postNo = new Column<>("postNo");
+    public Column<PositionTable, String> post_no = new Column<>("post_no");
 
     /**
      * 岗位名称
      */
-    public Column<PositionTable, String> postName = new Column<>("postName");
+    public Column<PositionTable, String> post_name = new Column<>("post_name");
 }

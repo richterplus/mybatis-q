@@ -24,27 +24,27 @@ public class EmployeeTable extends Table {
     /**
      * 员工id
      */
-    public Column<EmployeeTable, Integer> empId = new Column<>("empId");
+    public Column<EmployeeTable, Integer> emp_id = new Column<>("emp_id");
 
     /**
      * 工号
      */
-    public Column<EmployeeTable, String> empNo = new Column<>("empNo");
+    public Column<EmployeeTable, String> emp_no = new Column<>("emp_no");
 
     /**
      * 员工姓名
      */
-    public Column<EmployeeTable, String> empName = new Column<>("empName");
+    public Column<EmployeeTable, String> emp_name = new Column<>("emp_name");
 
     /**
      * 是否全职
      */
-    public Column<EmployeeTable, Boolean> isFulltime = new Column<>("isFulltime");
+    public Column<EmployeeTable, Boolean> is_fulltime = new Column<>("is_fulltime");
 
     /**
      * 序列号
      */
-    public Column<EmployeeTable, Long> serialNo = new Column<>("serialNo");
+    public Column<EmployeeTable, Long> serial_no = new Column<>("serial_no");
 
     /**
      * 性别（1:男，2:女）
@@ -74,5 +74,5 @@ public class EmployeeTable extends Table {
     /**
      * 创建日期
      */
-    public Column<EmployeeTable, java.util.Date> createDate = new Column<>("createDate");
+    public Column<EmployeeTable, java.util.Date> create_date = new Column<>("create_date");
 }

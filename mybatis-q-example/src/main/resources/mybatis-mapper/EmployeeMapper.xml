@@ -1,27 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.github.mybatisq.mapper.EmployeeMapper">
+    <resultMap type="com.github.mybatisq.entity.Employee" id="employee">
+        <id column="emp_id" property="empId"/>
+        <result column="emp_no" property="empNo"/>
+        <result column="emp_name" property="empName"/>
+        <result column="is_fulltime" property="isFulltime"/>
+        <result column="serial_no" property="serialNo"/>
+        <result column="gender" property="gender"/>
+        <result column="birthday" property="birthday"/>
+        <result column="height" property="height"/>
+        <result column="weight" property="weight"/>
+        <result column="salary" property="salary"/>
+        <result column="create_date" property="createDate"/>
+    </resultMap>
+
     <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
         select count(0) <include refid="com.github.mybatisq.mapper.QMapper.countFrom"/>
     </select>
 
-    <select id="select" parameterType="com.github.mybatisq.Query" resultType="com.github.mybatisq.entity.Employee">
-        select ${tableAlias}.empId,${tableAlias}.empNo,${tableAlias}.empName,${tableAlias}.isFulltime,${tableAlias}.serialNo,${tableAlias}.gender,${tableAlias}.birthday,${tableAlias}.height,${tableAlias}.weight,${tableAlias}.salary,${tableAlias}.createDate <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    <select id="select" parameterType="com.github.mybatisq.Query" resultMap="employee">
+        select ${tableAlias}.emp_id,${tableAlias}.emp_no,${tableAlias}.emp_name,${tableAlias}.is_fulltime,${tableAlias}.serial_no,${tableAlias}.gender,${tableAlias}.birthday,${tableAlias}.height,${tableAlias}.weight,${tableAlias}.salary,${tableAlias}.create_date <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
     </select>
 
     <insert id="insert" parameterType="com.github.mybatisq.entity.Employee" useGeneratedKeys="true" keyProperty="empId">
         <trim prefix="insert employee (" suffix=")" suffixOverrides=",">
-            <if test="empId != null">empId,</if>
-            <if test="empNo != null">empNo,</if>
-            <if test="empName != null">empName,</if>
-            <if test="isFulltime != null">isFulltime,</if>
-            <if test="serialNo != null">serialNo,</if>
+            <if test="empId != null">emp_id,</if>
+            <if test="empNo != null">emp_no,</if>
+            <if test="empName != null">emp_name,</if>
+            <if test="isFulltime != null">is_fulltime,</if>
+            <if test="serialNo != null">serial_no,</if>
             <if test="gender != null">gender,</if>
             <if test="birthday != null">birthday,</if>
             <if test="height != null">height,</if>
             <if test="weight != null">weight,</if>
             <if test="salary != null">salary,</if>
-            <if test="createDate != null">createDate,</if>
+            <if test="createDate != null">create_date,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="empId != null">#{empId},</if>
@@ -39,21 +53,21 @@
     </insert>
 
     <update id="update" parameterType="com.github.mybatisq.entity.Employee">
-        <trim prefix="update employee set" suffix="where empId=#{empId}" suffixOverrides=",">
-            <if test="empNo != null">empNo=#{empNo},</if>
-            <if test="empName != null">empName=#{empName},</if>
-            <if test="isFulltime != null">isFulltime=#{isFulltime},</if>
-            <if test="serialNo != null">serialNo=#{serialNo},</if>
+        <trim prefix="update employee set" suffix="where emp_id=#{empId}" suffixOverrides=",">
+            <if test="empNo != null">emp_no=#{empNo},</if>
+            <if test="empName != null">emp_name=#{empName},</if>
+            <if test="isFulltime != null">is_fulltime=#{isFulltime},</if>
+            <if test="serialNo != null">serial_no=#{serialNo},</if>
             <if test="gender != null">gender=#{gender},</if>
             <if test="birthday != null">birthday=#{birthday},</if>
             <if test="height != null">height=#{height},</if>
             <if test="weight != null">weight=#{weight},</if>
             <if test="salary != null">salary=#{salary},</if>
-            <if test="createDate != null">createDate=#{createDate},</if>
+            <if test="createDate != null">create_date=#{createDate},</if>
         </trim>
     </update>
 
     <delete id="delete">
-        delete from employee where empId=#{empId}
+        delete from employee where emp_id=#{empId}
     </delete>
 </mapper>

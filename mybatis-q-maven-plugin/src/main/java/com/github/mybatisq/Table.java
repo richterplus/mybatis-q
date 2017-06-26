@@ -6,11 +6,16 @@ import java.util.List;
  * 表
  */
 public class Table {
-
+    
     /**
-     * 名称
+     * 原始表名
      */
-    private String name;
+    private String originalName;
+    
+    /**
+     * 映射的名称
+     */
+    private String mappedName;
 
     /**
      * 注释
@@ -23,19 +28,35 @@ public class Table {
     private List<Column> columns;
 
     /**
-     * 获取名称
-     * @return 名称
+     * 获取原始表名
+     * @return 原始表名
      */
-    public String getName() {
-        return name;
+    public String getOriginalName() {
+        return originalName;
     }
 
     /**
-     * 设置名称
-     * @param name 名称
+     * 设置原始表名
+     * @param originalName 原始表名
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setOriginalName(String originalName) {
+        this.originalName = originalName;
+    }
+
+    /**
+     * 获取映射的名称
+     * @return 映射的名称
+     */
+    public String getMappedName() {
+        return mappedName;
+    }
+
+    /**
+     * 设置映射的名称
+     * @param mappedName 映射的名称
+     */
+    public void setMappedName(String mappedName) {
+        this.mappedName = mappedName;
     }
 
     /**

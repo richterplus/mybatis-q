@@ -4,11 +4,16 @@ package com.github.mybatisq;
  * 列
  */
 public class Column {
-
+    
     /**
-     * 名称
+     * 原始列名
      */
-    private String name;
+    private String originalName;
+    
+    /**
+     * 映射的名称
+     */
+    private String mappedName;
 
     /**
      * 数据类型
@@ -31,19 +36,35 @@ public class Column {
     private boolean isAutoIncrement;
 
     /**
-     * 获取名称
-     * @return 名称
+     * 获取原始列名
+     * @return 原始列名
      */
-    public String getName() {
-        return name;
+    public String getOriginalName() {
+        return originalName;
     }
 
     /**
-     * 设置名称
-     * @param name 名称
+     * 设置原始列名
+     * @param originalName 原始列名
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setOriginalName(String originalName) {
+        this.originalName = originalName;
+    }
+
+    /**
+     * 获取映射的名称
+     * @return 映射的名称
+     */
+    public String getMappedName() {
+        return mappedName;
+    }
+
+    /**
+     * 设置映射的名称
+     * @param mappedName 映射的名称
+     */
+    public void setMappedName(String mappedName) {
+        this.mappedName = mappedName;
     }
 
     /**

@@ -154,6 +154,18 @@ public class GenCodeMojo extends AbstractMojo {
         }
         return javaType;
     }
+    
+    private String generateMappedName(String originalName) {
+        String[] splitWords = originalName.split("[_-]");
+        for (int i = 0; i < splitWords.length; i++) {
+            splitWords[i] = splitWords[i].substring(0, 1).toUpperCase() + splitWords[i].substring(1);
+        }
+        return String.join("", splitWords);
+    }
+    
+    private String lowerCaseFirstChar(String str) {
+        return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -202,10 +214,12 @@ public class GenCodeMojo extends AbstractMojo {
                     c -> (includeEntityNames.size() == 0 || includeEntityNames.contains(c.getSimpleName())) && (excludedEntityNames.size() == 0 || !excludedEntityNames.contains(c.getSimpleName())))
                     .map(c -> {
                         Table table = new Table();
-                        table.setName(c.getSimpleName());
+                        table.setOriginalName(c.getSimpleName());
+                        table.setMappedName(generateMappedName(table.getOriginalName()));
                         table.setColumns(Stream.of(c.getDeclaredFields()).map(f -> {
                             Column column = new Column();
-                            column.setName(f.getName());
+                            column.setOriginalName(f.getName());
+                            column.setMappedName(generateMappedName(column.getOriginalName()));
                             column.setDataType(f.getType().getName().replace("java.lang.", ""));
                             return column;
                         }).collect(Collectors.toList()));
@@ -228,7 +242,8 @@ public class GenCodeMojo extends AbstractMojo {
                 tables = new ArrayList<>();
                 while (resultSet.next()) {
                     Table table = new Table();
-                    table.setName(resultSet.getString("Name"));
+                    table.setOriginalName(resultSet.getString("Name"));
+                    table.setMappedName(generateMappedName(table.getOriginalName()));
                     table.setComment(resultSet.getString("Comment"));
                     table.setColumns(new ArrayList<>());
                     tables.add(table);
@@ -238,19 +253,19 @@ public class GenCodeMojo extends AbstractMojo {
 
                 for (Table table : tables) {
                     statement = conn.createStatement();
-                    resultSet = statement.executeQuery("show full columns from `" + table.getName() + "`");
+                    resultSet = statement.executeQuery("show full columns from `" + table.getOriginalName() + "`");
                     while (resultSet.next()) {
                         Column column = new Column();
                         column.setComment(resultSet.getString("Comment"));
                         column.setDataType(mapDbTypeToJavaType(resultSet.getString("Type")));
                         column.setIsAutoIncrement(resultSet.getString("Extra").contains("auto_increment"));
                         column.setIsPrimaryKey(resultSet.getString("Key").contains("PRI"));
-                        column.setName(resultSet.getString("Field"));
+                        column.setOriginalName(resultSet.getString("Field"));
+                        column.setMappedName(generateMappedName(column.getOriginalName()));
                         table.getColumns().add(column);
                     }
                     resultSet.close();
                     statement.close();
-                    table.setName(table.getName().substring(0, 1).toUpperCase() + table.getName().substring(1));
                 }
 
                 genEntities = true;
@@ -296,7 +311,7 @@ public class GenCodeMojo extends AbstractMojo {
                 tables.forEach(t -> {
                     final StringBuilder builder = new StringBuilder();
                     builder.append("package " + entityPackage + ";" + newLine(2));
-                    String className = t.getName();
+                    String className = t.getMappedName();
                     if (t.getComment() != null && t.getComment().length() > 0) {
                         builder.append("/**" + newLine());
                         builder.append(" * " + t.getComment() + newLine());
@@ -309,7 +324,7 @@ public class GenCodeMojo extends AbstractMojo {
                             builder.append(space(4) + " * " + c.getComment() + newLine());
                             builder.append(space(4) + " */" + newLine());
                         }
-                        builder.append(space(4) + "private " + c.getDataType() + " " + c.getName() + ";" + newLine(2));
+                        builder.append(space(4) + "private " + c.getDataType() + " " + lowerCaseFirstChar(c.getMappedName()) + ";" + newLine(2));
                     });
                     t.getColumns().forEach(c -> {
                         if (c.getComment() != null && c.getComment().length() > 0) {
@@ -318,18 +333,18 @@ public class GenCodeMojo extends AbstractMojo {
                             builder.append(space(4) + " * @return " + c.getComment() + newLine());
                             builder.append(space(4) + " */" + newLine());
                         }
-                        builder.append(space(4) + "public " + c.getDataType() + " get" + c.getName().substring(0, 1).toUpperCase() + c.getName().substring(1) + "() {" + newLine());
-                        builder.append(space(8) + "return " + c.getName() + ";" + newLine());
+                        builder.append(space(4) + "public " + c.getDataType() + " get" + c.getMappedName() + "() {" + newLine());
+                        builder.append(space(8) + "return " + lowerCaseFirstChar(c.getMappedName()) + ";" + newLine());
                         builder.append(space(4) + "}" + newLine(2));
                         if (c.getComment() != null && c.getComment().length() > 0) {
                             builder.append(space(4) + "/**" + newLine());
                             builder.append(space(4) + " * 设置" + c.getComment() + newLine());
-                            builder.append(space(4) + " * @param " + c.getName() + " " + c.getComment() + newLine());
+                            builder.append(space(4) + " * @param " + lowerCaseFirstChar(c.getMappedName()) + " " + c.getComment() + newLine());
                             builder.append(space(4) + " */" + newLine());
                         }
                         builder.append(
-                                space(4) + "public void set" + c.getName().substring(0, 1).toUpperCase() + c.getName().substring(1) + "(" + c.getDataType() + " " + c.getName() + ") {" + newLine());
-                        builder.append(space(8) + "this." + c.getName() + " = " + c.getName() + ";" + newLine());
+                                space(4) + "public void set" + c.getMappedName() + "(" + c.getDataType() + " " + lowerCaseFirstChar(c.getMappedName()) + ") {" + newLine());
+                        builder.append(space(8) + "this." + lowerCaseFirstChar(c.getMappedName()) + " = " + lowerCaseFirstChar(c.getMappedName()) + ";" + newLine());
                         builder.append(space(4) + "}" + newLine(2));
                     });
                     builder.append("}");
@@ -351,8 +366,8 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append("import com.github.mybatisq.Join;" + newLine());
                 builder.append("import com.github.mybatisq.Query;" + newLine());
                 builder.append("import com.github.mybatisq.Table;" + newLine());
-                String className = t.getName() + "Table";
-                String tableName = t.getName().substring(0, 1).toLowerCase() + t.getName().substring(1);
+                String className = t.getMappedName() + "Table";
+                String tableName = t.getOriginalName();
                 String tableAlias = alias(tableName);
                 builder.append(newLine() + "public class " + className + " extends Table {" + newLine());
                 builder.append(newLine() + space(4) + className + "() {" + newLine());
@@ -371,7 +386,7 @@ public class GenCodeMojo extends AbstractMojo {
                         builder.append(space(4) + " * " + c.getComment() + newLine());
                         builder.append(space(4) + " */");
                     }
-                    builder.append(newLine() + space(4) + "public Column<" + className + ", " + c.getDataType() + "> " + c.getName() + " = new Column<>(\"" + c.getName() + "\");" + newLine());
+                    builder.append(newLine() + space(4) + "public Column<" + className + ", " + c.getDataType() + "> " + c.getOriginalName() + " = new Column<>(\"" + c.getOriginalName() + "\");" + newLine());
                 });
                 builder.append("}");
                 String fileContent = builder.toString();
@@ -388,32 +403,40 @@ public class GenCodeMojo extends AbstractMojo {
                 final StringBuilder builder = new StringBuilder();
                 builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" + newLine());
                 builder.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >" + newLine());
-                String className = t.getName();
-                String tableName = t.getName().substring(0, 1).toLowerCase() + t.getName().substring(1);
-                builder.append("<mapper namespace=\"" + genPackage + "." + className + "Mapper\">");
-
-                builder.append(newLine() + space(4) + "<select id=\"count\" parameterType=\"com.github.mybatisq.Query\" resultType=\"java.lang.Integer\">" + newLine());
+                String className = t.getMappedName();
+                String tableName = t.getOriginalName();
+                builder.append("<mapper namespace=\"" + genPackage + "." + className + "Mapper\">" + newLine());
+                builder.append(space(4) + "<resultMap type=\"" + entityPackage + "." + className + "\" id=\"" + lowerCaseFirstChar(className) + "\">" + newLine());
+                t.getColumns().stream().forEach(c -> {
+                    if (c.getIsPrimaryKey()) {
+                        builder.append(space(8) + "<id column=\"" + c.getOriginalName() + "\" property=\"" + lowerCaseFirstChar(c.getMappedName()) + "\"/>" + newLine());
+                    } else {
+                        builder.append(space(8) + "<result column=\"" + c.getOriginalName() + "\" property=\"" + lowerCaseFirstChar(c.getMappedName()) + "\"/>" + newLine());
+                    }
+                });
+                builder.append(space(4) + "</resultMap>" + newLine(2));
+                builder.append(space(4) + "<select id=\"count\" parameterType=\"com.github.mybatisq.Query\" resultType=\"java.lang.Integer\">" + newLine());
                 builder.append(space(8) + "select count(0) <include refid=\"" + genPackage + ".QMapper.countFrom\"/>" + newLine());
                 builder.append(space(4) + "</select>" + newLine());
-                builder.append(newLine() + space(4) + "<select id=\"select\" parameterType=\"com.github.mybatisq.Query\" resultType=\"" + entityPackage + "." + className + "\">" + newLine());
+                builder.append(newLine() + space(4) + "<select id=\"select\" parameterType=\"com.github.mybatisq.Query\" resultMap=\"" + lowerCaseFirstChar(className) + "\">" + newLine());
                 builder.append(space(8) + "select ");
-                builder.append(t.getColumns().stream().map(c -> "${tableAlias}." + c.getName()).reduce((a, b) -> a + "," + b).get());
+                builder.append(t.getColumns().stream().map(c -> "${tableAlias}." + c.getOriginalName()).reduce((a, b) -> a + "," + b).get());
                 builder.append(" <include refid=\"" + genPackage + ".QMapper.selectFrom\"/>" + newLine());
                 builder.append(space(4) + "</select>" + newLine());
 
                 builder.append(newLine() + space(4) + "<insert id=\"insert\" parameterType=\"" + entityPackage + "." + className + "\" useGeneratedKeys=\"true\"");
                 t.getColumns().stream().filter(c -> c.getIsAutoIncrement() && c.getIsPrimaryKey()).findFirst().ifPresent(c -> {
-                    builder.append(" keyProperty=\"" + c.getName() + "\"");
+                    builder.append(" keyProperty=\"" + lowerCaseFirstChar(c.getMappedName()) + "\"");
                 });
                 builder.append(">" + newLine());
                 builder.append(space(8) + "<trim prefix=\"insert " + tableName + " (\" suffix=\")\" suffixOverrides=\",\">\r\n");
                 t.getColumns().forEach(c -> {
-                    builder.append(space(12) + "<if test=\"" + c.getName() + " != null\">" + c.getName() + ",</if>" + newLine());
+                    builder.append(space(12) + "<if test=\"" + lowerCaseFirstChar(c.getMappedName()) + " != null\">" + c.getOriginalName() + ",</if>" + newLine());
                 });
                 builder.append(space(8) + "</trim>" + newLine());
                 builder.append(space(8) + "<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">" + newLine());
                 t.getColumns().forEach(c -> {
-                    builder.append(space(12) + "<if test=\"" + c.getName() + " != null\">#{" + c.getName() + "},</if>" + newLine());
+                    builder.append(space(12) + "<if test=\"" + lowerCaseFirstChar(c.getMappedName()) + " != null\">#{" + lowerCaseFirstChar(c.getMappedName()) + "},</if>" + newLine());
                 });
                 builder.append(space(8) + "</trim>" + newLine());
                 builder.append(space(4) + "</insert>" + newLine());
@@ -423,16 +446,16 @@ public class GenCodeMojo extends AbstractMojo {
                     throw new RuntimeException("Table " + tableName + " must has a primary key column.");
                 }
                 builder.append(newLine() + space(4) + "<update id=\"update\" parameterType=\"" + entityPackage + "." + className + "\">" + newLine());
-                builder.append(space(8) + "<trim prefix=\"update " + tableName + " set\" suffix=\"where " + keyColumn.get().getName() + "=#{" + keyColumn.get().getName() + "}\" suffixOverrides=\",\">"
+                builder.append(space(8) + "<trim prefix=\"update " + tableName + " set\" suffix=\"where " + keyColumn.get().getOriginalName() + "=#{" + lowerCaseFirstChar(keyColumn.get().getMappedName()) + "}\" suffixOverrides=\",\">"
                         + newLine());
                 t.getColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> {
-                    builder.append(space(12) + "<if test=\"" + c.getName() + " != null\">" + c.getName() + "=#{" + c.getName() + "},</if>" + newLine());
+                    builder.append(space(12) + "<if test=\"" + lowerCaseFirstChar(c.getMappedName()) + " != null\">" + c.getOriginalName() + "=#{" + lowerCaseFirstChar(c.getMappedName()) + "},</if>" + newLine());
                 });
                 builder.append(space(8) + "</trim>" + newLine());
                 builder.append(space(4) + "</update>" + newLine());
 
                 builder.append(newLine() + space(4) + "<delete id=\"delete\">" + newLine());
-                builder.append(space(8) + "delete from " + tableName + " where " + keyColumn.get().getName() + "=#{" + keyColumn.get().getName() + "}" + newLine());
+                builder.append(space(8) + "delete from " + tableName + " where " + keyColumn.get().getOriginalName() + "=#{" + lowerCaseFirstChar(keyColumn.get().getMappedName()) + "}" + newLine());
                 builder.append(space(4) + "</delete>" + newLine());
 
                 builder.append("</mapper>");
@@ -449,8 +472,8 @@ public class GenCodeMojo extends AbstractMojo {
             tables.forEach(t -> {
                 final StringBuilder builder = new StringBuilder();
 
-                String className = t.getName();
-                String tableName = t.getName().substring(0, 1).toLowerCase() + t.getName().substring(1);
+                String className = t.getMappedName();
+                String tableName = t.getOriginalName();
 
                 Optional<Column> keyColumn = t.getColumns().stream().filter(c -> c.getIsPrimaryKey()).findFirst();
                 if (!keyColumn.isPresent()) {
@@ -467,9 +490,9 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append("public interface " + className + "Mapper {" + newLine(2));
                 builder.append(space(4) + "int count(Query<" + className + "Table> query);" + newLine(2));
                 builder.append(space(4) + "List<" + className + "> select(Query<" + className + "Table> query);" + newLine(2));
-                builder.append(space(4) + "int insert(" + className + " " + tableName + ");" + newLine(2));
-                builder.append(space(4) + "int update(" + className + " " + tableName + ");" + newLine(2));
-                builder.append(space(4) + "int delete(@Param(\"" + keyColumn.get().getName() + "\") " + keyColumn.get().getDataType() + " " + keyColumn.get().getName() + ");" + newLine(2));
+                builder.append(space(4) + "int insert(" + className + " " + lowerCaseFirstChar(className) + ");" + newLine(2));
+                builder.append(space(4) + "int update(" + className + " " + lowerCaseFirstChar(className) + ");" + newLine(2));
+                builder.append(space(4) + "int delete(@Param(\"" + lowerCaseFirstChar(keyColumn.get().getMappedName()) + "\") " + keyColumn.get().getDataType() + " " + lowerCaseFirstChar(keyColumn.get().getMappedName()) + ");" + newLine(2));
                 builder.append("}");
 
                 String fileContent = builder.toString();

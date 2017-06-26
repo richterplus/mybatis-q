@@ -8,13 +8,13 @@ import com.github.mybatisq.Table;
 public class EmpPostTable extends Table {
 
     EmpPostTable() {
-        super("empPost", "e0");
+        super("emp_post", "e0");
     }
 
-    public static final EmpPostTable empPost = new EmpPostTable();
+    public static final EmpPostTable emp_post = new EmpPostTable();
 
     public Query<EmpPostTable> query() {
-        return new Query<>(empPost);
+        return new Query<>(emp_post);
     }
 
     public <T extends Table> Join<EmpPostTable, T> inner(T table) {
@@ -24,15 +24,15 @@ public class EmpPostTable extends Table {
     /**
      * id
      */
-    public Column<EmpPostTable, Integer> epid = new Column<>("epid");
+    public Column<EmpPostTable, Integer> ep_id = new Column<>("ep_id");
 
     /**
      * 员工id
      */
-    public Column<EmpPostTable, Integer> empId = new Column<>("empId");
+    public Column<EmpPostTable, Integer> emp_id = new Column<>("emp_id");
 
     /**
      * 职位id
      */
-    public Column<EmpPostTable, Integer> postId = new Column<>("postId");
+    public Column<EmpPostTable, Integer> post_id = new Column<>("post_id");
 }

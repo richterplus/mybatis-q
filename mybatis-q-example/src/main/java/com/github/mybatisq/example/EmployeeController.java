@@ -26,7 +26,7 @@ public class EmployeeController {
     @RequestMapping("/get/{empId}")
     public Employee get(@PathVariable("empId") int empId) {
         EmployeeTable emp = EmployeeTable.employee;
-        List<Employee> employees = employeeMapper.select(emp.query().where(emp.empId.eq(empId)));
+        List<Employee> employees = employeeMapper.select(emp.query().where(emp.emp_id.eq(empId)));
         return employees.size() == 0 ? null : employees.get(0);
     }
 
@@ -35,14 +35,14 @@ public class EmployeeController {
         EmployeeTable e = EmployeeTable.employee;
         DepartmentTable d = DepartmentTable.department;
         PositionTable p = PositionTable.position;
-        EmpDeptTable ed = EmpDeptTable.empDept;
-        EmpPostTable ep = EmpPostTable.empPost;
+        EmpDeptTable ed = EmpDeptTable.emp_dept;
+        EmpPostTable ep = EmpPostTable.emp_post;
 
         return employeeMapper.select(e.query()
-                .join(e.inner(ed).on(e.empId.eq(ed.empId)))
-                .join(e.inner(ep).on(e.empId.eq(ep.empId)))
-                .join(ep.inner(p).on(ep.postId.eq(p.postId)).and(p.postId.eq(1)))
-                .join(ed.inner(d).on(ed.deptId.eq(d.deptId)).and(d.deptId.eq(1))));
+                .join(e.inner(ed).on(e.emp_id.eq(ed.emp_id)))
+                .join(e.inner(ep).on(e.emp_id.eq(ep.emp_id)))
+                .join(ep.inner(p).on(ep.post_id.eq(p.post_id)).and(p.post_id.eq(1)))
+                .join(ed.inner(d).on(ed.dept_id.eq(d.dept_id)).and(d.dept_id.eq(1))));
     }
 
     @RequestMapping("/update")

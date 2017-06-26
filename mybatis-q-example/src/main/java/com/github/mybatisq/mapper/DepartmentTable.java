@@ -24,20 +24,20 @@ public class DepartmentTable extends Table {
     /**
      * 部门id
      */
-    public Column<DepartmentTable, Integer> deptId = new Column<>("deptId");
+    public Column<DepartmentTable, Integer> dept_id = new Column<>("dept_id");
 
     /**
      * 部门编号
      */
-    public Column<DepartmentTable, String> deptNo = new Column<>("deptNo");
+    public Column<DepartmentTable, String> dept_no = new Column<>("dept_no");
 
     /**
      * 部门名称
      */
-    public Column<DepartmentTable, String> deptName = new Column<>("deptName");
+    public Column<DepartmentTable, String> dept_name = new Column<>("dept_name");
 
     /**
      * 创建日期
      */
-    public Column<DepartmentTable, java.util.Date> createDate = new Column<>("createDate");
+    public Column<DepartmentTable, java.util.Date> create_date = new Column<>("create_date");
 }

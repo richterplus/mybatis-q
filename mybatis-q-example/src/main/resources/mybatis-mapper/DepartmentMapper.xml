@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.github.mybatisq.mapper.DepartmentMapper">
+    <resultMap type="com.github.mybatisq.entity.Department" id="department">
+        <id column="dept_id" property="deptId"/>
+        <result column="dept_no" property="deptNo"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="create_date" property="createDate"/>
+    </resultMap>
+
     <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
         select count(0) <include refid="com.github.mybatisq.mapper.QMapper.countFrom"/>
     </select>
 
-    <select id="select" parameterType="com.github.mybatisq.Query" resultType="com.github.mybatisq.entity.Department">
-        select ${tableAlias}.deptId,${tableAlias}.deptNo,${tableAlias}.deptName,${tableAlias}.createDate <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    <select id="select" parameterType="com.github.mybatisq.Query" resultMap="department">
+        select ${tableAlias}.dept_id,${tableAlias}.dept_no,${tableAlias}.dept_name,${tableAlias}.create_date <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
     </select>
 
     <insert id="insert" parameterType="com.github.mybatisq.entity.Department" useGeneratedKeys="true" keyProperty="deptId">
         <trim prefix="insert department (" suffix=")" suffixOverrides=",">
-            <if test="deptId != null">deptId,</if>
-            <if test="deptNo != null">deptNo,</if>
-            <if test="deptName != null">deptName,</if>
-            <if test="createDate != null">createDate,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptNo != null">dept_no,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="createDate != null">create_date,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="deptId != null">#{deptId},</if>
@@ -25,14 +32,14 @@
     </insert>
 
     <update id="update" parameterType="com.github.mybatisq.entity.Department">
-        <trim prefix="update department set" suffix="where deptId=#{deptId}" suffixOverrides=",">
-            <if test="deptNo != null">deptNo=#{deptNo},</if>
-            <if test="deptName != null">deptName=#{deptName},</if>
-            <if test="createDate != null">createDate=#{createDate},</if>
+        <trim prefix="update department set" suffix="where dept_id=#{deptId}" suffixOverrides=",">
+            <if test="deptNo != null">dept_no=#{deptNo},</if>
+            <if test="deptName != null">dept_name=#{deptName},</if>
+            <if test="createDate != null">create_date=#{createDate},</if>
         </trim>
     </update>
 
     <delete id="delete">
-        delete from department where deptId=#{deptId}
+        delete from department where dept_id=#{deptId}
     </delete>
 </mapper>
