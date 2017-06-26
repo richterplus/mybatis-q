@@ -4,7 +4,6 @@ import java.util.Collection;
 
 /**
  * 列
- *
  * @param <T> 表类型
  * @param <D> 数据类型
  */
@@ -12,7 +11,6 @@ public class Column<T extends Table, D> {
 
     /**
      * 新增列
-     *
      * @param name 名称
      */
     public Column(String name) {
@@ -21,7 +19,6 @@ public class Column<T extends Table, D> {
 
     /**
      * 升序排列
-     *
      * @return 排序项
      */
     public OrderBy<T> asc() {
@@ -30,7 +27,6 @@ public class Column<T extends Table, D> {
 
     /**
      * 降序排列
-     *
      * @return 排序项
      */
     public OrderBy<T> desc() {
@@ -39,7 +35,6 @@ public class Column<T extends Table, D> {
 
     /**
      * = value
-     *
      * @param value 查询值
      * @return 查询项
      */
@@ -49,7 +44,6 @@ public class Column<T extends Table, D> {
 
     /**
      * &gt; value
-     *
      * @param value 查询值
      * @return 查询项
      */
@@ -59,7 +53,6 @@ public class Column<T extends Table, D> {
 
     /**
      * &gt;= value
-     *
      * @param value 查询值
      * @return 查询项
      */
@@ -69,7 +62,6 @@ public class Column<T extends Table, D> {
 
     /**
      * &lt; value
-     *
      * @param value 查询值
      * @return 查询项
      */
@@ -79,7 +71,6 @@ public class Column<T extends Table, D> {
 
     /**
      * &lt;= value
-     *
      * @param value 查询值
      * @return 查询项
      */
@@ -89,7 +80,6 @@ public class Column<T extends Table, D> {
 
     /**
      * between start and end
-     *
      * @param start 起始值
      * @param end 结束值
      * @return 查询项
@@ -100,7 +90,6 @@ public class Column<T extends Table, D> {
 
     /**
      * in (values...)
-     *
      * @param values 查询值
      * @return 查询项
      */
@@ -110,7 +99,6 @@ public class Column<T extends Table, D> {
 
     /**
      * in (select ...)
-     *
      * @param select 子查询
      * @return 查询项
      */
@@ -120,7 +108,6 @@ public class Column<T extends Table, D> {
 
     /**
      * like 'value%'
-     *
      * @param value 查询值
      * @return 查询项
      */
@@ -133,7 +120,6 @@ public class Column<T extends Table, D> {
 
     /**
      * 连接到另一个列
-     *
      * @param column 列
      * @param <T2> 连接表
      * @return 连接对象
@@ -149,7 +135,6 @@ public class Column<T extends Table, D> {
 
     /**
      * 获取名称
-     *
      * @return 名称
      */
     public String getName() {

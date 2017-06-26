@@ -2,7 +2,6 @@ package com.github.mybatisq;
 
 /**
  * 子查询
- *
  * @param <T> 表类型
  * @param <D> 数据类型
  */
@@ -10,7 +9,6 @@ public class Select<T extends Table, D> {
 
     /**
      * 新建子查询
-     *
      * @param table 表
      * @param column 列
      */
@@ -22,7 +20,6 @@ public class Select<T extends Table, D> {
 
     /**
      * where条件
-     *
      * @param where where条件
      * @return 子查询
      */
@@ -33,7 +30,6 @@ public class Select<T extends Table, D> {
 
     /**
      * 排序
-     *
      * @param orderBy 排序
      * @return 子查询
      */
@@ -44,7 +40,6 @@ public class Select<T extends Table, D> {
 
     /**
      * 限制子查询返回的数据行（limit ..., ?）
-     *
      * @param limit 限制的数据行数
      * @return 子查询
      */
@@ -58,7 +53,6 @@ public class Select<T extends Table, D> {
 
     /**
      * 跳过子查询返回的行数（limit ?, ...）
-     *
      * @param skip 跳过的数据行数
      * @return 子查询
      */
@@ -107,7 +101,6 @@ public class Select<T extends Table, D> {
 
     /**
      * 获取表名称
-     *
      * @return 表名称
      */
     public String getTableName() {
@@ -116,7 +109,6 @@ public class Select<T extends Table, D> {
 
     /**
      * 获取表别名
-     *
      * @return 表别名
      */
     public String getTableAlias() {
@@ -125,7 +117,6 @@ public class Select<T extends Table, D> {
 
     /**
      * 获取where条件
-     *
      * @return where条件
      */
     public Where<T> getWhere() {
@@ -134,7 +125,6 @@ public class Select<T extends Table, D> {
 
     /**
      * 获取排序
-     *
      * @return 排序
      */
     public OrderBy<T> getOrderBy() {
@@ -143,7 +133,6 @@ public class Select<T extends Table, D> {
 
     /**
      * 获取列名
-     *
      * @return 列名
      */
     public String getColumnName() {

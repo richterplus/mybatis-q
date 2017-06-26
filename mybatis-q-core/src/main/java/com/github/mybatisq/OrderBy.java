@@ -8,7 +8,6 @@ public class OrderBy<T extends Table> {
 
     /**
      * 新建排序项
-     *
      * @param columnName 列名
      * @param direction 排序方向
      */
@@ -29,7 +28,6 @@ public class OrderBy<T extends Table> {
 
     /**
      * 获取列名
-     *
      * @return 列名
      */
     public String getColumnName() {
@@ -38,7 +36,6 @@ public class OrderBy<T extends Table> {
 
     /**
      * 获取排序方向
-     *
      * @return 排序方向
      */
     public String getDirection() {

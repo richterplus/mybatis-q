@@ -7,7 +7,6 @@ public abstract class Table {
 
     /**
      * 新建表
-     *
      * @param name 名称
      * @param alias 别名
      */
@@ -28,7 +27,6 @@ public abstract class Table {
 
     /**
      * 获取名称
-     *
      * @return 名称
      */
     public String getName() {
@@ -37,7 +35,6 @@ public abstract class Table {
 
     /**
      * 获取别名
-     *
      * @return 别名
      */
     public String getAlias() {

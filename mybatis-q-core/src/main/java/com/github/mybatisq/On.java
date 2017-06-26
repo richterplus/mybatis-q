@@ -2,7 +2,6 @@ package com.github.mybatisq;
 
 /**
  * 连接对象
- *
  * @param <T1> 表1
  * @param <T2> 表2
  */
@@ -10,7 +9,6 @@ public class On<T1 extends Table, T2 extends Table> {
 
     /**
      * 新建连接对象
-     *
      * @param column1 列1
      * @param operator 操作符
      * @param column2 列2
@@ -38,7 +36,6 @@ public class On<T1 extends Table, T2 extends Table> {
 
     /**
      * 获取列名1
-     *
      * @return 列名1
      */
     public String getColumnName1() {
@@ -47,7 +44,6 @@ public class On<T1 extends Table, T2 extends Table> {
 
     /**
      * 获取操作符
-     *
      * @return 操作符
      */
     public String getOperator() {
@@ -56,7 +52,6 @@ public class On<T1 extends Table, T2 extends Table> {
 
     /**
      * 获取列名2
-     *
      * @return 列名2
      */
     public String getColumnName2() {

@@ -5,14 +5,12 @@ import java.util.LinkedList;
 
 /**
  * 查询
- *
  * @param <T> 表类型
  */
 public class Query<T extends Table> {
 
     /**
      * 新建查询
-     *
      * @param table 表
      */
     public Query(T table) {
@@ -25,29 +23,28 @@ public class Query<T extends Table> {
 
     /**
      * where
-     *
      * @param where where条件
      * @return 查询
      */
     public Query<T> where(Where<T> where) {
-        if (where != null) wheres.add(where);
+        if (where != null)
+            wheres.add(where);
         return this;
     }
 
     /**
      * 排序
-     *
      * @param orderBy 排序
      * @return 查询
      */
     public Query<T> orderBy(OrderBy<T> orderBy) {
-        if (orderBy != null) orderBys.add(orderBy);
+        if (orderBy != null)
+            orderBys.add(orderBy);
         return this;
     }
 
     /**
      * 限制查询返回的数据行（limit ..., ?）
-     *
      * @param limit 限制的数据行数
      * @return 查询
      */
@@ -61,7 +58,6 @@ public class Query<T extends Table> {
 
     /**
      * 跳过查询返回的行数（limit ?, ...）
-     *
      * @param skip 跳过的数据行数
      * @return 查询
      */
@@ -75,12 +71,12 @@ public class Query<T extends Table> {
 
     /**
      * 连接
-     *
      * @param innerJoin 连接
      * @return 查询
      */
     public Query<T> join(Join<? extends Table, ? extends Table> innerJoin) {
-        if (innerJoin != null) joins.add(innerJoin);
+        if (innerJoin != null)
+            joins.add(innerJoin);
         return this;
     }
 
@@ -121,7 +117,6 @@ public class Query<T extends Table> {
 
     /**
      * 获取表名称
-     *
      * @return 表名称
      */
     public String getTableName() {
@@ -130,7 +125,6 @@ public class Query<T extends Table> {
 
     /**
      * 获取表别名
-     *
      * @return 表别名
      */
     public String getTableAlias() {
@@ -139,7 +133,6 @@ public class Query<T extends Table> {
 
     /**
      * 获取where条件
-     *
      * @return where条件
      */
     public Collection<Where<T>> getWheres() {
@@ -148,7 +141,6 @@ public class Query<T extends Table> {
 
     /**
      * 获取排序
-     *
      * @return 排序
      */
     public Collection<OrderBy<T>> getOrderBys() {
@@ -157,7 +149,6 @@ public class Query<T extends Table> {
 
     /**
      * 获取连接
-     *
      * @return 连接
      */
     public Collection<Join<? extends Table, ? extends Table>> getJoins() {

@@ -2,14 +2,12 @@ package com.github.mybatisq;
 
 /**
  * where项
- *
  * @param <T> 表类型
  */
 public class Where<T extends Table> {
 
     /**
      * 新建where项
-     *
      * @param columnName 列名
      * @param operator 操作符
      * @param queryValue 查询值
@@ -20,7 +18,6 @@ public class Where<T extends Table> {
 
     /**
      * 新建where项
-     *
      * @param columnName 列名
      * @param operator 操作符
      * @param queryValue 查询值
@@ -55,7 +52,6 @@ public class Where<T extends Table> {
 
     /**
      * 获取列名
-     *
      * @return 列名
      */
     public String getColumnName() {
@@ -64,7 +60,6 @@ public class Where<T extends Table> {
 
     /**
      * 获取操作符
-     *
      * @return 操作符
      */
     public String getOperator() {
@@ -73,7 +68,6 @@ public class Where<T extends Table> {
 
     /**
      * 获取查询值
-     *
      * @return 查询值
      */
     public Object getQueryValue() {
@@ -82,7 +76,6 @@ public class Where<T extends Table> {
 
     /**
      * 获取第二个查询值
-     *
      * @return 第二个查询值
      */
     public Object getQueryValue2() {
