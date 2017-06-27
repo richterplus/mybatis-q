@@ -1,9 +1,9 @@
 # mybatis-q
 mybatis code generator / mybatis代码生成工具
 
-## Database first approach
+## Sample Usage
 
-### pom.xml
+### pom.xml -- database first
 
 	<build>
 	    <plugins>
@@ -29,6 +29,30 @@ mybatis code generator / mybatis代码生成工具
 	                    <username>root</username>
 	                    <password>123456</password>
 	                </datasource>
+	            </configuration>
+	        </plugin>
+	    </plugins>
+	</build>
+
+### pom.xml -- code first
+
+	<build>
+	    <plugins>
+	        <plugin>
+	            <groupId>com.github</groupId>
+	            <artifactId>mybatis-q-maven-plugin</artifactId>
+	            <version>0.0.1</version>
+	            <dependencies>
+	                <dependency>
+	                    <groupId>mysql</groupId>
+	                    <artifactId>mysql-connector-java</artifactId>
+	                    <version>5.1.42</version>
+	                </dependency>
+	            </dependencies>
+	            <configuration>
+	                <entityPackage>com.github.mybatisq.entity</entityPackage><!--entity class package (entities must be defined first) -->
+	                <genPackage>com.github.mybatisq.mapper</genPackage><!--mybatis mapper interface package-->
+	                <mapperFolder>mybatis-mapper</mapperFolder><!--mybatis xml mapper file location in src/main/resources folder-->
 	            </configuration>
 	        </plugin>
 	    </plugins>
