@@ -36,6 +36,7 @@ mybatis code generator / mybatis代码生成工具
 
 ### pom.xml -- code first
 
+	```xml
 	<build>
 	    <plugins>
 	        <plugin>
@@ -57,15 +58,19 @@ mybatis code generator / mybatis代码生成工具
 	        </plugin>
 	    </plugins>
 	</build>
+	```
 
 ### maven build
 
+	```bash
 	mvn mybatis-q:gencode
+	```
 
 ### example usage
 
 #### example database definition:
 
+	```sql
 	CREATE TABLE `employee` (
 	  `emp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '员工id',
 	  `emp_no` varchar(45) NOT NULL COMMENT '工号',
@@ -109,9 +114,11 @@ mybatis code generator / mybatis代码生成工具
 	  `post_id` int(11) NOT NULL COMMENT '职位id',
 	  PRIMARY KEY (`ep_id`)
 	) COMMENT='员工职位';
+	```
 
 #### example sql operation based on generated codes
 
+	```java
 	EmployeeTable e = EmployeeTable.employee;
 	DepartmentTable d = DepartmentTable.department;
 	PositionTable p = PositionTable.position;
@@ -142,5 +149,6 @@ mybatis code generator / mybatis代码生成工具
 	        .orderBy(e.createDate.desc())
 	        .skip(10)
 	        .limit(5));
+	```
 	        
 You can find out more in the source codes.
