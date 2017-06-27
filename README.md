@@ -1,9 +1,9 @@
 # mybatis-q
 mybatis code generator / mybatis代码生成工具
 
-##Database first approach
+## Database first approach
 
-###pom.xml
+### pom.xml
 
 	<build>
 	    <plugins>
@@ -34,13 +34,13 @@ mybatis code generator / mybatis代码生成工具
 	    </plugins>
 	</build>
 
-###maven build
+### maven build
 
 	mvn mybatis-q:gencode
 
-###example usage
+### example usage
 
-####example database definition:
+#### example database definition:
 
 	CREATE TABLE `employee` (
 	  `emp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '员工id',
@@ -86,7 +86,7 @@ mybatis code generator / mybatis代码生成工具
 	  PRIMARY KEY (`ep_id`)
 	) COMMENT='员工职位';
 
-####example sql operation based on generated codes
+#### example sql operation based on generated codes
 
 	EmployeeTable e = EmployeeTable.employee;
 	DepartmentTable d = DepartmentTable.department;
