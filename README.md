@@ -45,13 +45,6 @@ mybatis code generator / mybatis代码生成工具
             <groupId>com.github</groupId>
             <artifactId>mybatis-q-maven-plugin</artifactId>
             <version>0.0.1</version>
-            <dependencies>
-                <dependency>
-                    <groupId>mysql</groupId>
-                    <artifactId>mysql-connector-java</artifactId>
-                    <version>5.1.42</version>
-                </dependency>
-            </dependencies>
             <configuration>
                 <entityPackage>com.github.mybatisq.entity</entityPackage><!--entity class package (entities must be defined first) -->
                 <genPackage>com.github.mybatisq.mapper</genPackage><!--mybatis mapper interface package-->
