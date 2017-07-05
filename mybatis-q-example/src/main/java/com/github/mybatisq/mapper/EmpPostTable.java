@@ -7,7 +7,7 @@ import com.github.mybatisq.Table;
 
 public class EmpPostTable extends Table {
 
-    EmpPostTable() {
+    private EmpPostTable() {
         super("emp_post", "e0");
     }
 

@@ -7,7 +7,7 @@ import com.github.mybatisq.Table;
 
 public class EmployeeTable extends Table {
 
-    EmployeeTable() {
+    private EmployeeTable() {
         super("employee", "e1");
     }
 

@@ -7,7 +7,7 @@ import com.github.mybatisq.Table;
 
 public class PositionTable extends Table {
 
-    PositionTable() {
+    private PositionTable() {
         super("position", "p");
     }
 

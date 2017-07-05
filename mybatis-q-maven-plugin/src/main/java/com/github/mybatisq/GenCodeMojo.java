@@ -86,7 +86,7 @@ public class GenCodeMojo extends AbstractMojo {
             URL urls[] = new URL[classpathElements.size()];
 
             for (int i = 0; i < classpathElements.size(); ++i) {
-                urls[i] = new File((String) classpathElements.get(i)).toURI().toURL();
+                urls[i] = new File(classpathElements.get(i)).toURI().toURL();
             }
             return new URLClassLoader(urls, getClass().getClassLoader());
         } catch (MalformedURLException | DependencyResolutionRequiredException e) {
@@ -94,26 +94,22 @@ public class GenCodeMojo extends AbstractMojo {
         }
     }
 
-    final Set<String> aliases = new HashSet<>();
+    private final Set<String> aliases = new HashSet<>();
 
     private String space(int count) {
-        String space = "";
+        StringBuilder space = new StringBuilder();
         for (int i = 0; i < count; i++) {
-            space += " ";
+            space.append(" ");
         }
-        return space;
-    }
-
-    private String newLine() {
-        return "\r\n";
+        return space.toString();
     }
 
     private String newLine(int count) {
-        String newLine = "";
+        StringBuilder newLine = new StringBuilder();
         for (int i = 0; i < count; i++) {
-            newLine += newLine();
+            newLine.append("\r\n");
         }
-        return newLine;
+        return newLine.toString();
     }
 
     private String alias(String tableName) {
@@ -178,11 +174,11 @@ public class GenCodeMojo extends AbstractMojo {
         if (excludeEntities == null)
             excludeEntities = "";
 
-        Set<String> includeEntityNames = Stream.of(includeEntities.split(",")).map(e -> e.trim()).filter(e -> e.length() > 0).collect(Collectors.toSet());
+        Set<String> includeEntityNames = Stream.of(includeEntities.split(",")).map(String::trim).filter(e -> e.length() > 0).collect(Collectors.toSet());
 
-        Set<String> excludedEntityNames = Stream.of(excludeEntities.split(",")).map(e -> e.trim()).filter(e -> e.length() > 0).collect(Collectors.toSet());
+        Set<String> excludedEntityNames = Stream.of(excludeEntities.split(",")).map(String::trim).filter(e -> e.length() > 0).collect(Collectors.toSet());
 
-        List<Table> tables = null;
+        List<Table> tables;
 
         ClassLoader cl = getClassLoader();
 
@@ -196,12 +192,13 @@ public class GenCodeMojo extends AbstractMojo {
             }
 
             File file = new File(classPath.getFile());
-            if (file == null || file.listFiles() == null) {
+            if (file.listFiles() == null) {
                 return;
             }
 
             List<Class<?>> classes = new ArrayList<>();
-            for (File f : file.listFiles()) {
+            File[] files = file.listFiles();
+            for (File f : files != null ? files : new File[0]) {
                 try {
                     classes.add(cl.loadClass(entityPackage + "." + f.getName().replace(".class", "")));
                 } catch (ClassNotFoundException e) {
@@ -231,9 +228,9 @@ public class GenCodeMojo extends AbstractMojo {
                 t.getColumns().get(0).setIsAutoIncrement(true);
             });
         } else {
-            Connection conn = null;
-            Statement statement = null;
-            ResultSet resultSet = null;
+            Connection conn;
+            Statement statement;
+            ResultSet resultSet;
             try {
                 Class.forName(datasource.getDriverClassName());
                 conn = DriverManager.getConnection(datasource.getUrl(), datasource.getUsername(), datasource.getPassword());
@@ -269,22 +266,11 @@ public class GenCodeMojo extends AbstractMojo {
                 }
 
                 genEntities = true;
+                resultSet.close();
+                statement.close();
+                conn.close();
             } catch (ClassNotFoundException | SQLException e) {
                 throw new MojoFailureException("Failed to initialize datasource driver class", e);
-            } finally {
-                try {
-                    if (resultSet != null) {
-                        resultSet.close();
-                    }
-                    if (statement != null) {
-                        statement.close();
-                    }
-                    if (conn != null) {
-                        conn.close();
-                    }
-                } catch (SQLException e) {
-                    throw new MojoFailureException("Failed to close datasource connection", e);
-                }
             }
         }
 
@@ -310,42 +296,41 @@ public class GenCodeMojo extends AbstractMojo {
             if (genEntities) {
                 tables.forEach(t -> {
                     final StringBuilder builder = new StringBuilder();
-                    builder.append("package " + entityPackage + ";" + newLine(2));
+                    builder.append("package ").append(entityPackage).append(";").append(newLine(2));
                     String className = t.getMappedName();
                     if (t.getComment() != null && t.getComment().length() > 0) {
-                        builder.append("/**" + newLine());
-                        builder.append(" * " + t.getComment() + newLine());
-                        builder.append(" */" + newLine());
+                        builder.append("/**").append(newLine(1));
+                        builder.append(" * ").append(t.getComment()).append(newLine(1));
+                        builder.append(" */").append(newLine(1));
                     }
-                    builder.append("public class " + className + " {" + newLine(2));
+                    builder.append("public class ").append(className).append(" {").append(newLine(2));
                     t.getColumns().forEach(c -> {
                         if (c.getComment() != null && c.getComment().length() > 0) {
-                            builder.append(space(4) + "/**" + newLine());
-                            builder.append(space(4) + " * " + c.getComment() + newLine());
-                            builder.append(space(4) + " */" + newLine());
+                            builder.append(space(4)).append("/**").append(newLine(1));
+                            builder.append(space(4)).append(" * ").append(c.getComment()).append(newLine(1));
+                            builder.append(space(4)).append(" */").append(newLine(1));
                         }
-                        builder.append(space(4) + "private " + c.getDataType() + " " + lowerCaseFirstChar(c.getMappedName()) + ";" + newLine(2));
+                        builder.append(space(4)).append("private ").append(c.getDataType()).append(" ").append(lowerCaseFirstChar(c.getMappedName())).append(";").append(newLine(2));
                     });
                     t.getColumns().forEach(c -> {
                         if (c.getComment() != null && c.getComment().length() > 0) {
-                            builder.append(space(4) + "/**" + newLine());
-                            builder.append(space(4) + " * 获取" + c.getComment() + newLine());
-                            builder.append(space(4) + " * @return " + c.getComment() + newLine());
-                            builder.append(space(4) + " */" + newLine());
+                            builder.append(space(4)).append("/**").append(newLine(1));
+                            builder.append(space(4)).append(" * 获取").append(c.getComment()).append(newLine(1));
+                            builder.append(space(4)).append(" * @return ").append(c.getComment()).append(newLine(1));
+                            builder.append(space(4)).append(" */").append(newLine(1));
                         }
-                        builder.append(space(4) + "public " + c.getDataType() + " get" + c.getMappedName() + "() {" + newLine());
-                        builder.append(space(8) + "return " + lowerCaseFirstChar(c.getMappedName()) + ";" + newLine());
-                        builder.append(space(4) + "}" + newLine(2));
+                        builder.append(space(4)).append("public ").append(c.getDataType()).append(" get").append(c.getMappedName()).append("() {").append(newLine(1));
+                        builder.append(space(8)).append("return ").append(lowerCaseFirstChar(c.getMappedName())).append(";").append(newLine(1));
+                        builder.append(space(4)).append("}").append(newLine(2));
                         if (c.getComment() != null && c.getComment().length() > 0) {
-                            builder.append(space(4) + "/**" + newLine());
-                            builder.append(space(4) + " * 设置" + c.getComment() + newLine());
-                            builder.append(space(4) + " * @param " + lowerCaseFirstChar(c.getMappedName()) + " " + c.getComment() + newLine());
-                            builder.append(space(4) + " */" + newLine());
+                            builder.append(space(4)).append("/**").append(newLine(1));
+                            builder.append(space(4)).append(" * 设置").append(c.getComment()).append(newLine(1));
+                            builder.append(space(4)).append(" * @param ").append(lowerCaseFirstChar(c.getMappedName())).append(" ").append(c.getComment()).append(newLine(1));
+                            builder.append(space(4)).append(" */").append(newLine(1));
                         }
-                        builder.append(
-                                space(4) + "public void set" + c.getMappedName() + "(" + c.getDataType() + " " + lowerCaseFirstChar(c.getMappedName()) + ") {" + newLine());
-                        builder.append(space(8) + "this." + lowerCaseFirstChar(c.getMappedName()) + " = " + lowerCaseFirstChar(c.getMappedName()) + ";" + newLine());
-                        builder.append(space(4) + "}" + newLine(2));
+                        builder.append(space(4)).append("public void set").append(c.getMappedName()).append("(").append(c.getDataType()).append(" ").append(lowerCaseFirstChar(c.getMappedName())).append(") {").append(newLine(1));
+                        builder.append(space(8)).append("this.").append(lowerCaseFirstChar(c.getMappedName())).append(" = ").append(lowerCaseFirstChar(c.getMappedName())).append(";").append(newLine(1));
+                        builder.append(space(4)).append("}").append(newLine(2));
                     });
                     builder.append("}");
                     String fileContent = builder.toString();
@@ -361,32 +346,32 @@ public class GenCodeMojo extends AbstractMojo {
 
             tables.forEach(t -> {
                 final StringBuilder builder = new StringBuilder();
-                builder.append("package " + genPackage + ";" + newLine(2));
-                builder.append("import com.github.mybatisq.Column;" + newLine());
-                builder.append("import com.github.mybatisq.Join;" + newLine());
-                builder.append("import com.github.mybatisq.Query;" + newLine());
-                builder.append("import com.github.mybatisq.Table;" + newLine());
+                builder.append("package ").append(genPackage).append(";").append(newLine(2));
+                builder.append("import com.github.mybatisq.Column;").append(newLine(1));
+                builder.append("import com.github.mybatisq.Join;").append(newLine(1));
+                builder.append("import com.github.mybatisq.Query;").append(newLine(1));
+                builder.append("import com.github.mybatisq.Table;").append(newLine(1));
                 String className = t.getMappedName() + "Table";
                 String tableName = t.getOriginalName();
                 String tableAlias = alias(tableName);
-                builder.append(newLine() + "public class " + className + " extends Table {" + newLine());
-                builder.append(newLine() + space(4) + className + "() {" + newLine());
-                builder.append(space(8) + "super(\"" + tableName + "\", \"" + tableAlias + "\");" + newLine());
-                builder.append(space(4) + "}" + newLine());
-                builder.append(newLine() + space(4) + "public static final " + className + " " + tableName + " = new " + className + "();" + newLine());
-                builder.append(newLine() + space(4) + "public Query<" + className + "> query() {" + newLine());
-                builder.append(space(8) + "return new Query<>(" + tableName + ");" + newLine());
-                builder.append(space(4) + "}" + newLine());
-                builder.append(newLine() + space(4) + "public <T extends Table> Join<" + className + ", T> inner(T table) {" + newLine());
-                builder.append(space(8) + "return new Join<>(\"inner\", this, table);" + newLine());
-                builder.append(space(4) + "}" + newLine());
+                builder.append(newLine(1)).append("public class ").append(className).append(" extends Table {").append(newLine(1));
+                builder.append(newLine(1)).append(space(4)).append("private ").append(className).append("() {").append(newLine(1));
+                builder.append(space(8)).append("super(\"").append(tableName).append("\", \"").append(tableAlias).append("\");").append(newLine(1));
+                builder.append(space(4)).append("}").append(newLine(1));
+                builder.append(newLine(1)).append(space(4)).append("public static final ").append(className).append(" ").append(tableName).append(" = new ").append(className).append("();").append(newLine(1));
+                builder.append(newLine(1)).append(space(4)).append("public Query<").append(className).append("> query() {").append(newLine(1));
+                builder.append(space(8)).append("return new Query<>(").append(tableName).append(");").append(newLine(1));
+                builder.append(space(4)).append("}").append(newLine(1));
+                builder.append(newLine(1)).append(space(4)).append("public <T extends Table> Join<").append(className).append(", T> inner(T table) {").append(newLine(1));
+                builder.append(space(8)).append("return new Join<>(\"inner\", this, table);").append(newLine(1));
+                builder.append(space(4)).append("}").append(newLine(1));
                 t.getColumns().forEach(c -> {
                     if (c.getComment() != null && c.getComment().trim().length() > 0) {
-                        builder.append(newLine() + space(4) + "/**" + newLine());
-                        builder.append(space(4) + " * " + c.getComment() + newLine());
-                        builder.append(space(4) + " */");
+                        builder.append(newLine(1)).append(space(4)).append("/**").append(newLine(1));
+                        builder.append(space(4)).append(" * ").append(c.getComment()).append(newLine(1));
+                        builder.append(space(4)).append(" */");
                     }
-                    builder.append(newLine() + space(4) + "public Column<" + className + ", " + c.getDataType() + "> " + c.getOriginalName() + " = new Column<>(\"" + c.getOriginalName() + "\");" + newLine());
+                    builder.append(newLine(1)).append(space(4)).append("public Column<").append(className).append(", ").append(c.getDataType()).append("> ").append(c.getOriginalName()).append(" = new Column<>(\"").append(c.getOriginalName()).append("\");").append(newLine(1));
                 });
                 builder.append("}");
                 String fileContent = builder.toString();
@@ -401,62 +386,53 @@ public class GenCodeMojo extends AbstractMojo {
 
             tables.forEach(t -> {
                 final StringBuilder builder = new StringBuilder();
-                builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" + newLine());
-                builder.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >" + newLine());
+                builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>").append(newLine(1));
+                builder.append("<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\" >").append(newLine(1));
                 String className = t.getMappedName();
                 String tableName = t.getOriginalName();
-                builder.append("<mapper namespace=\"" + genPackage + "." + className + "Mapper\">" + newLine());
-                builder.append(space(4) + "<resultMap type=\"" + entityPackage + "." + className + "\" id=\"" + lowerCaseFirstChar(className) + "\">" + newLine());
-                t.getColumns().stream().forEach(c -> {
+                builder.append("<mapper namespace=\"").append(genPackage).append(".").append(className).append("Mapper\">").append(newLine(1));
+                builder.append(space(4)).append("<resultMap type=\"").append(entityPackage).append(".").append(className).append("\" id=\"").append(lowerCaseFirstChar(className)).append("\">").append(newLine(1));
+                t.getColumns().forEach(c -> {
                     if (c.getIsPrimaryKey()) {
-                        builder.append(space(8) + "<id column=\"" + c.getOriginalName() + "\" property=\"" + lowerCaseFirstChar(c.getMappedName()) + "\"/>" + newLine());
+                        builder.append(space(8)).append("<id column=\"").append(c.getOriginalName()).append("\" property=\"").append(lowerCaseFirstChar(c.getMappedName())).append("\"/>").append(newLine(1));
                     } else {
-                        builder.append(space(8) + "<result column=\"" + c.getOriginalName() + "\" property=\"" + lowerCaseFirstChar(c.getMappedName()) + "\"/>" + newLine());
+                        builder.append(space(8)).append("<result column=\"").append(c.getOriginalName()).append("\" property=\"").append(lowerCaseFirstChar(c.getMappedName())).append("\"/>").append(newLine(1));
                     }
                 });
-                builder.append(space(4) + "</resultMap>" + newLine(2));
-                builder.append(space(4) + "<select id=\"count\" parameterType=\"com.github.mybatisq.Query\" resultType=\"java.lang.Integer\">" + newLine());
-                builder.append(space(8) + "select count(0) <include refid=\"" + genPackage + ".QMapper.countFrom\"/>" + newLine());
-                builder.append(space(4) + "</select>" + newLine());
-                builder.append(newLine() + space(4) + "<select id=\"select\" parameterType=\"com.github.mybatisq.Query\" resultMap=\"" + lowerCaseFirstChar(className) + "\">" + newLine());
-                builder.append(space(8) + "select ");
-                builder.append(t.getColumns().stream().map(c -> "${tableAlias}." + c.getOriginalName()).reduce((a, b) -> a + "," + b).get());
-                builder.append(" <include refid=\"" + genPackage + ".QMapper.selectFrom\"/>" + newLine());
-                builder.append(space(4) + "</select>" + newLine());
+                builder.append(space(4)).append("</resultMap>").append(newLine(2));
+                builder.append(space(4)).append("<select id=\"count\" parameterType=\"com.github.mybatisq.Query\" resultType=\"java.lang.Integer\">").append(newLine(1));
+                builder.append(space(8)).append("select count(0) <include refid=\"").append(genPackage).append(".QMapper.countFrom\"/>").append(newLine(1));
+                builder.append(space(4)).append("</select>").append(newLine(1));
+                builder.append(newLine(1)).append(space(4)).append("<select id=\"select\" parameterType=\"com.github.mybatisq.Query\" resultMap=\"").append(lowerCaseFirstChar(className)).append("\">").append(newLine(1));
+                builder.append(space(8)).append("select ");
+                t.getColumns().stream().map(c -> "${tableAlias}." + c.getOriginalName()).reduce((a, b) -> a + "," + b).ifPresent(builder::append);
+                builder.append(" <include refid=\"").append(genPackage).append(".QMapper.selectFrom\"/>").append(newLine(1));
+                builder.append(space(4)).append("</select>").append(newLine(1));
 
-                builder.append(newLine() + space(4) + "<insert id=\"insert\" parameterType=\"" + entityPackage + "." + className + "\" useGeneratedKeys=\"true\"");
-                t.getColumns().stream().filter(c -> c.getIsAutoIncrement() && c.getIsPrimaryKey()).findFirst().ifPresent(c -> {
-                    builder.append(" keyProperty=\"" + lowerCaseFirstChar(c.getMappedName()) + "\"");
-                });
-                builder.append(">" + newLine());
-                builder.append(space(8) + "<trim prefix=\"insert " + tableName + " (\" suffix=\")\" suffixOverrides=\",\">\r\n");
-                t.getColumns().forEach(c -> {
-                    builder.append(space(12) + "<if test=\"" + lowerCaseFirstChar(c.getMappedName()) + " != null\">" + c.getOriginalName() + ",</if>" + newLine());
-                });
-                builder.append(space(8) + "</trim>" + newLine());
-                builder.append(space(8) + "<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">" + newLine());
-                t.getColumns().forEach(c -> {
-                    builder.append(space(12) + "<if test=\"" + lowerCaseFirstChar(c.getMappedName()) + " != null\">#{" + lowerCaseFirstChar(c.getMappedName()) + "},</if>" + newLine());
-                });
-                builder.append(space(8) + "</trim>" + newLine());
-                builder.append(space(4) + "</insert>" + newLine());
+                builder.append(newLine(1)).append(space(4)).append("<insert id=\"insert\" parameterType=\"").append(entityPackage).append(".").append(className).append("\" useGeneratedKeys=\"true\"");
+                t.getColumns().stream().filter(c -> c.getIsAutoIncrement() && c.getIsPrimaryKey()).findFirst().ifPresent(c -> builder.append(" keyProperty=\"").append(lowerCaseFirstChar(c.getMappedName())).append("\""));
+                builder.append(">").append(newLine(1));
+                builder.append(space(8)).append("<trim prefix=\"insert ").append(tableName).append(" (\" suffix=\")\" suffixOverrides=\",\">\r\n");
+                t.getColumns().forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">").append(c.getOriginalName()).append(",</if>").append(newLine(1)));
+                builder.append(space(8)).append("</trim>").append(newLine(1));
+                builder.append(space(8)).append("<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">").append(newLine(1));
+                t.getColumns().forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">#{").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
+                builder.append(space(8)).append("</trim>").append(newLine(1));
+                builder.append(space(4)).append("</insert>").append(newLine(1));
 
-                Optional<Column> keyColumn = t.getColumns().stream().filter(c -> c.getIsPrimaryKey()).findFirst();
+                Optional<Column> keyColumn = t.getColumns().stream().filter(Column::getIsPrimaryKey).findFirst();
                 if (!keyColumn.isPresent()) {
                     throw new RuntimeException("Table " + tableName + " must has a primary key column.");
                 }
-                builder.append(newLine() + space(4) + "<update id=\"update\" parameterType=\"" + entityPackage + "." + className + "\">" + newLine());
-                builder.append(space(8) + "<trim prefix=\"update " + tableName + " set\" suffix=\"where " + keyColumn.get().getOriginalName() + "=#{" + lowerCaseFirstChar(keyColumn.get().getMappedName()) + "}\" suffixOverrides=\",\">"
-                        + newLine());
-                t.getColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> {
-                    builder.append(space(12) + "<if test=\"" + lowerCaseFirstChar(c.getMappedName()) + " != null\">" + c.getOriginalName() + "=#{" + lowerCaseFirstChar(c.getMappedName()) + "},</if>" + newLine());
-                });
-                builder.append(space(8) + "</trim>" + newLine());
-                builder.append(space(4) + "</update>" + newLine());
+                builder.append(newLine(1)).append(space(4)).append("<update id=\"update\" parameterType=\"").append(entityPackage).append(".").append(className).append("\">").append(newLine(1));
+                builder.append(space(8)).append("<trim prefix=\"update ").append(tableName).append(" set\" suffix=\"where ").append(keyColumn.get().getOriginalName()).append("=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}\" suffixOverrides=\",\">").append(newLine(1));
+                t.getColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">").append(c.getOriginalName()).append("=#{").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
+                builder.append(space(8)).append("</trim>").append(newLine(1));
+                builder.append(space(4)).append("</update>").append(newLine(1));
 
-                builder.append(newLine() + space(4) + "<delete id=\"delete\">" + newLine());
-                builder.append(space(8) + "delete from " + tableName + " where " + keyColumn.get().getOriginalName() + "=#{" + lowerCaseFirstChar(keyColumn.get().getMappedName()) + "}" + newLine());
-                builder.append(space(4) + "</delete>" + newLine());
+                builder.append(newLine(1)).append(space(4)).append("<delete id=\"delete\">").append(newLine(1));
+                builder.append(space(8)).append("delete from ").append(tableName).append(" where ").append(keyColumn.get().getOriginalName()).append("=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}").append(newLine(1));
+                builder.append(space(4)).append("</delete>").append(newLine(1));
 
                 builder.append("</mapper>");
                 String fileContent = builder.toString();
@@ -475,24 +451,24 @@ public class GenCodeMojo extends AbstractMojo {
                 String className = t.getMappedName();
                 String tableName = t.getOriginalName();
 
-                Optional<Column> keyColumn = t.getColumns().stream().filter(c -> c.getIsPrimaryKey()).findFirst();
+                Optional<Column> keyColumn = t.getColumns().stream().filter(Column::getIsPrimaryKey).findFirst();
                 if (!keyColumn.isPresent()) {
                     throw new RuntimeException("Table " + tableName + " must has a primary key column.");
                 }
 
-                builder.append("package " + genPackage + ";" + newLine(2));
-                builder.append("import java.util.List;" + newLine(2));
-                builder.append("import org.apache.ibatis.annotations.Mapper;" + newLine());
-                builder.append("import org.apache.ibatis.annotations.Param;" + newLine(2));
-                builder.append("import com.github.mybatisq.Query;" + newLine());
-                builder.append("import " + entityPackage + "." + className + ";" + newLine(2));
-                builder.append("@Mapper" + newLine());
-                builder.append("public interface " + className + "Mapper {" + newLine(2));
-                builder.append(space(4) + "int count(Query<" + className + "Table> query);" + newLine(2));
-                builder.append(space(4) + "List<" + className + "> select(Query<" + className + "Table> query);" + newLine(2));
-                builder.append(space(4) + "int insert(" + className + " " + lowerCaseFirstChar(className) + ");" + newLine(2));
-                builder.append(space(4) + "int update(" + className + " " + lowerCaseFirstChar(className) + ");" + newLine(2));
-                builder.append(space(4) + "int delete(@Param(\"" + lowerCaseFirstChar(keyColumn.get().getMappedName()) + "\") " + keyColumn.get().getDataType() + " " + lowerCaseFirstChar(keyColumn.get().getMappedName()) + ");" + newLine(2));
+                builder.append("package ").append(genPackage).append(";").append(newLine(2));
+                builder.append("import java.util.List;").append(newLine(2));
+                builder.append("import org.apache.ibatis.annotations.Mapper;").append(newLine(1));
+                builder.append("import org.apache.ibatis.annotations.Param;").append(newLine(2));
+                builder.append("import com.github.mybatisq.Query;").append(newLine(1));
+                builder.append("import ").append(entityPackage).append(".").append(className).append(";").append(newLine(2));
+                builder.append("@Mapper").append(newLine(1));
+                builder.append("public interface ").append(className).append("Mapper {").append(newLine(2));
+                builder.append(space(4)).append("int count(Query<").append(className).append("Table> query);").append(newLine(2));
+                builder.append(space(4)).append("List<").append(className).append("> select(Query<").append(className).append("Table> query);").append(newLine(2));
+                builder.append(space(4)).append("int insert(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+                builder.append(space(4)).append("int update(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+                builder.append(space(4)).append("int delete(@Param(\"").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("\") ").append(keyColumn.get().getDataType()).append(" ").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append(");").append(newLine(2));
                 builder.append("}");
 
                 String fileContent = builder.toString();
