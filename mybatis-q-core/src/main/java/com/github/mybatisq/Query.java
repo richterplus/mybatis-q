@@ -26,7 +26,7 @@ public class Query<T extends Table> {
      * @param where where条件
      * @return 查询
      */
-    public Query<T> where(Where<T> where) {
+    public Query<T> where(Where where) {
         if (where != null)
             wheres.add(where);
         return this;
@@ -37,7 +37,7 @@ public class Query<T extends Table> {
      * @param orderBy 排序
      * @return 查询
      */
-    public Query<T> orderBy(OrderBy<T> orderBy) {
+    public Query<T> orderBy(OrderBy orderBy) {
         if (orderBy != null)
             orderBys.add(orderBy);
         return this;
@@ -93,12 +93,12 @@ public class Query<T extends Table> {
     /**
      * where条件
      */
-    private final Collection<Where<T>> wheres;
+    private final Collection<Where> wheres;
 
     /**
      * 排序
      */
-    private final Collection<OrderBy<T>> orderBys;
+    private final Collection<OrderBy> orderBys;
 
     /**
      * 限制的数据行数
@@ -135,7 +135,7 @@ public class Query<T extends Table> {
      * 获取where条件
      * @return where条件
      */
-    public Collection<Where<T>> getWheres() {
+    public Collection<Where> getWheres() {
         return wheres;
     }
 
@@ -143,7 +143,7 @@ public class Query<T extends Table> {
      * 获取排序
      * @return 排序
      */
-    public Collection<OrderBy<T>> getOrderBys() {
+    public Collection<OrderBy> getOrderBys() {
         return orderBys;
     }
 

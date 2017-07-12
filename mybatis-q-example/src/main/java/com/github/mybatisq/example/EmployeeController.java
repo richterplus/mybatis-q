@@ -1,20 +1,14 @@
 package com.github.mybatisq.example;
 
-import java.util.List;
-
+import com.github.mybatisq.entity.Employee;
+import com.github.mybatisq.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.mybatisq.entity.Employee;
-import com.github.mybatisq.mapper.DepartmentTable;
-import com.github.mybatisq.mapper.EmpDeptTable;
-import com.github.mybatisq.mapper.EmpPostTable;
-import com.github.mybatisq.mapper.EmployeeMapper;
-import com.github.mybatisq.mapper.EmployeeTable;
-import com.github.mybatisq.mapper.PositionTable;
+import java.util.List;
 
 @RestController
 @RequestMapping("/emp")
@@ -34,14 +28,12 @@ public class EmployeeController {
     public List<Employee> list() {
         EmployeeTable e = EmployeeTable.employee;
         DepartmentTable d = DepartmentTable.department;
-        PositionTable p = PositionTable.position;
         EmpDeptTable ed = EmpDeptTable.emp_dept;
         EmpPostTable ep = EmpPostTable.emp_post;
 
         return employeeMapper.select(e.query()
                 .join(e.inner(ed).on(e.emp_id.eq(ed.emp_id)))
                 .join(e.inner(ep).on(e.emp_id.eq(ep.emp_id)))
-                .join(ep.inner(p).on(ep.post_id.eq(p.post_id)).and(p.post_id.eq(1)))
                 .join(ed.inner(d).on(ed.dept_id.eq(d.dept_id)).and(d.dept_id.eq(1))));
     }
 

@@ -21,16 +21,16 @@ public class Column<T extends Table, D> {
      * 升序排列
      * @return 排序项
      */
-    public OrderBy<T> asc() {
-        return new OrderBy<>(name, "asc");
+    public OrderBy asc() {
+        return new OrderBy(name, "asc");
     }
 
     /**
      * 降序排列
      * @return 排序项
      */
-    public OrderBy<T> desc() {
-        return new OrderBy<>(name, "desc");
+    public OrderBy desc() {
+        return new OrderBy(name, "desc");
     }
 
     /**
@@ -38,8 +38,8 @@ public class Column<T extends Table, D> {
      * @param value 查询值
      * @return 查询项
      */
-    public Where<T> eq(D value) {
-        return new Where<>(name, "eq", value);
+    public Where eq(D value) {
+        return new Where(name, "eq", value);
     }
 
     /**
@@ -47,8 +47,8 @@ public class Column<T extends Table, D> {
      * @param value 查询值
      * @return 查询项
      */
-    public Where<T> gt(D value) {
-        return new Where<>(name, "gt", value);
+    public Where gt(D value) {
+        return new Where(name, "gt", value);
     }
 
     /**
@@ -56,8 +56,8 @@ public class Column<T extends Table, D> {
      * @param value 查询值
      * @return 查询项
      */
-    public Where<T> ge(D value) {
-        return new Where<>(name, "ge", value);
+    public Where ge(D value) {
+        return new Where(name, "ge", value);
     }
 
     /**
@@ -65,8 +65,8 @@ public class Column<T extends Table, D> {
      * @param value 查询值
      * @return 查询项
      */
-    public Where<T> lt(D value) {
-        return new Where<>(name, "lt", value);
+    public Where lt(D value) {
+        return new Where(name, "lt", value);
     }
 
     /**
@@ -74,8 +74,8 @@ public class Column<T extends Table, D> {
      * @param value 查询值
      * @return 查询项
      */
-    public Where<T> le(D value) {
-        return new Where<>(name, "le", value);
+    public Where le(D value) {
+        return new Where(name, "le", value);
     }
 
     /**
@@ -84,8 +84,8 @@ public class Column<T extends Table, D> {
      * @param end 结束值
      * @return 查询项
      */
-    public Where<T> between(D start, D end) {
-        return new Where<>(name, "between", start, end);
+    public Where between(D start, D end) {
+        return new Where(name, "between", start, end);
     }
 
     /**
@@ -93,17 +93,8 @@ public class Column<T extends Table, D> {
      * @param values 查询值
      * @return 查询项
      */
-    public Where<T> in(Collection<D> values) {
-        return new Where<>(name, "in", values);
-    }
-
-    /**
-     * in (select ...)
-     * @param select 子查询
-     * @return 查询项
-     */
-    Where<T> in(Select<? extends Table, D> select) {
-        return new Where<>(name, "inSelect", select);
+    public Where in(Collection<D> values) {
+        return new Where(name, "in", values);
     }
 
     /**
@@ -111,11 +102,11 @@ public class Column<T extends Table, D> {
      * @param value 查询值
      * @return 查询项
      */
-    public Where<T> startWith(D value) {
+    public Where startWith(D value) {
         if (!(value instanceof String)) {
             throw new RuntimeException("LIKE is not supported on non-string values.");
         }
-        return new Where<>(name, "startWith", value);
+        return new Where(name, "startWith", value);
     }
 
     /**

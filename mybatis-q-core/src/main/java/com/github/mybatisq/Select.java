@@ -23,7 +23,7 @@ public class Select<T extends Table, D> {
      * @param where where条件
      * @return 子查询
      */
-    public Select<T, D> where(Where<T> where) {
+    public Select<T, D> where(Where where) {
         this.where = where;
         return this;
     }
@@ -33,7 +33,7 @@ public class Select<T extends Table, D> {
      * @param orderBy 排序
      * @return 子查询
      */
-    public Select<T, D> orderBy(OrderBy<T> orderBy) {
+    public Select<T, D> orderBy(OrderBy orderBy) {
         this.orderBy = orderBy;
         return this;
     }
@@ -77,12 +77,12 @@ public class Select<T extends Table, D> {
     /**
      * where条件
      */
-    private Where<T> where;
+    private Where where;
 
     /**
      * 排序
      */
-    private OrderBy<T> orderBy;
+    private OrderBy orderBy;
 
     /**
      * 限制的数据行数
@@ -119,7 +119,7 @@ public class Select<T extends Table, D> {
      * 获取where条件
      * @return where条件
      */
-    public Where<T> getWhere() {
+    public Where getWhere() {
         return where;
     }
 
@@ -127,7 +127,7 @@ public class Select<T extends Table, D> {
      * 获取排序
      * @return 排序
      */
-    public OrderBy<T> getOrderBy() {
+    public OrderBy getOrderBy() {
         return orderBy;
     }
 

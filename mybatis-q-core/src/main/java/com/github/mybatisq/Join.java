@@ -52,7 +52,7 @@ public class Join<T1 extends Table, T2 extends Table> {
      * @param where where条件
      * @return 连接
      */
-    public Join<T1, T2> and(Where<T2> where) {
+    public Join<T1, T2> and(Where where) {
         if (where != null)
             wheres.add(where);
         return this;
@@ -86,7 +86,7 @@ public class Join<T1 extends Table, T2 extends Table> {
     /**
      * where集合
      */
-    private final Collection<Where<T2>> wheres;
+    private final Collection<Where> wheres;
 
     /**
      * 获取连接类型
@@ -133,7 +133,7 @@ public class Join<T1 extends Table, T2 extends Table> {
      * 获取where集合
      * @return where集合
      */
-    public Collection<Where<T2>> getWheres() {
+    public Collection<Where> getWheres() {
         return wheres;
     }
 }

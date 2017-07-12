@@ -2,9 +2,8 @@ package com.github.mybatisq;
 
 /**
  * 排序项
- * @param <T> 表类型
  */
-public class OrderBy<T extends Table> {
+public class OrderBy {
 
     /**
      * 新建排序项

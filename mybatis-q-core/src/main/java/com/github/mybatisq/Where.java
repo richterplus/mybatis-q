@@ -2,9 +2,8 @@ package com.github.mybatisq;
 
 /**
  * where项
- * @param <T> 表类型
  */
-public class Where<T extends Table> {
+public class Where {
 
     /**
      * 新建where项
