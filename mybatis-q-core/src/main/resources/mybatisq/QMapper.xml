@@ -6,7 +6,7 @@
         <foreach collection="joins" item="j" separator=" ">
             ${j.type} join `${j.tableName2}` `${j.tableAlias2}`
             <foreach collection="j.ons" item="o" open="on " separator=" and ">
-                <if test="o.operator == 'eq'">`${j.tableAlias1}`.`${o.columnName1}`=`${j.tableAlias2}`.${o.columnName2}</if>
+                <if test="o.operator == 'eq'">${j.tableAlias1}.${o.columnName1}=`${j.tableAlias2}`.`${o.columnName2}`</if>
             </foreach>
             <foreach collection="j.wheres" item="w" open="and " separator=" and ">
                 <if test="w.operator == 'eq'">`${j.tableAlias2}`.`${w.columnName}`=#{w.queryValue}</if>
@@ -16,7 +16,10 @@
                 <if test="w.operator == 'le'">`${j.tableAlias2}`.`${w.columnName}`&lt;=#{w.queryValue}</if>
                 <if test="w.operator == 'between'">`${j.tableAlias2}`.`${w.columnName}` between #{w.queryValue} and #{w.queryValue2}</if>
                 <if test="w.operator == 'in'">`${j.tableAlias2}`.`${w.columnName}` in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
-                <if test="w.operator == 'startWith'">`${j.tableAlias2}`.`${w.columnName}` like concat('%', #{w.queryValue})</if>
+                <if test="w.operator == 'startWith'">`${j.tableAlias2}`.`${w.columnName}` like concat(#{w.queryValue},'%')</if>
+                <if test="w.operator == 'contains'">`${j.tableAlias2}`.`${w.columnName}` like concat('%',#{w.queryValue},'%')</if>
+                <if test="w.operator == 'isNull'">`${j.tableAlias2}`.`${w.columnName}` is null</if>
+                <if test="w.operator == 'notNull'">`${j.tableAlias2}`.`${w.columnName}` is not null</if>
             </foreach>
         </foreach>
     </sql>
@@ -29,7 +32,10 @@
             <if test="w.operator == 'le'">`${tableAlias}`.`${w.columnName}`&lt;=#{w.queryValue}</if>
             <if test="w.operator == 'between'">`${tableAlias}`.`${w.columnName}` between #{w.queryValue} and #{w.queryValue2}</if>
             <if test="w.operator == 'in'">`${tableAlias}`.`${w.columnName}` in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
-            <if test="w.operator == 'startWith'">`${tableAlias}`.`${w.columnName}` like concat('%', #{w.queryValue})</if>
+            <if test="w.operator == 'startWith'">`${tableAlias}`.`${w.columnName}` like concat(#{w.queryValue},'%')</if>
+            <if test="w.operator == 'contains'">`${tableAlias}`.`${w.columnName}` like concat('%',#{w.queryValue},'%')</if>
+            <if test="w.operator == 'isNull'">`${tableAlias}`.`${w.columnName}` is null</if>
+            <if test="w.operator == 'notNull'">`${tableAlias}`.`${w.columnName}` is not null</if>
         </foreach>
     </sql>
     <sql id="orderBy">
@@ -44,15 +50,15 @@
         </trim>
     </sql>
     <sql id="countFrom">
-        <include refid="com.github.mybatisq.QMapper.from"/> 
-        <include refid="com.github.mybatisq.QMapper.join"/> 
+        <include refid="com.github.mybatisq.QMapper.from"/>
+        <include refid="com.github.mybatisq.QMapper.join"/>
         <include refid="com.github.mybatisq.QMapper.where"/>
     </sql>
     <sql id="selectFrom">
-        <include refid="com.github.mybatisq.QMapper.from"/> 
-        <include refid="com.github.mybatisq.QMapper.join"/> 
-        <include refid="com.github.mybatisq.QMapper.where"/> 
-        <include refid="com.github.mybatisq.QMapper.orderBy"/> 
+        <include refid="com.github.mybatisq.QMapper.from"/>
+        <include refid="com.github.mybatisq.QMapper.join"/>
+        <include refid="com.github.mybatisq.QMapper.where"/>
+        <include refid="com.github.mybatisq.QMapper.orderBy"/>
         <include refid="com.github.mybatisq.QMapper.limit"/>
     </sql>
 </mapper>

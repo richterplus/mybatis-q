@@ -1,5 +1,6 @@
 package com.github.mybatisq;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -19,6 +20,7 @@ public class Query<T extends Table> {
         this.wheres = new LinkedList<>();
         this.orderBys = new LinkedList<>();
         this.joins = new LinkedList<>();
+        this.selectedColumns = new LinkedList<>();
     }
 
     /**
@@ -81,6 +83,20 @@ public class Query<T extends Table> {
     }
 
     /**
+     * 选择列
+     * @param columns 列集合
+     * @return 查询
+     */
+    @SafeVarargs
+    public final Query<T> columns(Column<T, ?>... columns) {
+        selectedColumns.clear();
+        if (columns != null) {
+            selectedColumns.addAll(Arrays.asList(columns));
+        }
+        return this;
+    }
+
+    /**
      * 表名称
      */
     private final String tableName;
@@ -114,6 +130,11 @@ public class Query<T extends Table> {
      * 连接
      */
     private final Collection<Join<? extends Table, ? extends Table>> joins;
+
+    /**
+     * 选择列集合
+     */
+    private final Collection<Column<T, ?>> selectedColumns;
 
     /**
      * 获取表名称
@@ -153,5 +174,13 @@ public class Query<T extends Table> {
      */
     public Collection<Join<? extends Table, ? extends Table>> getJoins() {
         return joins;
+    }
+
+    /**
+     * 获取选择列集合
+     * @return 选择列集合
+     */
+    public Collection<Column<T, ?>> getSelectedColumns() {
+        return selectedColumns;
     }
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.mybatisq.mapper.PositionMapper">
+    <resultMap type="com.github.mybatisq.entity.Position" id="position">
+        <id column="post_id" property="postId"/>
+        <result column="post_no" property="postNo"/>
+        <result column="post_name" property="postName"/>
+    </resultMap>
+
+    <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
+        select count(0) <include refid="com.github.mybatisq.mapper.QMapper.countFrom"/>
+    </select>
+
+    <select id="select" parameterType="com.github.mybatisq.Query" resultMap="position">
+        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.`${col.name}`</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.`post_id`,${tableAlias}.`post_no`,${tableAlias}.`post_name`</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    </select>
+
+    <insert id="insert" parameterType="com.github.mybatisq.entity.Position" useGeneratedKeys="true" keyProperty="postId">
+        <trim prefix="insert `position` (" suffix=")" suffixOverrides=",">
+            <if test="postId != null">`post_id`,</if>
+            <if test="postNo != null">`post_no`,</if>
+            <if test="postName != null">`post_name`,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="postId != null">#{postId},</if>
+            <if test="postNo != null">#{postNo},</if>
+            <if test="postName != null">#{postName},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsert" useGeneratedKeys="true">
+        <foreach collection="entityList" item="item" separator=";">
+            <trim prefix="insert `position` (" suffix=")" suffixOverrides=",">
+                <if test="item.postId != null">`post_id`,</if>
+                <if test="item.postNo != null">`post_no`,</if>
+                <if test="item.postName != null">`post_name`,</if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="item.postId != null">#{item.postId},</if>
+                <if test="item.postNo != null">#{item.postNo},</if>
+                <if test="item.postName != null">#{item.postName},</if>
+            </trim>
+
+        </foreach>
+
+    </insert>
+    <update id="update" parameterType="com.github.mybatisq.entity.Position">
+        <trim prefix="update `position` set" suffix="where `post_id`=#{postId}" suffixOverrides=",">
+            <if test="postNo != null">`post_no`=#{postNo},</if>
+            <if test="postName != null">`post_name`=#{postName},</if>
+        </trim>
+    </update>
+
+    <update id="batchUpdate">
+
+        <foreach collection="entityList" item="item" separator=";">
+            <trim prefix="update `position` set" suffix="where `post_id`=#{item.postId}" suffixOverrides=",">
+                <if test="item.postNo != null">`post_no`=#{item.postNo},</if>
+                <if test="item.postName != null">`post_name`=#{item.postName},</if>
+            </trim>
+
+        </foreach>
+
+    </update>
+    <update id="batchUpdateByCase">
+
+        <trim prefix="update `position` set" suffixOverrides=",">
+            <foreach collection="entityList" item="item" open="`post_no`=case `post_id` " close=" end," separator=" ">when #{item.postId} then #{postNo}
+            <foreach collection="entityList" item="item" open="`post_name`=case `post_id` " close=" end," separator=" ">when #{item.postId} then #{postName}
+        </trim>
+        <foreach collection="entityList" item="item" open="where `post_id` in (" close=")" separator=",">#{item.postId}</foreach>
+    </update>
+    <delete id="delete">
+        delete from `position` where post_id=#{postId}
+    </delete>
+</mapper>

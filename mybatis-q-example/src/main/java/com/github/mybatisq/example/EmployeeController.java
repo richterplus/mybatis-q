@@ -3,10 +3,7 @@ package com.github.mybatisq.example;
 import com.github.mybatisq.entity.Employee;
 import com.github.mybatisq.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,14 +14,14 @@ public class EmployeeController {
     @Autowired
     private EmployeeMapper employeeMapper;
 
-    @RequestMapping("/get/{empId}")
+    @GetMapping("{empId}")
     public Employee get(@PathVariable("empId") int empId) {
         EmployeeTable emp = EmployeeTable.employee;
         List<Employee> employees = employeeMapper.select(emp.query().where(emp.emp_id.eq(empId)));
         return employees.size() == 0 ? null : employees.get(0);
     }
 
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public List<Employee> list() {
         EmployeeTable e = EmployeeTable.employee;
         DepartmentTable d = DepartmentTable.department;
@@ -37,13 +34,13 @@ public class EmployeeController {
                 .join(ed.inner(d).on(ed.dept_id.eq(d.dept_id)).and(d.dept_id.eq(1))));
     }
 
-    @RequestMapping("/update")
+    @PostMapping
     public Employee update(@RequestBody Employee employee) {
         employeeMapper.update(employee);
         return employee;
     }
 
-    @RequestMapping("/delete/{empId}")
+    @DeleteMapping("{empId}")
     public Employee delete(@PathVariable("empId") Integer empId) {
         Employee employee = get(empId);
         if (employee != null) {
@@ -52,7 +49,7 @@ public class EmployeeController {
         return employee;
     }
 
-    @RequestMapping("/create")
+    @PutMapping
     public Employee create(@RequestBody Employee employee) {
         employeeMapper.insert(employee);
         return employee;

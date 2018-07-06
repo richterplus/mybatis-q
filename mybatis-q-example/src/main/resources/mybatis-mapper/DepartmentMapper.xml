@@ -13,15 +13,15 @@
     </select>
 
     <select id="select" parameterType="com.github.mybatisq.Query" resultMap="department">
-        select ${tableAlias}.dept_id,${tableAlias}.dept_no,${tableAlias}.dept_name,${tableAlias}.create_date <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.`${col.name}`</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.`dept_id`,${tableAlias}.`dept_no`,${tableAlias}.`dept_name`,${tableAlias}.`create_date`</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
     </select>
 
     <insert id="insert" parameterType="com.github.mybatisq.entity.Department" useGeneratedKeys="true" keyProperty="deptId">
-        <trim prefix="insert department (" suffix=")" suffixOverrides=",">
-            <if test="deptId != null">dept_id,</if>
-            <if test="deptNo != null">dept_no,</if>
-            <if test="deptName != null">dept_name,</if>
-            <if test="createDate != null">create_date,</if>
+        <trim prefix="insert `department` (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">`dept_id`,</if>
+            <if test="deptNo != null">`dept_no`,</if>
+            <if test="deptName != null">`dept_name`,</if>
+            <if test="createDate != null">`create_date`,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="deptId != null">#{deptId},</if>
@@ -31,15 +31,54 @@
         </trim>
     </insert>
 
+    <insert id="batchInsert" useGeneratedKeys="true">
+        <foreach collection="entityList" item="item" separator=";">
+            <trim prefix="insert `department` (" suffix=")" suffixOverrides=",">
+                <if test="item.deptId != null">`dept_id`,</if>
+                <if test="item.deptNo != null">`dept_no`,</if>
+                <if test="item.deptName != null">`dept_name`,</if>
+                <if test="item.createDate != null">`create_date`,</if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="item.deptId != null">#{item.deptId},</if>
+                <if test="item.deptNo != null">#{item.deptNo},</if>
+                <if test="item.deptName != null">#{item.deptName},</if>
+                <if test="item.createDate != null">#{item.createDate},</if>
+            </trim>
+
+        </foreach>
+
+    </insert>
     <update id="update" parameterType="com.github.mybatisq.entity.Department">
-        <trim prefix="update department set" suffix="where dept_id=#{deptId}" suffixOverrides=",">
-            <if test="deptNo != null">dept_no=#{deptNo},</if>
-            <if test="deptName != null">dept_name=#{deptName},</if>
-            <if test="createDate != null">create_date=#{createDate},</if>
+        <trim prefix="update `department` set" suffix="where `dept_id`=#{deptId}" suffixOverrides=",">
+            <if test="deptNo != null">`dept_no`=#{deptNo},</if>
+            <if test="deptName != null">`dept_name`=#{deptName},</if>
+            <if test="createDate != null">`create_date`=#{createDate},</if>
         </trim>
     </update>
 
+    <update id="batchUpdate">
+
+        <foreach collection="entityList" item="item" separator=";">
+            <trim prefix="update `department` set" suffix="where `dept_id`=#{item.deptId}" suffixOverrides=",">
+                <if test="item.deptNo != null">`dept_no`=#{item.deptNo},</if>
+                <if test="item.deptName != null">`dept_name`=#{item.deptName},</if>
+                <if test="item.createDate != null">`create_date`=#{item.createDate},</if>
+            </trim>
+
+        </foreach>
+
+    </update>
+    <update id="batchUpdateByCase">
+
+        <trim prefix="update `department` set" suffixOverrides=",">
+            <foreach collection="entityList" item="item" open="`dept_no`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{deptNo}
+            <foreach collection="entityList" item="item" open="`dept_name`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{deptName}
+            <foreach collection="entityList" item="item" open="`create_date`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{createDate}
+        </trim>
+        <foreach collection="entityList" item="item" open="where `dept_id` in (" close=")" separator=",">#{item.deptId}</foreach>
+    </update>
     <delete id="delete">
-        delete from department where dept_id=#{deptId}
+        delete from `department` where dept_id=#{deptId}
     </delete>
 </mapper>

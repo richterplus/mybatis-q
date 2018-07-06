@@ -17,7 +17,11 @@ public interface EmpPostMapper {
 
     int insert(EmpPost empPost);
 
+    int batchInsert(@Param("entityList") List<EmpPost> empPost);
+
     int update(EmpPost empPost);
+
+    int batchUpdate(@Param("entityList") List<EmpPost> empPost);
 
     int delete(@Param("epId") Integer epId);
 

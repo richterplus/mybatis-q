@@ -11,6 +11,7 @@ public class Column<T extends Table, D> {
 
     /**
      * 新增列
+     *
      * @param name 名称
      */
     public Column(String name) {
@@ -19,6 +20,7 @@ public class Column<T extends Table, D> {
 
     /**
      * 升序排列
+     *
      * @return 排序项
      */
     public OrderBy asc() {
@@ -27,6 +29,7 @@ public class Column<T extends Table, D> {
 
     /**
      * 降序排列
+     *
      * @return 排序项
      */
     public OrderBy desc() {
@@ -35,6 +38,7 @@ public class Column<T extends Table, D> {
 
     /**
      * = value
+     *
      * @param value 查询值
      * @return 查询项
      */
@@ -44,6 +48,7 @@ public class Column<T extends Table, D> {
 
     /**
      * &gt; value
+     *
      * @param value 查询值
      * @return 查询项
      */
@@ -53,6 +58,7 @@ public class Column<T extends Table, D> {
 
     /**
      * &gt;= value
+     *
      * @param value 查询值
      * @return 查询项
      */
@@ -62,6 +68,7 @@ public class Column<T extends Table, D> {
 
     /**
      * &lt; value
+     *
      * @param value 查询值
      * @return 查询项
      */
@@ -71,6 +78,7 @@ public class Column<T extends Table, D> {
 
     /**
      * &lt;= value
+     *
      * @param value 查询值
      * @return 查询项
      */
@@ -80,8 +88,9 @@ public class Column<T extends Table, D> {
 
     /**
      * between start and end
+     *
      * @param start 起始值
-     * @param end 结束值
+     * @param end   结束值
      * @return 查询项
      */
     public Where between(D start, D end) {
@@ -90,6 +99,7 @@ public class Column<T extends Table, D> {
 
     /**
      * in (values...)
+     *
      * @param values 查询值
      * @return 查询项
      */
@@ -99,6 +109,7 @@ public class Column<T extends Table, D> {
 
     /**
      * like 'value%'
+     *
      * @param value 查询值
      * @return 查询项
      */
@@ -110,9 +121,41 @@ public class Column<T extends Table, D> {
     }
 
     /**
+     * like '%value%'
+     *
+     * @param value 查询值
+     * @return 查询项
+     */
+    public Where contains(D value) {
+        if (!(value instanceof String)) {
+            throw new RuntimeException("LIKE is not supported on non-string values.");
+        }
+        return new Where(name, "contains", value);
+    }
+
+    /**
+     * is null
+     *
+     * @return 查询项
+     */
+    public Where isNull() {
+        return new Where(name, "isNull", null);
+    }
+
+    /**
+     * is not null
+     *
+     * @return 查询项
+     */
+    public Where notNull() {
+        return new Where(name, "notNull", null);
+    }
+
+    /**
      * 连接到另一个列
+     *
      * @param column 列
-     * @param <T2> 连接表
+     * @param <T2>   连接表
      * @return 连接对象
      */
     public <T2 extends Table> On<T, T2> eq(Column<T2, D> column) {
@@ -126,6 +169,7 @@ public class Column<T extends Table, D> {
 
     /**
      * 获取名称
+     *
      * @return 名称
      */
     public String getName() {

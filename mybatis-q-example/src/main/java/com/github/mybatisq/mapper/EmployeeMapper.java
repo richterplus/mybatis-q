@@ -17,7 +17,11 @@ public interface EmployeeMapper {
 
     int insert(Employee employee);
 
+    int batchInsert(@Param("entityList") List<Employee> employee);
+
     int update(Employee employee);
+
+    int batchUpdate(@Param("entityList") List<Employee> employee);
 
     int delete(@Param("empId") Integer empId);
 

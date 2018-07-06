@@ -64,7 +64,7 @@
                     <dependency>
                         <groupId>mysql</groupId>
                         <artifactId>mysql-connector-java</artifactId>
-                        <version>5.1.42</version>
+                        <version>8.0.11</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -72,8 +72,8 @@
                     <genPackage>com.github.mybatisq.mapper</genPackage>
                     <mapperFolder>mybatis-mapper</mapperFolder>
                     <datasource>
-                        <driverClassName>com.mysql.jdbc.Driver</driverClassName>
-                        <url>jdbc:mysql://127.0.0.1:3306/test?useSSL=false&amp;useUnicode=true&amp;characterEncoding=UTF-8</url>
+                        <driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>
+                        <url>jdbc:mysql://127.0.0.1:3306/mybatisq</url>
                         <username>root</username>
                         <password>iamchenjie</password>
                     </datasource>

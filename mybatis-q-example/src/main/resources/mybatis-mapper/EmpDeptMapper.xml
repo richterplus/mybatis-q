@@ -12,14 +12,14 @@
     </select>
 
     <select id="select" parameterType="com.github.mybatisq.Query" resultMap="empDept">
-        select ${tableAlias}.ed_id,${tableAlias}.emp_id,${tableAlias}.dept_id <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.`${col.name}`</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.`ed_id`,${tableAlias}.`emp_id`,${tableAlias}.`dept_id`</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
     </select>
 
     <insert id="insert" parameterType="com.github.mybatisq.entity.EmpDept" useGeneratedKeys="true" keyProperty="edId">
-        <trim prefix="insert emp_dept (" suffix=")" suffixOverrides=",">
-            <if test="edId != null">ed_id,</if>
-            <if test="empId != null">emp_id,</if>
-            <if test="deptId != null">dept_id,</if>
+        <trim prefix="insert `emp_dept` (" suffix=")" suffixOverrides=",">
+            <if test="edId != null">`ed_id`,</if>
+            <if test="empId != null">`emp_id`,</if>
+            <if test="deptId != null">`dept_id`,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="edId != null">#{edId},</if>
@@ -28,14 +28,49 @@
         </trim>
     </insert>
 
+    <insert id="batchInsert" useGeneratedKeys="true">
+        <foreach collection="entityList" item="item" separator=";">
+            <trim prefix="insert `emp_dept` (" suffix=")" suffixOverrides=",">
+                <if test="item.edId != null">`ed_id`,</if>
+                <if test="item.empId != null">`emp_id`,</if>
+                <if test="item.deptId != null">`dept_id`,</if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="item.edId != null">#{item.edId},</if>
+                <if test="item.empId != null">#{item.empId},</if>
+                <if test="item.deptId != null">#{item.deptId},</if>
+            </trim>
+
+        </foreach>
+
+    </insert>
     <update id="update" parameterType="com.github.mybatisq.entity.EmpDept">
-        <trim prefix="update emp_dept set" suffix="where ed_id=#{edId}" suffixOverrides=",">
-            <if test="empId != null">emp_id=#{empId},</if>
-            <if test="deptId != null">dept_id=#{deptId},</if>
+        <trim prefix="update `emp_dept` set" suffix="where `ed_id`=#{edId}" suffixOverrides=",">
+            <if test="empId != null">`emp_id`=#{empId},</if>
+            <if test="deptId != null">`dept_id`=#{deptId},</if>
         </trim>
     </update>
 
+    <update id="batchUpdate">
+
+        <foreach collection="entityList" item="item" separator=";">
+            <trim prefix="update `emp_dept` set" suffix="where `ed_id`=#{item.edId}" suffixOverrides=",">
+                <if test="item.empId != null">`emp_id`=#{item.empId},</if>
+                <if test="item.deptId != null">`dept_id`=#{item.deptId},</if>
+            </trim>
+
+        </foreach>
+
+    </update>
+    <update id="batchUpdateByCase">
+
+        <trim prefix="update `emp_dept` set" suffixOverrides=",">
+            <foreach collection="entityList" item="item" open="`emp_id`=case `ed_id` " close=" end," separator=" ">when #{item.edId} then #{empId}
+            <foreach collection="entityList" item="item" open="`dept_id`=case `ed_id` " close=" end," separator=" ">when #{item.edId} then #{deptId}
+        </trim>
+        <foreach collection="entityList" item="item" open="where `ed_id` in (" close=")" separator=",">#{item.edId}</foreach>
+    </update>
     <delete id="delete">
-        delete from emp_dept where ed_id=#{edId}
+        delete from `emp_dept` where ed_id=#{edId}
     </delete>
 </mapper>

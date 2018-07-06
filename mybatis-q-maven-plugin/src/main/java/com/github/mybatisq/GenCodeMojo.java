@@ -107,7 +107,7 @@ public class GenCodeMojo extends AbstractMojo {
     private String newLine(int count) {
         StringBuilder newLine = new StringBuilder();
         for (int i = 0; i < count; i++) {
-            newLine.append("\r\n");
+            newLine.append("\n");
         }
         return newLine.toString();
     }
@@ -150,7 +150,7 @@ public class GenCodeMojo extends AbstractMojo {
         }
         return javaType;
     }
-    
+
     private String generateMappedName(String originalName) {
         String[] splitWords = originalName.split("[_-]");
         for (int i = 0; i < splitWords.length; i++) {
@@ -158,7 +158,7 @@ public class GenCodeMojo extends AbstractMojo {
         }
         return String.join("", splitWords);
     }
-    
+
     private String lowerCaseFirstChar(String str) {
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
@@ -405,33 +405,61 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(space(4)).append("</select>").append(newLine(1));
                 builder.append(newLine(1)).append(space(4)).append("<select id=\"select\" parameterType=\"com.github.mybatisq.Query\" resultMap=\"").append(lowerCaseFirstChar(className)).append("\">").append(newLine(1));
                 builder.append(space(8)).append("select ");
-                t.getColumns().stream().map(c -> "${tableAlias}." + c.getOriginalName()).reduce((a, b) -> a + "," + b).ifPresent(builder::append);
-                builder.append(" <include refid=\"").append(genPackage).append(".QMapper.selectFrom\"/>").append(newLine(1));
+                builder.append("<if test=\"selectedColumns.size > 0\"><foreach collection=\"selectedColumns\" item=\"col\" separator=\",\">${tableAlias}.`${col.name}`</foreach></if>");
+                builder.append("<if test=\"selectedColumns.size == 0\">");
+                t.getColumns().stream().map(c -> "${tableAlias}.`" + c.getOriginalName() + "`").reduce((a, b) -> a + "," + b).ifPresent(builder::append);
+                builder.append("</if> <include refid=\"").append(genPackage).append(".QMapper.selectFrom\"/>").append(newLine(1));
                 builder.append(space(4)).append("</select>").append(newLine(1));
 
                 builder.append(newLine(1)).append(space(4)).append("<insert id=\"insert\" parameterType=\"").append(entityPackage).append(".").append(className).append("\" useGeneratedKeys=\"true\"");
                 t.getColumns().stream().filter(c -> c.getIsAutoIncrement() && c.getIsPrimaryKey()).findFirst().ifPresent(c -> builder.append(" keyProperty=\"").append(lowerCaseFirstChar(c.getMappedName())).append("\""));
                 builder.append(">").append(newLine(1));
-                builder.append(space(8)).append("<trim prefix=\"insert ").append(tableName).append(" (\" suffix=\")\" suffixOverrides=\",\">\r\n");
-                t.getColumns().forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">").append(c.getOriginalName()).append(",</if>").append(newLine(1)));
+                builder.append(space(8)).append("<trim prefix=\"insert `").append(tableName).append("` (\" suffix=\")\" suffixOverrides=\",\">\n");
+                t.getColumns().forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">`").append(c.getOriginalName()).append("`,</if>").append(newLine(1)));
                 builder.append(space(8)).append("</trim>").append(newLine(1));
                 builder.append(space(8)).append("<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">").append(newLine(1));
                 t.getColumns().forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">#{").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
                 builder.append(space(8)).append("</trim>").append(newLine(1));
                 builder.append(space(4)).append("</insert>").append(newLine(1));
 
+                builder.append(newLine(1)).append(space(4)).append("<insert id=\"batchInsert\" useGeneratedKeys=\"true\">");
+                builder.append(newLine(1)).append(space(8)).append("<foreach collection=\"entityList\" item=\"item\" separator=\";\">");
+                builder.append(newLine(1)).append(space(12)).append("<trim prefix=\"insert `").append(tableName).append("` (\" suffix=\")\" suffixOverrides=\",\">").append(newLine(1));
+                t.getColumns().forEach(c -> builder.append(space(16)).append("<if test=\"item.").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">`").append(c.getOriginalName()).append("`,</if>").append(newLine(1)));
+                builder.append(space(12)).append("</trim>").append(newLine(1));
+                builder.append(space(12)).append("<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">").append(newLine(1));
+                t.getColumns().forEach(c -> builder.append(space(16)).append("<if test=\"item.").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">#{item.").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
+                builder.append(space(12)).append("</trim>").append(newLine(1));
+                builder.append(newLine(1)).append(space(8)).append("</foreach>").append(newLine(1));
+                builder.append(newLine(1)).append(space(4)).append("</insert>");
+
                 Optional<Column> keyColumn = t.getColumns().stream().filter(Column::getIsPrimaryKey).findFirst();
                 if (!keyColumn.isPresent()) {
                     throw new RuntimeException("Table " + tableName + " must has a primary key column.");
                 }
                 builder.append(newLine(1)).append(space(4)).append("<update id=\"update\" parameterType=\"").append(entityPackage).append(".").append(className).append("\">").append(newLine(1));
-                builder.append(space(8)).append("<trim prefix=\"update ").append(tableName).append(" set\" suffix=\"where ").append(keyColumn.get().getOriginalName()).append("=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}\" suffixOverrides=\",\">").append(newLine(1));
-                t.getColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">").append(c.getOriginalName()).append("=#{").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
+                builder.append(space(8)).append("<trim prefix=\"update `").append(tableName).append("` set\" suffix=\"where `").append(keyColumn.get().getOriginalName()).append("`=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}\" suffixOverrides=\",\">").append(newLine(1));
+                t.getColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">`").append(c.getOriginalName()).append("`=#{").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
                 builder.append(space(8)).append("</trim>").append(newLine(1));
                 builder.append(space(4)).append("</update>").append(newLine(1));
 
+                builder.append(newLine(1)).append(space(4)).append("<update id=\"batchUpdate\">").append(newLine(1));
+                builder.append(newLine(1)).append(space(8)).append("<foreach collection=\"entityList\" item=\"item\" separator=\";\">").append(newLine(1));
+                builder.append(space(12)).append("<trim prefix=\"update `").append(tableName).append("` set\" suffix=\"where `").append(keyColumn.get().getOriginalName()).append("`=#{item.").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}\" suffixOverrides=\",\">").append(newLine(1));
+                t.getColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(space(16)).append("<if test=\"item.").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">`").append(c.getOriginalName()).append("`=#{item.").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
+                builder.append(space(12)).append("</trim>").append(newLine(1));
+                builder.append(newLine(1)).append(space(8)).append("</foreach>").append(newLine(1));
+                builder.append(newLine(1)).append(space(4)).append("</update>");
+
+                builder.append(newLine(1)).append(space(4)).append("<update id=\"batchUpdateByCase\">").append(newLine(1));
+                builder.append(newLine(1)).append(space(8)).append("<trim prefix=\"update `").append(tableName).append("` set\" suffixOverrides=\",\">");
+                t.getColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(newLine(1)).append(space(12)).append("<foreach collection=\"entityList\" item=\"item\" open=\"`").append(c.getOriginalName()).append("`=case `").append(keyColumn.get().getOriginalName()).append("` \" close=\" end,\" separator=\" \">when #{item.").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("} then #{").append(lowerCaseFirstChar(c.getMappedName())).append("}</foreach>"));
+                builder.append(newLine(1)).append(space(8)).append("</trim>");
+                builder.append(newLine(1)).append(space(8)).append("<foreach collection=\"entityList\" item=\"item\" open=\"where `").append(keyColumn.get().getOriginalName()).append("` in (\" close=\")\" separator=\",\">#{item.").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}").append("</foreach>");
+                builder.append(newLine(1)).append(space(4)).append("</update>");
+
                 builder.append(newLine(1)).append(space(4)).append("<delete id=\"delete\">").append(newLine(1));
-                builder.append(space(8)).append("delete from ").append(tableName).append(" where ").append(keyColumn.get().getOriginalName()).append("=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}").append(newLine(1));
+                builder.append(space(8)).append("delete from `").append(tableName).append("` where ").append(keyColumn.get().getOriginalName()).append("=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}").append(newLine(1));
                 builder.append(space(4)).append("</delete>").append(newLine(1));
 
                 builder.append("</mapper>");
@@ -467,7 +495,9 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(space(4)).append("int count(Query<").append(className).append("Table> query);").append(newLine(2));
                 builder.append(space(4)).append("List<").append(className).append("> select(Query<").append(className).append("Table> query);").append(newLine(2));
                 builder.append(space(4)).append("int insert(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+                builder.append(space(4)).append("int batchInsert(@Param(\"entityList\") List<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
                 builder.append(space(4)).append("int update(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+                builder.append(space(4)).append("int batchUpdate(@Param(\"entityList\") List<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
                 builder.append(space(4)).append("int delete(@Param(\"").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("\") ").append(keyColumn.get().getDataType()).append(" ").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append(");").append(newLine(2));
                 builder.append("}");
 

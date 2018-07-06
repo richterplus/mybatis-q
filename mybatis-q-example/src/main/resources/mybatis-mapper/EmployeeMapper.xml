@@ -20,22 +20,22 @@
     </select>
 
     <select id="select" parameterType="com.github.mybatisq.Query" resultMap="employee">
-        select ${tableAlias}.emp_id,${tableAlias}.emp_no,${tableAlias}.emp_name,${tableAlias}.is_fulltime,${tableAlias}.serial_no,${tableAlias}.gender,${tableAlias}.birthday,${tableAlias}.height,${tableAlias}.weight,${tableAlias}.salary,${tableAlias}.create_date <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.`${col.name}`</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.`emp_id`,${tableAlias}.`emp_no`,${tableAlias}.`emp_name`,${tableAlias}.`is_fulltime`,${tableAlias}.`serial_no`,${tableAlias}.`gender`,${tableAlias}.`birthday`,${tableAlias}.`height`,${tableAlias}.`weight`,${tableAlias}.`salary`,${tableAlias}.`create_date`</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
     </select>
 
     <insert id="insert" parameterType="com.github.mybatisq.entity.Employee" useGeneratedKeys="true" keyProperty="empId">
-        <trim prefix="insert employee (" suffix=")" suffixOverrides=",">
-            <if test="empId != null">emp_id,</if>
-            <if test="empNo != null">emp_no,</if>
-            <if test="empName != null">emp_name,</if>
-            <if test="isFulltime != null">is_fulltime,</if>
-            <if test="serialNo != null">serial_no,</if>
-            <if test="gender != null">gender,</if>
-            <if test="birthday != null">birthday,</if>
-            <if test="height != null">height,</if>
-            <if test="weight != null">weight,</if>
-            <if test="salary != null">salary,</if>
-            <if test="createDate != null">create_date,</if>
+        <trim prefix="insert `employee` (" suffix=")" suffixOverrides=",">
+            <if test="empId != null">`emp_id`,</if>
+            <if test="empNo != null">`emp_no`,</if>
+            <if test="empName != null">`emp_name`,</if>
+            <if test="isFulltime != null">`is_fulltime`,</if>
+            <if test="serialNo != null">`serial_no`,</if>
+            <if test="gender != null">`gender`,</if>
+            <if test="birthday != null">`birthday`,</if>
+            <if test="height != null">`height`,</if>
+            <if test="weight != null">`weight`,</if>
+            <if test="salary != null">`salary`,</if>
+            <if test="createDate != null">`create_date`,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="empId != null">#{empId},</if>
@@ -52,22 +52,89 @@
         </trim>
     </insert>
 
+    <insert id="batchInsert" useGeneratedKeys="true">
+        <foreach collection="entityList" item="item" separator=";">
+            <trim prefix="insert `employee` (" suffix=")" suffixOverrides=",">
+                <if test="item.empId != null">`emp_id`,</if>
+                <if test="item.empNo != null">`emp_no`,</if>
+                <if test="item.empName != null">`emp_name`,</if>
+                <if test="item.isFulltime != null">`is_fulltime`,</if>
+                <if test="item.serialNo != null">`serial_no`,</if>
+                <if test="item.gender != null">`gender`,</if>
+                <if test="item.birthday != null">`birthday`,</if>
+                <if test="item.height != null">`height`,</if>
+                <if test="item.weight != null">`weight`,</if>
+                <if test="item.salary != null">`salary`,</if>
+                <if test="item.createDate != null">`create_date`,</if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="item.empId != null">#{item.empId},</if>
+                <if test="item.empNo != null">#{item.empNo},</if>
+                <if test="item.empName != null">#{item.empName},</if>
+                <if test="item.isFulltime != null">#{item.isFulltime},</if>
+                <if test="item.serialNo != null">#{item.serialNo},</if>
+                <if test="item.gender != null">#{item.gender},</if>
+                <if test="item.birthday != null">#{item.birthday},</if>
+                <if test="item.height != null">#{item.height},</if>
+                <if test="item.weight != null">#{item.weight},</if>
+                <if test="item.salary != null">#{item.salary},</if>
+                <if test="item.createDate != null">#{item.createDate},</if>
+            </trim>
+
+        </foreach>
+
+    </insert>
     <update id="update" parameterType="com.github.mybatisq.entity.Employee">
-        <trim prefix="update employee set" suffix="where emp_id=#{empId}" suffixOverrides=",">
-            <if test="empNo != null">emp_no=#{empNo},</if>
-            <if test="empName != null">emp_name=#{empName},</if>
-            <if test="isFulltime != null">is_fulltime=#{isFulltime},</if>
-            <if test="serialNo != null">serial_no=#{serialNo},</if>
-            <if test="gender != null">gender=#{gender},</if>
-            <if test="birthday != null">birthday=#{birthday},</if>
-            <if test="height != null">height=#{height},</if>
-            <if test="weight != null">weight=#{weight},</if>
-            <if test="salary != null">salary=#{salary},</if>
-            <if test="createDate != null">create_date=#{createDate},</if>
+        <trim prefix="update `employee` set" suffix="where `emp_id`=#{empId}" suffixOverrides=",">
+            <if test="empNo != null">`emp_no`=#{empNo},</if>
+            <if test="empName != null">`emp_name`=#{empName},</if>
+            <if test="isFulltime != null">`is_fulltime`=#{isFulltime},</if>
+            <if test="serialNo != null">`serial_no`=#{serialNo},</if>
+            <if test="gender != null">`gender`=#{gender},</if>
+            <if test="birthday != null">`birthday`=#{birthday},</if>
+            <if test="height != null">`height`=#{height},</if>
+            <if test="weight != null">`weight`=#{weight},</if>
+            <if test="salary != null">`salary`=#{salary},</if>
+            <if test="createDate != null">`create_date`=#{createDate},</if>
         </trim>
     </update>
 
+    <update id="batchUpdate">
+
+        <foreach collection="entityList" item="item" separator=";">
+            <trim prefix="update `employee` set" suffix="where `emp_id`=#{item.empId}" suffixOverrides=",">
+                <if test="item.empNo != null">`emp_no`=#{item.empNo},</if>
+                <if test="item.empName != null">`emp_name`=#{item.empName},</if>
+                <if test="item.isFulltime != null">`is_fulltime`=#{item.isFulltime},</if>
+                <if test="item.serialNo != null">`serial_no`=#{item.serialNo},</if>
+                <if test="item.gender != null">`gender`=#{item.gender},</if>
+                <if test="item.birthday != null">`birthday`=#{item.birthday},</if>
+                <if test="item.height != null">`height`=#{item.height},</if>
+                <if test="item.weight != null">`weight`=#{item.weight},</if>
+                <if test="item.salary != null">`salary`=#{item.salary},</if>
+                <if test="item.createDate != null">`create_date`=#{item.createDate},</if>
+            </trim>
+
+        </foreach>
+
+    </update>
+    <update id="batchUpdateByCase">
+
+        <trim prefix="update `employee` set" suffixOverrides=",">
+            <foreach collection="entityList" item="item" open="`emp_no`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{empNo}
+            <foreach collection="entityList" item="item" open="`emp_name`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{empName}
+            <foreach collection="entityList" item="item" open="`is_fulltime`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{isFulltime}
+            <foreach collection="entityList" item="item" open="`serial_no`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{serialNo}
+            <foreach collection="entityList" item="item" open="`gender`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{gender}
+            <foreach collection="entityList" item="item" open="`birthday`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{birthday}
+            <foreach collection="entityList" item="item" open="`height`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{height}
+            <foreach collection="entityList" item="item" open="`weight`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{weight}
+            <foreach collection="entityList" item="item" open="`salary`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{salary}
+            <foreach collection="entityList" item="item" open="`create_date`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{createDate}
+        </trim>
+        <foreach collection="entityList" item="item" open="where `emp_id` in (" close=")" separator=",">#{item.empId}</foreach>
+    </update>
     <delete id="delete">
-        delete from employee where emp_id=#{empId}
+        delete from `employee` where emp_id=#{empId}
     </delete>
 </mapper>

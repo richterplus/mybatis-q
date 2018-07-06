@@ -17,7 +17,11 @@ public interface DepartmentMapper {
 
     int insert(Department department);
 
+    int batchInsert(@Param("entityList") List<Department> department);
+
     int update(Department department);
+
+    int batchUpdate(@Param("entityList") List<Department> department);
 
     int delete(@Param("deptId") Integer deptId);
 
