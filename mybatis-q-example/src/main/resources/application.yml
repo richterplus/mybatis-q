@@ -1,13 +1,17 @@
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/mybatisq
+    url: jdbc:mysql://127.0.0.1:3306/mybatisq?useSSL=false
     username: root
     password: iamchenjie
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
     
 logging:
   level:
-    root: DEBUG
+    root: INFO
+    com.github.mybatisq.mapper: DEBUG
     
 mybatis:
   mapper-locations: classpath*:/mybatis-mapper/*Mapper.xml

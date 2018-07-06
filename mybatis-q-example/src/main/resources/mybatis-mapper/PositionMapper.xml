@@ -65,8 +65,8 @@
     <update id="batchUpdateByCase">
 
         <trim prefix="update `position` set" suffixOverrides=",">
-            <foreach collection="entityList" item="item" open="`post_no`=case `post_id` " close=" end," separator=" ">when #{item.postId} then #{postNo}
-            <foreach collection="entityList" item="item" open="`post_name`=case `post_id` " close=" end," separator=" ">when #{item.postId} then #{postName}
+            <foreach collection="entityList" item="item" open="`post_no`=case `post_id` " close=" end," separator=" ">when #{item.postId} then #{postNo}</foreach>
+            <foreach collection="entityList" item="item" open="`post_name`=case `post_id` " close=" end," separator=" ">when #{item.postId} then #{postName}</foreach>
         </trim>
         <foreach collection="entityList" item="item" open="where `post_id` in (" close=")" separator=",">#{item.postId}</foreach>
     </update>

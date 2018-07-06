@@ -5,6 +5,7 @@ import com.github.mybatisq.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -18,7 +19,7 @@ public class EmployeeController {
     public Employee get(@PathVariable("empId") int empId) {
         EmployeeTable emp = EmployeeTable.employee;
         List<Employee> employees = employeeMapper.select(emp.query().where(emp.emp_id.eq(empId)));
-        return employees.size() == 0 ? null : employees.get(0);
+        return employees.size() == 0 ? new Employee() : employees.get(0);
     }
 
     @GetMapping("/list")
@@ -31,7 +32,7 @@ public class EmployeeController {
         return employeeMapper.select(e.query()
                 .join(e.inner(ed).on(e.emp_id.eq(ed.emp_id)))
                 .join(e.inner(ep).on(e.emp_id.eq(ep.emp_id)))
-                .join(ed.inner(d).on(ed.dept_id.eq(d.dept_id)).and(d.dept_id.eq(1))));
+                .join(ed.inner(d).on(ed.dept_id.eq(d.dept_id)).and(d.dept_id.ge(0))));
     }
 
     @PostMapping
@@ -51,6 +52,7 @@ public class EmployeeController {
 
     @PutMapping
     public Employee create(@RequestBody Employee employee) {
+        employee.setCreateDate(new Date());
         employeeMapper.insert(employee);
         return employee;
     }
