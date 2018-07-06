@@ -78,7 +78,7 @@
                     <mapperFolder>mybatis-mapper</mapperFolder>
                     <datasource>
                         <driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>
-                        <url>jdbc:mysql://127.0.0.1:3306/mybatisq</url>
+                        <url>jdbc:mysql://127.0.0.1:3306/mybatisq?useSSL=false</url>
                         <username>root</username>
                         <password>iamchenjie</password>
                     </datasource>
