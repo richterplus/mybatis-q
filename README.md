@@ -114,36 +114,41 @@ CREATE TABLE `emp_post` (
 #### example sql operation based on generated codes
 
 ```java
-EmployeeTable e = EmployeeTable.employee;
-DepartmentTable d = DepartmentTable.department;
-PositionTable p = PositionTable.position;
-EmpDeptTable ed = EmpDeptTable.empDept;
-EmpPostTable ep = EmpPostTable.empPost;
- 
-//select e.* from employee e
-//inner join empDept ed on e.empId = ed.empId
-//inner join empPost ep on e.empId = ep.empId
-//inner join position p on ep.postId = p.postId and p.postId = 1
-//inner join dept d on ed.deptId = d.deptId and d.deptId = 1
-//where e.empNo in ('e001', 'e002', 'e003') and e.salary >= 5000.00
-//order by e.createDate desc
-//limit 10, 5
-List<Employee> employees = employeeMapper.select(e.query()
-        .join(e.inner(ed)
-                .on(e.empId.eq(ed.empId)))
-        .join(e.inner(ep)
-                .on(e.empId.eq(ep.empId)))
-        .join(ep.inner(p)
-                .on(ep.postId.eq(p.postId))
-                .and(p.postId.eq(1)))
-        .join(ed.inner(d)
-                .on(ed.deptId.eq(d.deptId))
-                .and(d.deptId.eq(1)))
-        .where(e.empNo.in(Arrays.asList("e001", "e002", "e003")))
-        .where(e.salary.ge(new BigDecimal(5000.00)))
-        .orderBy(e.createDate.desc())
-        .skip(10)
-        .limit(5));
+class EmployeeRepository {
+    
+    public List<Employee> listAll() {
+        EmployeeTable e = EmployeeTable.employee;
+        DepartmentTable d = DepartmentTable.department;
+        PositionTable p = PositionTable.position;
+        EmpDeptTable ed = EmpDeptTable.empDept;
+        EmpPostTable ep = EmpPostTable.empPost;
+         
+        //select e.* from employee e
+        //inner join empDept ed on e.empId = ed.empId
+        //inner join empPost ep on e.empId = ep.empId
+        //inner join position p on ep.postId = p.postId and p.postId = 1
+        //inner join dept d on ed.deptId = d.deptId and d.deptId = 1
+        //where e.empNo in ('e001', 'e002', 'e003') and e.salary >= 5000.00
+        //order by e.createDate desc
+        //limit 10, 5
+        return employeeMapper.select(e.query()
+                .join(e.inner(ed)
+                        .on(e.empId.eq(ed.empId)))
+                .join(e.inner(ep)
+                        .on(e.empId.eq(ep.empId)))
+                .join(ep.inner(p)
+                        .on(ep.postId.eq(p.postId))
+                        .and(p.postId.eq(1)))
+                .join(ed.inner(d)
+                        .on(ed.deptId.eq(d.deptId))
+                        .and(d.deptId.eq(1)))
+                .where(e.empNo.in(Arrays.asList("e001", "e002", "e003")))
+                .where(e.salary.ge(new BigDecimal(5000.00)))
+                .orderBy(e.createDate.desc())
+                .skip(10)
+                .limit(5));
+    }
+}
 ```
 	        
 You can find out more in the source codes.
