@@ -430,8 +430,8 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(space(12)).append("<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">").append(newLine(1));
                 t.getColumns().forEach(c -> builder.append(space(16)).append("<if test=\"item.").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">#{item.").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
                 builder.append(space(12)).append("</trim>").append(newLine(1));
-                builder.append(newLine(1)).append(space(8)).append("</foreach>").append(newLine(1));
-                builder.append(newLine(1)).append(space(4)).append("</insert>");
+                builder.append(space(8)).append("</foreach>").append(newLine(1));
+                builder.append(space(4)).append("</insert>").append(newLine(1));
 
                 Optional<Column> keyColumn = t.getColumns().stream().filter(Column::getIsPrimaryKey).findFirst();
                 if (!keyColumn.isPresent()) {
@@ -444,19 +444,19 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(space(4)).append("</update>").append(newLine(1));
 
                 builder.append(newLine(1)).append(space(4)).append("<update id=\"batchUpdate\">").append(newLine(1));
-                builder.append(newLine(1)).append(space(8)).append("<foreach collection=\"entityList\" item=\"item\" separator=\";\">").append(newLine(1));
+                builder.append(space(8)).append("<foreach collection=\"entityList\" item=\"item\" separator=\";\">").append(newLine(1));
                 builder.append(space(12)).append("<trim prefix=\"update `").append(tableName).append("` set\" suffix=\"where `").append(keyColumn.get().getOriginalName()).append("`=#{item.").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}\" suffixOverrides=\",\">").append(newLine(1));
                 t.getColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(space(16)).append("<if test=\"item.").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">`").append(c.getOriginalName()).append("`=#{item.").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
                 builder.append(space(12)).append("</trim>").append(newLine(1));
-                builder.append(newLine(1)).append(space(8)).append("</foreach>").append(newLine(1));
-                builder.append(newLine(1)).append(space(4)).append("</update>");
+                builder.append(space(8)).append("</foreach>").append(newLine(1));
+                builder.append(space(4)).append("</update>").append(newLine(1));
 
                 builder.append(newLine(1)).append(space(4)).append("<update id=\"batchUpdateByCase\">").append(newLine(1));
-                builder.append(newLine(1)).append(space(8)).append("<trim prefix=\"update `").append(tableName).append("` set\" suffixOverrides=\",\">");
+                builder.append(space(8)).append("<trim prefix=\"update `").append(tableName).append("` set\" suffixOverrides=\",\">");
                 t.getColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(newLine(1)).append(space(12)).append("<foreach collection=\"entityList\" item=\"item\" open=\"`").append(c.getOriginalName()).append("`=case `").append(keyColumn.get().getOriginalName()).append("` \" close=\" end,\" separator=\" \">when #{item.").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("} then #{").append(lowerCaseFirstChar(c.getMappedName())).append("}</foreach>"));
                 builder.append(newLine(1)).append(space(8)).append("</trim>");
                 builder.append(newLine(1)).append(space(8)).append("<foreach collection=\"entityList\" item=\"item\" open=\"where `").append(keyColumn.get().getOriginalName()).append("` in (\" close=\")\" separator=\",\">#{item.").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}").append("</foreach>");
-                builder.append(newLine(1)).append(space(4)).append("</update>");
+                builder.append(newLine(1)).append(space(4)).append("</update>").append(newLine(1));
 
                 builder.append(newLine(1)).append(space(4)).append("<delete id=\"delete\">").append(newLine(1));
                 builder.append(space(8)).append("delete from `").append(tableName).append("` where ").append(keyColumn.get().getOriginalName()).append("=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}").append(newLine(1));
