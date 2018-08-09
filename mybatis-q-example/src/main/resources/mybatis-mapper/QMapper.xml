@@ -16,6 +16,7 @@
                 <if test="w.operator == 'le'">`${j.tableAlias2}`.`${w.columnName}`&lt;=#{w.queryValue}</if>
                 <if test="w.operator == 'between'">`${j.tableAlias2}`.`${w.columnName}` between #{w.queryValue} and #{w.queryValue2}</if>
                 <if test="w.operator == 'in'">`${j.tableAlias2}`.`${w.columnName}` in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
+                <if test="w.operator == 'notIn'">`${j.tableAlias2}`.`${w.columnName}` not in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
                 <if test="w.operator == 'startWith'">`${j.tableAlias2}`.`${w.columnName}` like concat(#{w.queryValue},'%')</if>
                 <if test="w.operator == 'contains'">`${j.tableAlias2}`.`${w.columnName}` like concat('%',#{w.queryValue},'%')</if>
                 <if test="w.operator == 'isNull'">`${j.tableAlias2}`.`${w.columnName}` is null</if>
@@ -32,6 +33,7 @@
             <if test="w.operator == 'le'">`${tableAlias}`.`${w.columnName}`&lt;=#{w.queryValue}</if>
             <if test="w.operator == 'between'">`${tableAlias}`.`${w.columnName}` between #{w.queryValue} and #{w.queryValue2}</if>
             <if test="w.operator == 'in'">`${tableAlias}`.`${w.columnName}` in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
+            <if test="w.operator == 'notIn'">`${tableAlias}`.`${w.columnName}` not in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
             <if test="w.operator == 'startWith'">`${tableAlias}`.`${w.columnName}` like concat(#{w.queryValue},'%')</if>
             <if test="w.operator == 'contains'">`${tableAlias}`.`${w.columnName}` like concat('%',#{w.queryValue},'%')</if>
             <if test="w.operator == 'isNull'">`${tableAlias}`.`${w.columnName}` is null</if>

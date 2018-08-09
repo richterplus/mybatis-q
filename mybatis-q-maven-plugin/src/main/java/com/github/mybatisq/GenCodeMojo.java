@@ -11,11 +11,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -152,11 +148,7 @@ public class GenCodeMojo extends AbstractMojo {
     }
 
     private String generateMappedName(String originalName) {
-        String[] splitWords = originalName.split("[_-]");
-        for (int i = 0; i < splitWords.length; i++) {
-            splitWords[i] = splitWords[i].substring(0, 1).toUpperCase() + splitWords[i].substring(1);
-        }
-        return String.join("", splitWords);
+        return Stream.of(originalName.split("[_-]")).filter(s -> s.length() > 0).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1)).reduce((a, b) -> a + b).orElse("");
     }
 
     private String lowerCaseFirstChar(String str) {
@@ -247,6 +239,14 @@ public class GenCodeMojo extends AbstractMojo {
                 }
                 resultSet.close();
                 statement.close();
+
+                if (includeEntityNames != null && includeEntityNames.size() > 0) {
+                    tables = tables.stream().filter(t -> includeEntityNames.contains(t.getMappedName())).collect(Collectors.toList());
+                }
+
+                if (excludedEntityNames != null && excludedEntityNames.size() > 0) {
+                    tables = tables.stream().filter(t -> !excludedEntityNames.contains(t.getMappedName())).collect(Collectors.toList());
+                }
 
                 for (Table table : tables) {
                     statement = conn.createStatement();
@@ -349,6 +349,7 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append("package ").append(genPackage).append(";").append(newLine(2));
                 builder.append("import com.github.mybatisq.Column;").append(newLine(1));
                 builder.append("import com.github.mybatisq.Join;").append(newLine(1));
+                builder.append("import com.github.mybatisq.DeleteQuery;").append(newLine(1));
                 builder.append("import com.github.mybatisq.Query;").append(newLine(1));
                 builder.append("import com.github.mybatisq.Table;").append(newLine(1));
                 String className = t.getMappedName() + "Table";
@@ -361,6 +362,9 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(newLine(1)).append(space(4)).append("public static final ").append(className).append(" ").append(tableName).append(" = new ").append(className).append("();").append(newLine(1));
                 builder.append(newLine(1)).append(space(4)).append("public Query<").append(className).append("> query() {").append(newLine(1));
                 builder.append(space(8)).append("return new Query<>(").append(tableName).append(");").append(newLine(1));
+                builder.append(space(4)).append("}").append(newLine(1));
+                builder.append(newLine(1)).append(space(4)).append("public DeleteQuery<").append(className).append("> deleteQuery() {").append(newLine(1));
+                builder.append(space(8)).append("return new DeleteQuery<>(").append(tableName).append(");").append(newLine(1));
                 builder.append(space(4)).append("}").append(newLine(1));
                 builder.append(newLine(1)).append(space(4)).append("public <T extends Table> Join<").append(className).append(", T> inner(T table) {").append(newLine(1));
                 builder.append(space(8)).append("return new Join<>(\"inner\", this, table);").append(newLine(1));
@@ -392,6 +396,15 @@ public class GenCodeMojo extends AbstractMojo {
                 String tableName = t.getOriginalName();
                 builder.append("<mapper namespace=\"").append(genPackage).append(".").append(className).append("Mapper\">").append(newLine(1));
                 builder.append(space(4)).append("<resultMap type=\"").append(entityPackage).append(".").append(className).append("\" id=\"").append(lowerCaseFirstChar(className)).append("\">").append(newLine(1));
+                t.getColumns().sort((o1, o2) -> {
+                    if (o1.getIsPrimaryKey() == o2.getIsPrimaryKey()) {
+                        return 0;
+                    } else if (o1.getIsPrimaryKey()) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                });
                 t.getColumns().forEach(c -> {
                     if (c.getIsPrimaryKey()) {
                         builder.append(space(8)).append("<id column=\"").append(c.getOriginalName()).append("\" property=\"").append(lowerCaseFirstChar(c.getMappedName())).append("\"/>").append(newLine(1));
@@ -401,7 +414,7 @@ public class GenCodeMojo extends AbstractMojo {
                 });
                 builder.append(space(4)).append("</resultMap>").append(newLine(2));
                 builder.append(space(4)).append("<select id=\"count\" parameterType=\"com.github.mybatisq.Query\" resultType=\"java.lang.Integer\">").append(newLine(1));
-                builder.append(space(8)).append("select count(0) <include refid=\"").append(genPackage).append(".QMapper.countFrom\"/>").append(newLine(1));
+                builder.append(space(8)).append("select count(*) <include refid=\"").append(genPackage).append(".QMapper.countFrom\"/>").append(newLine(1));
                 builder.append(space(4)).append("</select>").append(newLine(1));
                 builder.append(newLine(1)).append(space(4)).append("<select id=\"select\" parameterType=\"com.github.mybatisq.Query\" resultMap=\"").append(lowerCaseFirstChar(className)).append("\">").append(newLine(1));
                 builder.append(space(8)).append("select ");
@@ -462,6 +475,14 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(space(8)).append("delete from `").append(tableName).append("` where ").append(keyColumn.get().getOriginalName()).append("=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}").append(newLine(1));
                 builder.append(space(4)).append("</delete>").append(newLine(1));
 
+                builder.append(newLine(1)).append(space(4)).append("<delete id=\"batchDelete\">").append(newLine(1));
+                builder.append(space(8)).append("<trim prefix=\"delete from `").append(tableName).append("` where `").append(keyColumn.get().getOriginalName()).append("` in (\" suffix=\")\"><foreach collection=\"").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("List\" separator=\",\" item=\"item\">#{item}</foreach></trim>").append(newLine(1));
+                builder.append(space(4)).append("</delete>").append(newLine(1));
+
+                builder.append(newLine(1)).append(space(4)).append("<delete id=\"deleteByQuery\" parameterType=\"com.github.mybatisq.DeleteQuery\">").append(newLine(1));
+                builder.append(space(8)).append("<trim prefix=\"delete from `").append(tableName).append("`\"><include refid=\"").append(genPackage).append(".QMapper.deleteWhere\"/></trim>").append(newLine(1));
+                builder.append(space(4)).append("</delete>").append(newLine(1));
+
                 builder.append("</mapper>");
                 String fileContent = builder.toString();
                 String filePath = mapperPath + "/" + className + "Mapper.xml";
@@ -485,9 +506,11 @@ public class GenCodeMojo extends AbstractMojo {
                 }
 
                 builder.append("package ").append(genPackage).append(";").append(newLine(2));
+                builder.append("import java.util.Collection;").append(newLine(1));
                 builder.append("import java.util.List;").append(newLine(2));
                 builder.append("import org.apache.ibatis.annotations.Mapper;").append(newLine(1));
                 builder.append("import org.apache.ibatis.annotations.Param;").append(newLine(2));
+                builder.append("import com.github.mybatisq.DeleteQuery;").append(newLine(1));
                 builder.append("import com.github.mybatisq.Query;").append(newLine(1));
                 builder.append("import ").append(entityPackage).append(".").append(className).append(";").append(newLine(2));
                 builder.append("@Mapper").append(newLine(1));
@@ -495,10 +518,12 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(space(4)).append("int count(Query<").append(className).append("Table> query);").append(newLine(2));
                 builder.append(space(4)).append("List<").append(className).append("> select(Query<").append(className).append("Table> query);").append(newLine(2));
                 builder.append(space(4)).append("int insert(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
-                builder.append(space(4)).append("int batchInsert(@Param(\"entityList\") List<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+                builder.append(space(4)).append("int batchInsert(@Param(\"entityList\") Collection<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
                 builder.append(space(4)).append("int update(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
-                builder.append(space(4)).append("int batchUpdate(@Param(\"entityList\") List<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+                builder.append(space(4)).append("int batchUpdate(@Param(\"entityList\") Collection<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
                 builder.append(space(4)).append("int delete(@Param(\"").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("\") ").append(keyColumn.get().getDataType()).append(" ").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append(");").append(newLine(2));
+                builder.append(space(4)).append("int batchDelete(@Param(\"").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("List\") Collection<").append(keyColumn.get().getDataType()).append("> ").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("List);").append(newLine(2));
+                builder.append(space(4)).append("int deleteByQuery(DeleteQuery<").append(className).append("Table> query);").append(newLine(2));
                 builder.append("}");
 
                 String fileContent = builder.toString();

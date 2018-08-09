@@ -80,10 +80,9 @@
                 <if test="item.salary != null">#{item.salary},</if>
                 <if test="item.createDate != null">#{item.createDate},</if>
             </trim>
-
         </foreach>
-
     </insert>
+
     <update id="update" parameterType="com.github.mybatisq.entity.Employee">
         <trim prefix="update `employee` set" suffix="where `emp_id`=#{empId}" suffixOverrides=",">
             <if test="empNo != null">`emp_no`=#{empNo},</if>
@@ -100,7 +99,6 @@
     </update>
 
     <update id="batchUpdate">
-
         <foreach collection="entityList" item="item" separator=";">
             <trim prefix="update `employee` set" suffix="where `emp_id`=#{item.empId}" suffixOverrides=",">
                 <if test="item.empNo != null">`emp_no`=#{item.empNo},</if>
@@ -114,12 +112,10 @@
                 <if test="item.salary != null">`salary`=#{item.salary},</if>
                 <if test="item.createDate != null">`create_date`=#{item.createDate},</if>
             </trim>
-
         </foreach>
-
     </update>
-    <update id="batchUpdateByCase">
 
+    <update id="batchUpdateByCase">
         <trim prefix="update `employee` set" suffixOverrides=",">
             <foreach collection="entityList" item="item" open="`emp_no`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{empNo}</foreach>
             <foreach collection="entityList" item="item" open="`emp_name`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{empName}</foreach>
@@ -134,6 +130,7 @@
         </trim>
         <foreach collection="entityList" item="item" open="where `emp_id` in (" close=")" separator=",">#{item.empId}</foreach>
     </update>
+
     <delete id="delete">
         delete from `employee` where emp_id=#{empId}
     </delete>

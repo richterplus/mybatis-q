@@ -40,10 +40,9 @@
                 <if test="item.postNo != null">#{item.postNo},</if>
                 <if test="item.postName != null">#{item.postName},</if>
             </trim>
-
         </foreach>
-
     </insert>
+
     <update id="update" parameterType="com.github.mybatisq.entity.Position">
         <trim prefix="update `position` set" suffix="where `post_id`=#{postId}" suffixOverrides=",">
             <if test="postNo != null">`post_no`=#{postNo},</if>
@@ -52,24 +51,22 @@
     </update>
 
     <update id="batchUpdate">
-
         <foreach collection="entityList" item="item" separator=";">
             <trim prefix="update `position` set" suffix="where `post_id`=#{item.postId}" suffixOverrides=",">
                 <if test="item.postNo != null">`post_no`=#{item.postNo},</if>
                 <if test="item.postName != null">`post_name`=#{item.postName},</if>
             </trim>
-
         </foreach>
-
     </update>
-    <update id="batchUpdateByCase">
 
+    <update id="batchUpdateByCase">
         <trim prefix="update `position` set" suffixOverrides=",">
             <foreach collection="entityList" item="item" open="`post_no`=case `post_id` " close=" end," separator=" ">when #{item.postId} then #{postNo}</foreach>
             <foreach collection="entityList" item="item" open="`post_name`=case `post_id` " close=" end," separator=" ">when #{item.postId} then #{postName}</foreach>
         </trim>
         <foreach collection="entityList" item="item" open="where `post_id` in (" close=")" separator=",">#{item.postId}</foreach>
     </update>
+
     <delete id="delete">
         delete from `position` where post_id=#{postId}
     </delete>

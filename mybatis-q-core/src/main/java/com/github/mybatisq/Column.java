@@ -47,6 +47,13 @@ public class Column<T extends Table, D> {
     }
 
     /**
+     * = 另一列的值
+     */
+    public Where eqAnother(Column<T, D> column) {
+        return new Where(name, "eqCol", column);
+    }
+
+    /**
      * &gt; value
      *
      * @param value 查询值
@@ -149,6 +156,13 @@ public class Column<T extends Table, D> {
      */
     public Where notNull() {
         return new Where(name, "notNull", null);
+    }
+
+    /**
+     * not in (...)
+     */
+    public Where notIn(Collection<D> values) {
+        return new Where(name, "notIn", values);
     }
 
     /**

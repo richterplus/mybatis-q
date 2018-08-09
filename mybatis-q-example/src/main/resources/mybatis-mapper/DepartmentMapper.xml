@@ -45,10 +45,9 @@
                 <if test="item.deptName != null">#{item.deptName},</if>
                 <if test="item.createDate != null">#{item.createDate},</if>
             </trim>
-
         </foreach>
-
     </insert>
+
     <update id="update" parameterType="com.github.mybatisq.entity.Department">
         <trim prefix="update `department` set" suffix="where `dept_id`=#{deptId}" suffixOverrides=",">
             <if test="deptNo != null">`dept_no`=#{deptNo},</if>
@@ -58,19 +57,16 @@
     </update>
 
     <update id="batchUpdate">
-
         <foreach collection="entityList" item="item" separator=";">
             <trim prefix="update `department` set" suffix="where `dept_id`=#{item.deptId}" suffixOverrides=",">
                 <if test="item.deptNo != null">`dept_no`=#{item.deptNo},</if>
                 <if test="item.deptName != null">`dept_name`=#{item.deptName},</if>
                 <if test="item.createDate != null">`create_date`=#{item.createDate},</if>
             </trim>
-
         </foreach>
-
     </update>
-    <update id="batchUpdateByCase">
 
+    <update id="batchUpdateByCase">
         <trim prefix="update `department` set" suffixOverrides=",">
             <foreach collection="entityList" item="item" open="`dept_no`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{deptNo}</foreach>
             <foreach collection="entityList" item="item" open="`dept_name`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{deptName}</foreach>
@@ -78,6 +74,7 @@
         </trim>
         <foreach collection="entityList" item="item" open="where `dept_id` in (" close=")" separator=",">#{item.deptId}</foreach>
     </update>
+
     <delete id="delete">
         delete from `department` where dept_id=#{deptId}
     </delete>
