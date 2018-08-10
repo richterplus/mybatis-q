@@ -435,15 +435,16 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(space(8)).append("</trim>").append(newLine(1));
                 builder.append(space(4)).append("</insert>").append(newLine(1));
 
-                builder.append(newLine(1)).append(space(4)).append("<insert id=\"batchInsert\" useGeneratedKeys=\"true\" keyColumn=\"").append(t.getColumns().get(0).getOriginalName()).append("\" keyProperty=\"").append(lowerCaseFirstChar(t.getColumns().get(0).getMappedName())).append("\">");
-                builder.append(newLine(1)).append(space(8)).append("<foreach collection=\"list\" item=\"item\" separator=\";\">");
-                builder.append(newLine(1)).append(space(12)).append("<trim prefix=\"insert `").append(tableName).append("` (\" suffix=\")\" suffixOverrides=\",\">").append(newLine(1));
-                t.getColumns().forEach(c -> builder.append(space(16)).append("<if test=\"item.").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">`").append(c.getOriginalName()).append("`,</if>").append(newLine(1)));
-                builder.append(space(12)).append("</trim>").append(newLine(1));
-                builder.append(space(12)).append("<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">").append(newLine(1));
-                t.getColumns().forEach(c -> builder.append(space(16)).append("<if test=\"item.").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">#{item.").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
-                builder.append(space(12)).append("</trim>").append(newLine(1));
-                builder.append(space(8)).append("</foreach>").append(newLine(1));
+                builder.append(newLine(1)).append(space(4)).append("<insert id=\"batchInsert\" useGeneratedKeys=\"true\"");
+                t.getColumns().stream().filter(c -> c.getIsAutoIncrement() && c.getIsPrimaryKey()).findFirst().ifPresent(c -> builder.append(" keyProperty=\"").append(lowerCaseFirstChar(c.getMappedName())).append("\""));
+                builder.append(">");
+                builder.append(newLine(1)).append(space(8)).append("<trim prefix=\"insert `").append(tableName).append("` (");
+                builder.append(t.getColumns().stream().filter(c -> !c.getIsAutoIncrement()).map(c -> "`" + c.getOriginalName() + "`").reduce((a, b) -> String.join(",", a, b)).orElse(""));
+                builder.append(") values \">").append(newLine(1));
+                builder.append(space(12)).append("<foreach collection=\"list\" item=\"item\" separator=\",\">").append(newLine(1));
+                builder.append(space(16)).append("(").append(t.getColumns().stream().filter(c -> !c.getIsAutoIncrement()).map(c -> "#{item." + lowerCaseFirstChar(c.getMappedName()) + "}").reduce((a, b) -> String.join(",", a, b)).orElse("")).append(")").append(newLine(1));
+                builder.append(space(12)).append("</foreach>").append(newLine(1));
+                builder.append(space(8)).append("</trim>").append(newLine(1));
                 builder.append(space(4)).append("</insert>").append(newLine(1));
 
                 Optional<Column> keyColumn = t.getColumns().stream().filter(Column::getIsPrimaryKey).findFirst();
