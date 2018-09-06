@@ -30,8 +30,9 @@ public class Query<T extends Table> {
      * @return 查询
      */
     public Query<T> where(Where where) {
-        if (where != null)
+        if (where != null) {
             wheres.add(where);
+        }
         return this;
     }
 
@@ -41,8 +42,9 @@ public class Query<T extends Table> {
      * @return 查询
      */
     public Query<T> orderBy(OrderBy orderBy) {
-        if (orderBy != null)
+        if (orderBy != null) {
             orderBys.add(orderBy);
+        }
         return this;
     }
 
@@ -78,8 +80,9 @@ public class Query<T extends Table> {
      * @return 查询
      */
     public Query<T> join(Join<? extends Table, ? extends Table> innerJoin) {
-        if (innerJoin != null)
+        if (innerJoin != null) {
             joins.add(innerJoin);
+        }
         return this;
     }
 

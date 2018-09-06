@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.github.mybatisq.DeleteQuery;
 import com.github.mybatisq.Query;
+import com.github.mybatisq.Update;
 import com.github.mybatisq.entity.Position;
 
 /**
@@ -27,6 +28,8 @@ public interface PositionMapper {
     int update(Position position);
 
     int batchUpdate(@Param("list") Collection<Position> position);
+
+    int updateByBuilder(Update<PositionTable> update);
 
     int delete(@Param("postId") Integer postId);
 

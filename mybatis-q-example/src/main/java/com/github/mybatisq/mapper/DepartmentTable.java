@@ -4,6 +4,7 @@ import com.github.mybatisq.Column;
 import com.github.mybatisq.Join;
 import com.github.mybatisq.DeleteQuery;
 import com.github.mybatisq.Query;
+import com.github.mybatisq.Update;
 import com.github.mybatisq.Table;
 
 /**
@@ -19,6 +20,10 @@ public class DepartmentTable extends Table {
 
     public Query<DepartmentTable> query() {
         return new Query<>(department);
+    }
+
+    public Update<DepartmentTable> update() {
+        return new Update<>(department);
     }
 
     public DeleteQuery<DepartmentTable> deleteQuery() {

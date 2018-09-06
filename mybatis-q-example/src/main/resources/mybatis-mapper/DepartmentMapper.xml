@@ -49,11 +49,17 @@
 
     <update id="batchUpdate">
         <trim prefix="update `department` set" suffixOverrides=",">
-            <foreach collection="list" item="item" open="`dept_no`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{item.deptNo}</foreach>
-            <foreach collection="list" item="item" open="`dept_name`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{item.deptName}</foreach>
-            <foreach collection="list" item="item" open="`create_date`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{item.createDate}</foreach>
+            <foreach collection="entityList" item="item" open="`dept_no`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{deptNo}</foreach>
+            <foreach collection="entityList" item="item" open="`dept_name`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{deptName}</foreach>
+            <foreach collection="entityList" item="item" open="`create_date`=case `dept_id` " close=" end," separator=" ">when #{item.deptId} then #{createDate}</foreach>
         </trim>
         <foreach collection="list" item="item" open="where `dept_id` in (" close=")" separator=",">#{item.deptId}</foreach>
+    </update>
+
+    <update id="updateByBuilder" parameterType="com.github.mybatisq.Update">
+        <trim prefix="update `department`">
+            <include refid="com.github.mybatisq.mapper.QMapper.updateBuilder"/>
+        </trim>
     </update>
 
     <delete id="delete">

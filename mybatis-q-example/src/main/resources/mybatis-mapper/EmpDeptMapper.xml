@@ -45,10 +45,16 @@
 
     <update id="batchUpdate">
         <trim prefix="update `emp_dept` set" suffixOverrides=",">
-            <foreach collection="list" item="item" open="`emp_id`=case `ed_id` " close=" end," separator=" ">when #{item.edId} then #{item.empId}</foreach>
-            <foreach collection="list" item="item" open="`dept_id`=case `ed_id` " close=" end," separator=" ">when #{item.edId} then #{item.deptId}</foreach>
+            <foreach collection="entityList" item="item" open="`emp_id`=case `ed_id` " close=" end," separator=" ">when #{item.edId} then #{empId}</foreach>
+            <foreach collection="entityList" item="item" open="`dept_id`=case `ed_id` " close=" end," separator=" ">when #{item.edId} then #{deptId}</foreach>
         </trim>
         <foreach collection="list" item="item" open="where `ed_id` in (" close=")" separator=",">#{item.edId}</foreach>
+    </update>
+
+    <update id="updateByBuilder" parameterType="com.github.mybatisq.Update">
+        <trim prefix="update `emp_dept`">
+            <include refid="com.github.mybatisq.mapper.QMapper.updateBuilder"/>
+        </trim>
     </update>
 
     <delete id="delete">

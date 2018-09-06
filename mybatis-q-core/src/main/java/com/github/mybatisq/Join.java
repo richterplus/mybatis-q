@@ -32,8 +32,9 @@ public class Join<T1 extends Table, T2 extends Table> {
      * @return 连接
      */
     public Join<T1, T2> on(On<T1, T2> on) {
-        if (on != null)
+        if (on != null) {
             ons.add(on);
+        }
         return this;
     }
 
@@ -43,8 +44,9 @@ public class Join<T1 extends Table, T2 extends Table> {
      * @return 连接
      */
     public Join<T1, T2> and(On<T1, T2> on) {
-        if (on != null)
+        if (on != null) {
             ons.add(on);
+        }
         return this;
     }
 
@@ -54,8 +56,9 @@ public class Join<T1 extends Table, T2 extends Table> {
      * @return 连接
      */
     public Join<T1, T2> and(Where where) {
-        if (where != null)
+        if (where != null) {
             wheres.add(where);
+        }
         return this;
     }
 

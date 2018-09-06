@@ -77,18 +77,24 @@
 
     <update id="batchUpdate">
         <trim prefix="update `employee` set" suffixOverrides=",">
-            <foreach collection="list" item="item" open="`emp_no`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{item.empNo}</foreach>
-            <foreach collection="list" item="item" open="`emp_name`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{item.empName}</foreach>
-            <foreach collection="list" item="item" open="`is_fulltime`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{item.isFulltime}</foreach>
-            <foreach collection="list" item="item" open="`serial_no`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{item.serialNo}</foreach>
-            <foreach collection="list" item="item" open="`gender`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{item.gender}</foreach>
-            <foreach collection="list" item="item" open="`birthday`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{item.birthday}</foreach>
-            <foreach collection="list" item="item" open="`height`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{item.height}</foreach>
-            <foreach collection="list" item="item" open="`weight`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{item.weight}</foreach>
-            <foreach collection="list" item="item" open="`salary`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{item.salary}</foreach>
-            <foreach collection="list" item="item" open="`create_date`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{item.createDate}</foreach>
+            <foreach collection="entityList" item="item" open="`emp_no`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{empNo}</foreach>
+            <foreach collection="entityList" item="item" open="`emp_name`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{empName}</foreach>
+            <foreach collection="entityList" item="item" open="`is_fulltime`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{isFulltime}</foreach>
+            <foreach collection="entityList" item="item" open="`serial_no`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{serialNo}</foreach>
+            <foreach collection="entityList" item="item" open="`gender`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{gender}</foreach>
+            <foreach collection="entityList" item="item" open="`birthday`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{birthday}</foreach>
+            <foreach collection="entityList" item="item" open="`height`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{height}</foreach>
+            <foreach collection="entityList" item="item" open="`weight`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{weight}</foreach>
+            <foreach collection="entityList" item="item" open="`salary`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{salary}</foreach>
+            <foreach collection="entityList" item="item" open="`create_date`=case `emp_id` " close=" end," separator=" ">when #{item.empId} then #{createDate}</foreach>
         </trim>
         <foreach collection="list" item="item" open="where `emp_id` in (" close=")" separator=",">#{item.empId}</foreach>
+    </update>
+
+    <update id="updateByBuilder" parameterType="com.github.mybatisq.Update">
+        <trim prefix="update `employee`">
+            <include refid="com.github.mybatisq.mapper.QMapper.updateBuilder"/>
+        </trim>
     </update>
 
     <delete id="delete">

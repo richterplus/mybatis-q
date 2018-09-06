@@ -1,5 +1,6 @@
 package com.github.mybatisq.example;
 
+import com.github.mybatisq.NumberOps;
 import com.github.mybatisq.entity.Employee;
 import com.github.mybatisq.mapper.*;
 import org.apache.commons.lang3.time.DateUtils;
@@ -8,10 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author richterplus
@@ -48,6 +47,7 @@ public class EmployeeController {
     public String test() throws ParseException {
         EmployeeTable emp = EmployeeTable.employee;
 
+        /*
         List<Employee> employees = new ArrayList<>(10);
 
         for (int i = 0; i < 10; i++) {
@@ -64,6 +64,14 @@ public class EmployeeController {
 
         employeeMapper.deleteByQuery(emp.deleteQuery().where(emp.emp_id.gt(0)));
         employeeMapper.batchDelete(employees.stream().map(Employee::getEmpId).collect(Collectors.toList()));
+        */
+
+        employeeMapper.updateByBuilder(
+                emp.update()
+                        .set(emp.create_date, new Date())
+                        .set(emp.serial_no, NumberOps.plus(10L))
+                        .where(emp.emp_id.gt(10))
+                        .where(emp.serial_no.gt(0L)));
 
         return "ok";
     }

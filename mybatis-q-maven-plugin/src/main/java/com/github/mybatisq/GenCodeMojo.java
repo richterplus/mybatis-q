@@ -18,6 +18,8 @@ import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -327,6 +329,7 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append("import ").append(Join.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(DeleteQuery.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(Query.class.getName()).append(";").append(newLine(1));
+            builder.append("import ").append(Update.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(Table.class.getName()).append(";").append(newLine(1));
             String className = t.getMappedName() + "Table";
             String tableName = t.getOriginalName();
@@ -341,6 +344,9 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append(newLine(1)).append(space(4)).append("public static final ").append(className).append(" ").append(tableName).append(" = new ").append(className).append("();").append(newLine(1));
             builder.append(newLine(1)).append(space(4)).append("public Query<").append(className).append("> query() {").append(newLine(1));
             builder.append(space(8)).append("return new Query<>(").append(tableName).append(");").append(newLine(1));
+            builder.append(space(4)).append("}").append(newLine(1));
+            builder.append(newLine(1)).append(space(4)).append("public Update<").append(className).append("> update() {").append(newLine(1));
+            builder.append(space(8)).append("return new Update<>(").append(tableName).append(");").append(newLine(1));
             builder.append(space(4)).append("}").append(newLine(1));
             builder.append(newLine(1)).append(space(4)).append("public DeleteQuery<").append(className).append("> deleteQuery() {").append(newLine(1));
             builder.append(space(8)).append("return new DeleteQuery<>(").append(tableName).append(");").append(newLine(1));
@@ -434,6 +440,7 @@ public class GenCodeMojo extends AbstractMojo {
             if (!keyColumn.isPresent()) {
                 throw new RuntimeException("Table " + tableName + " must has a primary key column.");
             }
+
             builder.append(newLine(1)).append(space(4)).append("<update id=\"update\" parameterType=\"").append(entityPackage).append(".").append(className).append("\">").append(newLine(1));
             builder.append(space(8)).append("<trim prefix=\"update `").append(tableName).append("` set\" suffix=\"where `").append(keyColumn.get().getOriginalName()).append("`=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}\" suffixOverrides=\",\">").append(newLine(1));
             t.getMappedColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">`").append(c.getOriginalName()).append("`=#{").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
@@ -442,10 +449,16 @@ public class GenCodeMojo extends AbstractMojo {
 
             builder.append(newLine(1)).append(space(4)).append("<update id=\"batchUpdate\">").append(newLine(1));
             builder.append(space(8)).append("<trim prefix=\"update `").append(tableName).append("` set\" suffixOverrides=\",\">");
-            t.getMappedColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(newLine(1)).append(space(12)).append("<foreach collection=\"list\" item=\"item\" open=\"`").append(c.getOriginalName()).append("`=case `").append(keyColumn.get().getOriginalName()).append("` \" close=\" end,\" separator=\" \">when #{item.").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("} then #{item.").append(lowerCaseFirstChar(c.getMappedName())).append("}</foreach>"));
+            t.getMappedColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(newLine(1)).append(space(12)).append("<foreach collection=\"entityList\" item=\"item\" open=\"`").append(c.getOriginalName()).append("`=case `").append(keyColumn.get().getOriginalName()).append("` \" close=\" end,\" separator=\" \">when #{item.").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("} then #{").append(lowerCaseFirstChar(c.getMappedName())).append("}</foreach>"));
             builder.append(newLine(1)).append(space(8)).append("</trim>");
             builder.append(newLine(1)).append(space(8)).append("<foreach collection=\"list\" item=\"item\" open=\"where `").append(keyColumn.get().getOriginalName()).append("` in (\" close=\")\" separator=\",\">#{item.").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}").append("</foreach>");
             builder.append(newLine(1)).append(space(4)).append("</update>").append(newLine(1));
+
+            builder.append(newLine(1)).append(space(4)).append("<update id=\"updateByBuilder\" parameterType=\"").append(Update.class.getName()).append("\">").append(newLine(1));
+            builder.append(space(8)).append("<trim prefix=\"update `").append(tableName).append("`\">").append(newLine(1));
+            builder.append(space(12)).append("<include refid=\"").append(genPackage).append(".QMapper.updateBuilder\"/>").append(newLine(1));
+            builder.append(space(8)).append("</trim>").append(newLine(1));
+            builder.append(space(4)).append("</update>").append(newLine(1));
 
             builder.append(newLine(1)).append(space(4)).append("<delete id=\"delete\">").append(newLine(1));
             builder.append(space(8)).append("delete from `").append(tableName).append("` where ").append(keyColumn.get().getOriginalName()).append("=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}").append(newLine(1));
@@ -484,12 +497,13 @@ public class GenCodeMojo extends AbstractMojo {
             }
 
             builder.append("package ").append(genPackage).append(";").append(newLine(2));
-            builder.append("import java.util.Collection;").append(newLine(1));
-            builder.append("import java.util.List;").append(newLine(2));
-            builder.append("import org.apache.ibatis.annotations.Mapper;").append(newLine(1));
-            builder.append("import org.apache.ibatis.annotations.Param;").append(newLine(2));
-            builder.append("import com.github.mybatisq.DeleteQuery;").append(newLine(1));
-            builder.append("import com.github.mybatisq.Query;").append(newLine(1));
+            builder.append("import ").append(Collection.class.getName()).append(";").append(newLine(1));
+            builder.append("import ").append(List.class.getName()).append(";").append(newLine(2));
+            builder.append("import ").append(Mapper.class.getName()).append(";").append(newLine(1));
+            builder.append("import ").append(Param.class.getName()).append(";").append(newLine(2));
+            builder.append("import ").append(DeleteQuery.class.getName()).append(";").append(newLine(1));
+            builder.append("import ").append(Query.class.getName()).append(";").append(newLine(1));
+            builder.append("import ").append(Update.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(entityPackage).append(".").append(className).append(";").append(newLine(1));
             builder.append(newLine(1)).append("/**");
             builder.append(newLine(1)).append(" * @author richterplus");
@@ -502,6 +516,7 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append(space(4)).append("int batchInsert(@Param(\"list\") Collection<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
             builder.append(space(4)).append("int update(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
             builder.append(space(4)).append("int batchUpdate(@Param(\"list\") Collection<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+            builder.append(space(4)).append("int updateByBuilder(Update<").append(className).append("Table> update);").append(newLine(2));
             builder.append(space(4)).append("int delete(@Param(\"").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("\") ").append(keyColumn.get().getDataType()).append(" ").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append(");").append(newLine(2));
             builder.append(space(4)).append("int batchDelete(@Param(\"").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("List\") Collection<").append(keyColumn.get().getDataType()).append("> ").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("List);").append(newLine(2));
             builder.append(space(4)).append("int deleteByQuery(DeleteQuery<").append(className).append("Table> query);").append(newLine(2));

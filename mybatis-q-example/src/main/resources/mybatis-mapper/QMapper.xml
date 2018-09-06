@@ -59,6 +59,12 @@
             <if test="w.operator == 'notNull'">`${w.columnName}` is not null</if>
         </foreach>
     </sql>
+    <sql id="setter">
+        <foreach collection="setters" item="s" open="set " separator=",">
+            <if test="s.operator == 'eq'">`${s.columnName}`=#{s.value}</if>
+            <if test="s.operator == 'plus'">`${s.columnName}`=`${s.columnName}`+#{s.value}</if>
+        </foreach>
+    </sql>
     <sql id="orderBy">
         <foreach collection="orderBys" open="order by " separator="," item="o">
             `${tableAlias}`.`${o.columnName}` ${o.direction}
@@ -81,5 +87,9 @@
         <include refid="com.github.mybatisq.mapper.QMapper.where"/>
         <include refid="com.github.mybatisq.mapper.QMapper.orderBy"/>
         <include refid="com.github.mybatisq.mapper.QMapper.limit"/>
+    </sql>
+    <sql id="updateBuilder">
+        <include refid="com.github.mybatisq.mapper.QMapper.setter"/>
+        <include refid="com.github.mybatisq.mapper.QMapper.deleteWhere"/>
     </sql>
 </mapper>

@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.github.mybatisq.DeleteQuery;
 import com.github.mybatisq.Query;
+import com.github.mybatisq.Update;
 import com.github.mybatisq.entity.EmpDept;
 
 /**
@@ -27,6 +28,8 @@ public interface EmpDeptMapper {
     int update(EmpDept empDept);
 
     int batchUpdate(@Param("list") Collection<EmpDept> empDept);
+
+    int updateByBuilder(Update<EmpDeptTable> update);
 
     int delete(@Param("edId") Integer edId);
 

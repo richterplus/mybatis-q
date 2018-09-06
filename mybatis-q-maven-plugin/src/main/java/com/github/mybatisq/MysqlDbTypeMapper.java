@@ -1,8 +1,5 @@
 package com.github.mybatisq;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 /**
  * Mysql数据类型映射器
  * @author richterplus
