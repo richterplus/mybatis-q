@@ -2,9 +2,13 @@ package com.github.mybatisq.mapper;
 
 import com.github.mybatisq.Column;
 import com.github.mybatisq.Join;
+import com.github.mybatisq.DeleteQuery;
 import com.github.mybatisq.Query;
 import com.github.mybatisq.Table;
 
+/**
+ * @author richterplus
+ */
 public class EmpPostTable extends Table {
 
     private EmpPostTable() {
@@ -15,6 +19,10 @@ public class EmpPostTable extends Table {
 
     public Query<EmpPostTable> query() {
         return new Query<>(emp_post);
+    }
+
+    public DeleteQuery<EmpPostTable> deleteQuery() {
+        return new DeleteQuery<>(emp_post);
     }
 
     public <T extends Table> Join<EmpPostTable, T> inner(T table) {

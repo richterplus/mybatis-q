@@ -32,10 +32,11 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.12</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github</groupId>
@@ -46,6 +47,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.8</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -69,7 +76,7 @@
                     <dependency>
                         <groupId>mysql</groupId>
                         <artifactId>mysql-connector-java</artifactId>
-                        <version>8.0.11</version>
+                        <version>8.0.12</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -78,9 +85,9 @@
                     <mapperFolder>mybatis-mapper</mapperFolder>
                     <datasource>
                         <driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>
-                        <url>jdbc:mysql://127.0.0.1:3306/mybatisq?useSSL=false</url>
+                        <url>jdbc:mysql://127.0.0.1:3306/mybatis-q?useSSL=false&amp;serverTimezone=Asia/Shanghai&amp;allowPublicKeyRetrieval=true</url>
                         <username>root</username>
-                        <password>iamchenjie</password>
+                        <password>123456</password>
                     </datasource>
                 </configuration>
             </plugin>

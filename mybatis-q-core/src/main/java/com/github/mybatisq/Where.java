@@ -2,6 +2,7 @@ package com.github.mybatisq;
 
 /**
  * where项
+ * @author richterplus
  */
 public class Where {
 

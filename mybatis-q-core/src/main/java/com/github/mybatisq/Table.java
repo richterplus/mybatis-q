@@ -2,6 +2,7 @@ package com.github.mybatisq;
 
 /**
  * 表
+ * @author richterplus
  */
 public abstract class Table {
 

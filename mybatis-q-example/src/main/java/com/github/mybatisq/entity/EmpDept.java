@@ -1,7 +1,9 @@
 package com.github.mybatisq.entity;
 
+
 /**
  * 员工所在部门
+ * @author richterplus
  */
 public class EmpDept {
 

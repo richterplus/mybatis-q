@@ -2,6 +2,7 @@ package com.github.mybatisq;
 
 /**
  * 连接对象
+ * @author richterplus
  * @param <T1> 表1
  * @param <T2> 表2
  */

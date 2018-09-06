@@ -4,6 +4,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * 数据源
+ * @author richterplus
  */
 public class Datasource {
 

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 /**
  * 连接
+ * @author richterplus
  * @param <T1> 表1
  * @param <T2> 表2
  */

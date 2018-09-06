@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 /**
  * 查询
+ * @author richterplus
  * @param <T> 表类型
  */
 public class Query<T extends Table> {

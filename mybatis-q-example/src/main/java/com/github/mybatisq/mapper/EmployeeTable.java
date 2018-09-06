@@ -2,9 +2,13 @@ package com.github.mybatisq.mapper;
 
 import com.github.mybatisq.Column;
 import com.github.mybatisq.Join;
+import com.github.mybatisq.DeleteQuery;
 import com.github.mybatisq.Query;
 import com.github.mybatisq.Table;
 
+/**
+ * @author richterplus
+ */
 public class EmployeeTable extends Table {
 
     private EmployeeTable() {
@@ -15,6 +19,10 @@ public class EmployeeTable extends Table {
 
     public Query<EmployeeTable> query() {
         return new Query<>(employee);
+    }
+
+    public DeleteQuery<EmployeeTable> deleteQuery() {
+        return new DeleteQuery<>(employee);
     }
 
     public <T extends Table> Join<EmployeeTable, T> inner(T table) {
@@ -29,12 +37,12 @@ public class EmployeeTable extends Table {
     /**
      * 工号
      */
-    public Column<EmployeeTable, String> emp_no = new Column<>("emp_no");
+    public Column<EmployeeTable, java.lang.String> emp_no = new Column<>("emp_no");
 
     /**
      * 员工姓名
      */
-    public Column<EmployeeTable, String> emp_name = new Column<>("emp_name");
+    public Column<EmployeeTable, java.lang.String> emp_name = new Column<>("emp_name");
 
     /**
      * 是否全职

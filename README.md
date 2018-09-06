@@ -101,7 +101,7 @@ CREATE TABLE `emp_dept` (
   `emp_id` int(11) NOT NULL COMMENT '员工id',
   `dept_id` int(11) NOT NULL COMMENT '部门id',
   PRIMARY KEY (`ed_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='员工所在部门';
+) COMMENT='员工所在部门';
 
 CREATE TABLE `emp_post` (
   `ep_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',

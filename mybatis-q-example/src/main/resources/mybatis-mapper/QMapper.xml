@@ -10,6 +10,7 @@
             </foreach>
             <foreach collection="j.wheres" item="w" open="and " separator=" and ">
                 <if test="w.operator == 'eq'">`${j.tableAlias2}`.`${w.columnName}`=#{w.queryValue}</if>
+                <if test="w.operator == 'eqCol'">`${j.tableAlias2}`.`${w.columnName}`=`${j.tableAlias2}`.`${w.queryValue.name}`</if>
                 <if test="w.operator == 'gt'">`${j.tableAlias2}`.`${w.columnName}`&gt;#{w.queryValue}</if>
                 <if test="w.operator == 'ge'">`${j.tableAlias2}`.`${w.columnName}`&gt;=#{w.queryValue}</if>
                 <if test="w.operator == 'lt'">`${j.tableAlias2}`.`${w.columnName}`&lt;#{w.queryValue}</if>
@@ -27,6 +28,7 @@
     <sql id="where">
         <foreach collection="wheres" item="w" open="where " separator=" and ">
             <if test="w.operator == 'eq'">`${tableAlias}`.`${w.columnName}`=#{w.queryValue}</if>
+            <if test="w.operator == 'eqCol'">`${tableAlias}`.`${w.columnName}`=`${tableAlias}`.`${w.queryValue.name}`</if>
             <if test="w.operator == 'gt'">`${tableAlias}`.`${w.columnName}`&gt;#{w.queryValue}</if>
             <if test="w.operator == 'ge'">`${tableAlias}`.`${w.columnName}`&gt;=#{w.queryValue}</if>
             <if test="w.operator == 'lt'">`${tableAlias}`.`${w.columnName}`&lt;#{w.queryValue}</if>
@@ -38,6 +40,23 @@
             <if test="w.operator == 'contains'">`${tableAlias}`.`${w.columnName}` like concat('%',#{w.queryValue},'%')</if>
             <if test="w.operator == 'isNull'">`${tableAlias}`.`${w.columnName}` is null</if>
             <if test="w.operator == 'notNull'">`${tableAlias}`.`${w.columnName}` is not null</if>
+        </foreach>
+    </sql>
+    <sql id="deleteWhere">
+        <foreach collection="wheres" item="w" open="where " separator=" and ">
+            <if test="w.operator == 'eq'">`${w.columnName}`=#{w.queryValue}</if>
+            <if test="w.operator == 'eqCol'">`${w.columnName}`=`${w.queryValue.name}`</if>
+            <if test="w.operator == 'gt'">`${w.columnName}`&gt;#{w.queryValue}</if>
+            <if test="w.operator == 'ge'">`${w.columnName}`&gt;=#{w.queryValue}</if>
+            <if test="w.operator == 'lt'">`${w.columnName}`&lt;#{w.queryValue}</if>
+            <if test="w.operator == 'le'">`${w.columnName}`&lt;=#{w.queryValue}</if>
+            <if test="w.operator == 'between'">`${w.columnName}` between #{w.queryValue} and #{w.queryValue2}</if>
+            <if test="w.operator == 'in'">`${w.columnName}` in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
+            <if test="w.operator == 'notIn'">`${w.columnName}` not in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
+            <if test="w.operator == 'startWith'">`${w.columnName}` like concat(#{w.queryValue},'%')</if>
+            <if test="w.operator == 'contains'">`${w.columnName}` like concat('%',#{w.queryValue},'%')</if>
+            <if test="w.operator == 'isNull'">`${w.columnName}` is null</if>
+            <if test="w.operator == 'notNull'">`${w.columnName}` is not null</if>
         </foreach>
     </sql>
     <sql id="orderBy">

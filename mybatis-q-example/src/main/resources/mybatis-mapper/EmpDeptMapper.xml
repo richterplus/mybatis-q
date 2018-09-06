@@ -8,7 +8,7 @@
     </resultMap>
 
     <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
-        select count(0) <include refid="com.github.mybatisq.mapper.QMapper.countFrom"/>
+        select count(*) <include refid="com.github.mybatisq.mapper.QMapper.countFrom"/>
     </select>
 
     <select id="select" parameterType="com.github.mybatisq.Query" resultMap="empDept">
@@ -28,19 +28,12 @@
         </trim>
     </insert>
 
-    <insert id="batchInsert" useGeneratedKeys="true">
-        <foreach collection="entityList" item="item" separator=";">
-            <trim prefix="insert `emp_dept` (" suffix=")" suffixOverrides=",">
-                <if test="item.edId != null">`ed_id`,</if>
-                <if test="item.empId != null">`emp_id`,</if>
-                <if test="item.deptId != null">`dept_id`,</if>
-            </trim>
-            <trim prefix="values (" suffix=")" suffixOverrides=",">
-                <if test="item.edId != null">#{item.edId},</if>
-                <if test="item.empId != null">#{item.empId},</if>
-                <if test="item.deptId != null">#{item.deptId},</if>
-            </trim>
-        </foreach>
+    <insert id="batchInsert" useGeneratedKeys="true" keyProperty="edId">
+        <trim prefix="insert `emp_dept` (`emp_id`,`dept_id`) values ">
+            <foreach collection="list" item="item" separator=",">
+                (#{item.empId},#{item.deptId})
+            </foreach>
+        </trim>
     </insert>
 
     <update id="update" parameterType="com.github.mybatisq.entity.EmpDept">
@@ -51,23 +44,22 @@
     </update>
 
     <update id="batchUpdate">
-        <foreach collection="entityList" item="item" separator=";">
-            <trim prefix="update `emp_dept` set" suffix="where `ed_id`=#{item.edId}" suffixOverrides=",">
-                <if test="item.empId != null">`emp_id`=#{item.empId},</if>
-                <if test="item.deptId != null">`dept_id`=#{item.deptId},</if>
-            </trim>
-        </foreach>
-    </update>
-
-    <update id="batchUpdateByCase">
         <trim prefix="update `emp_dept` set" suffixOverrides=",">
-            <foreach collection="entityList" item="item" open="`emp_id`=case `ed_id` " close=" end," separator=" ">when #{item.edId} then #{empId}</foreach>
-            <foreach collection="entityList" item="item" open="`dept_id`=case `ed_id` " close=" end," separator=" ">when #{item.edId} then #{deptId}</foreach>
+            <foreach collection="list" item="item" open="`emp_id`=case `ed_id` " close=" end," separator=" ">when #{item.edId} then #{item.empId}</foreach>
+            <foreach collection="list" item="item" open="`dept_id`=case `ed_id` " close=" end," separator=" ">when #{item.edId} then #{item.deptId}</foreach>
         </trim>
-        <foreach collection="entityList" item="item" open="where `ed_id` in (" close=")" separator=",">#{item.edId}</foreach>
+        <foreach collection="list" item="item" open="where `ed_id` in (" close=")" separator=",">#{item.edId}</foreach>
     </update>
 
     <delete id="delete">
         delete from `emp_dept` where ed_id=#{edId}
+    </delete>
+
+    <delete id="batchDelete">
+        <trim prefix="delete from `emp_dept` where `ed_id` in (" suffix=")"><foreach collection="edIdList" separator="," item="item">#{item}</foreach></trim>
+    </delete>
+
+    <delete id="deleteByQuery" parameterType="com.github.mybatisq.DeleteQuery">
+        <trim prefix="delete from `emp_dept`"><include refid="com.github.mybatisq.mapper.QMapper.deleteWhere"/></trim>
     </delete>
 </mapper>

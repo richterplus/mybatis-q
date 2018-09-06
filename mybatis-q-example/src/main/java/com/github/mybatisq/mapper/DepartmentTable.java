@@ -2,9 +2,13 @@ package com.github.mybatisq.mapper;
 
 import com.github.mybatisq.Column;
 import com.github.mybatisq.Join;
+import com.github.mybatisq.DeleteQuery;
 import com.github.mybatisq.Query;
 import com.github.mybatisq.Table;
 
+/**
+ * @author richterplus
+ */
 public class DepartmentTable extends Table {
 
     private DepartmentTable() {
@@ -15,6 +19,10 @@ public class DepartmentTable extends Table {
 
     public Query<DepartmentTable> query() {
         return new Query<>(department);
+    }
+
+    public DeleteQuery<DepartmentTable> deleteQuery() {
+        return new DeleteQuery<>(department);
     }
 
     public <T extends Table> Join<DepartmentTable, T> inner(T table) {
@@ -29,12 +37,12 @@ public class DepartmentTable extends Table {
     /**
      * 部门编号
      */
-    public Column<DepartmentTable, String> dept_no = new Column<>("dept_no");
+    public Column<DepartmentTable, java.lang.String> dept_no = new Column<>("dept_no");
 
     /**
      * 部门名称
      */
-    public Column<DepartmentTable, String> dept_name = new Column<>("dept_name");
+    public Column<DepartmentTable, java.lang.String> dept_name = new Column<>("dept_name");
 
     /**
      * 创建日期

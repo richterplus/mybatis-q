@@ -1,7 +1,9 @@
 package com.github.mybatisq.entity;
 
+
 /**
  * 岗位
+ * @author richterplus
  */
 public class Position {
 
@@ -13,12 +15,12 @@ public class Position {
     /**
      * 岗位编号
      */
-    private String postNo;
+    private java.lang.String postNo;
 
     /**
      * 岗位名称
      */
-    private String postName;
+    private java.lang.String postName;
 
     /**
      * 获取岗位id
@@ -40,7 +42,7 @@ public class Position {
      * 获取岗位编号
      * @return 岗位编号
      */
-    public String getPostNo() {
+    public java.lang.String getPostNo() {
         return postNo;
     }
 
@@ -48,7 +50,7 @@ public class Position {
      * 设置岗位编号
      * @param postNo 岗位编号
      */
-    public void setPostNo(String postNo) {
+    public void setPostNo(java.lang.String postNo) {
         this.postNo = postNo;
     }
 
@@ -56,7 +58,7 @@ public class Position {
      * 获取岗位名称
      * @return 岗位名称
      */
-    public String getPostName() {
+    public java.lang.String getPostName() {
         return postName;
     }
 
@@ -64,7 +66,7 @@ public class Position {
      * 设置岗位名称
      * @param postName 岗位名称
      */
-    public void setPostName(String postName) {
+    public void setPostName(java.lang.String postName) {
         this.postName = postName;
     }
 

@@ -1,7 +1,9 @@
 package com.github.mybatisq.entity;
 
+
 /**
  * 部门
+ * @author richterplus
  */
 public class Department {
 
@@ -13,12 +15,12 @@ public class Department {
     /**
      * 部门编号
      */
-    private String deptNo;
+    private java.lang.String deptNo;
 
     /**
      * 部门名称
      */
-    private String deptName;
+    private java.lang.String deptName;
 
     /**
      * 创建日期
@@ -45,7 +47,7 @@ public class Department {
      * 获取部门编号
      * @return 部门编号
      */
-    public String getDeptNo() {
+    public java.lang.String getDeptNo() {
         return deptNo;
     }
 
@@ -53,7 +55,7 @@ public class Department {
      * 设置部门编号
      * @param deptNo 部门编号
      */
-    public void setDeptNo(String deptNo) {
+    public void setDeptNo(java.lang.String deptNo) {
         this.deptNo = deptNo;
     }
 
@@ -61,7 +63,7 @@ public class Department {
      * 获取部门名称
      * @return 部门名称
      */
-    public String getDeptName() {
+    public java.lang.String getDeptName() {
         return deptName;
     }
 
@@ -69,7 +71,7 @@ public class Department {
      * 设置部门名称
      * @param deptName 部门名称
      */
-    public void setDeptName(String deptName) {
+    public void setDeptName(java.lang.String deptName) {
         this.deptName = deptName;
     }
 

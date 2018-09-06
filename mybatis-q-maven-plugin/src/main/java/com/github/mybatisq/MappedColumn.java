@@ -2,8 +2,9 @@ package com.github.mybatisq;
 
 /**
  * 列
+ * @author richterplus
  */
-public class Column {
+public class MappedColumn {
     
     /**
      * 原始列名

@@ -4,6 +4,7 @@ import java.util.Collection;
 
 /**
  * 列
+ * @author richterplus
  * @param <T> 表类型
  * @param <D> 数据类型
  */

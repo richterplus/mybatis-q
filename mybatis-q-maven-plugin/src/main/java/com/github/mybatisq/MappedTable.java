@@ -4,8 +4,9 @@ import java.util.List;
 
 /**
  * 表
+ * @author richterplus
  */
-public class Table {
+public class MappedTable {
     
     /**
      * 原始表名
@@ -25,7 +26,7 @@ public class Table {
     /**
      * 列
      */
-    private List<Column> columns;
+    private List<MappedColumn> columns;
 
     /**
      * 获取原始表名
@@ -79,7 +80,7 @@ public class Table {
      * 获取列
      * @return 列
      */
-    public List<Column> getColumns() {
+    public List<MappedColumn> getMappedColumns() {
         return columns;
     }
 
@@ -87,7 +88,7 @@ public class Table {
      * 设置列
      * @param columns 列
      */
-    public void setColumns(List<Column> columns) {
+    public void setMappedColumns(List<MappedColumn> columns) {
         this.columns = columns;
     }
 }

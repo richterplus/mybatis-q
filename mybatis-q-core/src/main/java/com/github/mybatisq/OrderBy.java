@@ -2,6 +2,7 @@ package com.github.mybatisq;
 
 /**
  * 排序项
+ * @author richterplus
  */
 public class OrderBy {
 

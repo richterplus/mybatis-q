@@ -1,7 +1,9 @@
 package com.github.mybatisq.entity;
 
+
 /**
  * 人员
+ * @author richterplus
  */
 public class Employee {
 
@@ -13,12 +15,12 @@ public class Employee {
     /**
      * 工号
      */
-    private String empNo;
+    private java.lang.String empNo;
 
     /**
      * 员工姓名
      */
-    private String empName;
+    private java.lang.String empName;
 
     /**
      * 是否全职
@@ -80,7 +82,7 @@ public class Employee {
      * 获取工号
      * @return 工号
      */
-    public String getEmpNo() {
+    public java.lang.String getEmpNo() {
         return empNo;
     }
 
@@ -88,7 +90,7 @@ public class Employee {
      * 设置工号
      * @param empNo 工号
      */
-    public void setEmpNo(String empNo) {
+    public void setEmpNo(java.lang.String empNo) {
         this.empNo = empNo;
     }
 
@@ -96,7 +98,7 @@ public class Employee {
      * 获取员工姓名
      * @return 员工姓名
      */
-    public String getEmpName() {
+    public java.lang.String getEmpName() {
         return empName;
     }
 
@@ -104,7 +106,7 @@ public class Employee {
      * 设置员工姓名
      * @param empName 员工姓名
      */
-    public void setEmpName(String empName) {
+    public void setEmpName(java.lang.String empName) {
         this.empName = empName;
     }
 
