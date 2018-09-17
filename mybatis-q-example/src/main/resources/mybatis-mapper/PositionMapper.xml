@@ -36,6 +36,13 @@
         </trim>
     </insert>
 
+    <insert id="insertBySelect" parameterType="com.github.mybatisq.Insert">
+        insert `${table.name}`
+        <foreach collection="insertColumns" item="c" open="(" close=")" separator=",">${c.name}</foreach>
+        select <foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.`${col.name}`</foreach>
+        <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    </insert>
+
     <update id="update" parameterType="com.github.mybatisq.entity.Position">
         <trim prefix="update `position` set" suffix="where `post_id`=#{postId}" suffixOverrides=",">
             <if test="postNo != null">`post_no`=#{postNo},</if>

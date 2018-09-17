@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.github.mybatisq.DeleteQuery;
 import com.github.mybatisq.Query;
+import com.github.mybatisq.Insert;
 import com.github.mybatisq.Update;
 import com.github.mybatisq.entity.Position;
 
@@ -24,6 +25,8 @@ public interface PositionMapper {
     int insert(Position position);
 
     int batchInsert(@Param("list") Collection<Position> position);
+
+    int insertBySelect(Insert<PositionTable> insert);
 
     int update(Position position);
 

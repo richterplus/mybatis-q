@@ -79,7 +79,7 @@ public class Query<T extends Table> {
      * @param innerJoin 连接
      * @return 查询
      */
-    public Query<T> join(Join<? extends Table, ? extends Table> innerJoin) {
+    public Query<T> join(Join innerJoin) {
         if (innerJoin != null) {
             joins.add(innerJoin);
         }
@@ -133,7 +133,7 @@ public class Query<T extends Table> {
     /**
      * 连接
      */
-    private final Collection<Join<? extends Table, ? extends Table>> joins;
+    private final Collection<Join> joins;
 
     /**
      * 选择列集合
@@ -176,7 +176,7 @@ public class Query<T extends Table> {
      * 获取连接
      * @return 连接
      */
-    public Collection<Join<? extends Table, ? extends Table>> getJoins() {
+    public Collection<Join> getJoins() {
         return joins;
     }
 
@@ -186,5 +186,19 @@ public class Query<T extends Table> {
      */
     public Collection<Column<T, ?>> getSelectedColumns() {
         return selectedColumns;
+    }
+
+    /**
+     * @return 跳过数据的行数
+     */
+    public Integer getSkip() {
+        return skip;
+    }
+
+    /**
+     * @return 限制数据的行数
+     */
+    public Integer getLimit() {
+        return limit;
     }
 }

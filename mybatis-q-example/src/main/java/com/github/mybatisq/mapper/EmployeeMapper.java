@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.github.mybatisq.DeleteQuery;
 import com.github.mybatisq.Query;
+import com.github.mybatisq.Insert;
 import com.github.mybatisq.Update;
 import com.github.mybatisq.entity.Employee;
 
@@ -24,6 +25,8 @@ public interface EmployeeMapper {
     int insert(Employee employee);
 
     int batchInsert(@Param("list") Collection<Employee> employee);
+
+    int insertBySelect(Insert<EmployeeTable> insert);
 
     int update(Employee employee);
 

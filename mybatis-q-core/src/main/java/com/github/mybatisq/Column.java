@@ -49,6 +49,9 @@ public class Column<T extends Table, D> {
 
     /**
      * = 另一列的值
+     *
+     * @param column 另一个列
+     * @return 查询项
      */
     public Where eqAnother(Column<T, D> column) {
         return new Where(name, "eqCol", column);
@@ -161,6 +164,9 @@ public class Column<T extends Table, D> {
 
     /**
      * not in (...)
+     *
+     * @param values 查询值
+     * @return 查询项
      */
     public Where notIn(Collection<D> values) {
         return new Where(name, "notIn", values);

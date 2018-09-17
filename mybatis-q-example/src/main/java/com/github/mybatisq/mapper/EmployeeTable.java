@@ -4,6 +4,7 @@ import com.github.mybatisq.Column;
 import com.github.mybatisq.Join;
 import com.github.mybatisq.DeleteQuery;
 import com.github.mybatisq.Query;
+import com.github.mybatisq.Insert;
 import com.github.mybatisq.Update;
 import com.github.mybatisq.Table;
 
@@ -20,6 +21,10 @@ public class EmployeeTable extends Table {
 
     public Query<EmployeeTable> query() {
         return new Query<>(employee);
+    }
+
+    public Insert<EmployeeTable> insert() {
+        return new Insert<>(employee);
     }
 
     public Update<EmployeeTable> update() {

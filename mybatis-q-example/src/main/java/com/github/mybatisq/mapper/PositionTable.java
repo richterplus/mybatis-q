@@ -4,6 +4,7 @@ import com.github.mybatisq.Column;
 import com.github.mybatisq.Join;
 import com.github.mybatisq.DeleteQuery;
 import com.github.mybatisq.Query;
+import com.github.mybatisq.Insert;
 import com.github.mybatisq.Update;
 import com.github.mybatisq.Table;
 
@@ -20,6 +21,10 @@ public class PositionTable extends Table {
 
     public Query<PositionTable> query() {
         return new Query<>(position);
+    }
+
+    public Insert<PositionTable> insert() {
+        return new Insert<>(position);
     }
 
     public Update<PositionTable> update() {

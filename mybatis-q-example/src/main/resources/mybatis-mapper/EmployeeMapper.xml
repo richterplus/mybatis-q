@@ -60,6 +60,13 @@
         </trim>
     </insert>
 
+    <insert id="insertBySelect" parameterType="com.github.mybatisq.Insert">
+        insert `${table.name}`
+        <foreach collection="insertColumns" item="c" open="(" close=")" separator=",">${c.name}</foreach>
+        select <foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.`${col.name}`</foreach>
+        <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    </insert>
+
     <update id="update" parameterType="com.github.mybatisq.entity.Employee">
         <trim prefix="update `employee` set" suffix="where `emp_id`=#{empId}" suffixOverrides=",">
             <if test="empNo != null">`emp_no`=#{empNo},</if>

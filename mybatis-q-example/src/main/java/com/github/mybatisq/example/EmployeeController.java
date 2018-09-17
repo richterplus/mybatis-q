@@ -66,12 +66,22 @@ public class EmployeeController {
         employeeMapper.batchDelete(employees.stream().map(Employee::getEmpId).collect(Collectors.toList()));
         */
 
+        /*
         employeeMapper.updateByBuilder(
                 emp.update()
                         .set(emp.create_date, new Date())
                         .set(emp.serial_no, NumberOps.plus(10L))
                         .where(emp.emp_id.gt(10))
                         .where(emp.serial_no.gt(0L)));
+        */
+
+        employeeMapper.insertBySelect(
+                emp.insert()
+                        .columns(emp.emp_no, emp.emp_name, emp.is_fulltime, emp.gender, emp.create_date)
+                        .select(emp.query()
+                                .columns(emp.emp_no, emp.emp_name, emp.is_fulltime, emp.gender, emp.create_date)
+                                .where(emp.emp_id.gt(0))
+                                .limit(10)));
 
         return "ok";
     }

@@ -30,6 +30,7 @@ public class NumberOps<T extends Number> {
     /**
      * 加number
      * @param number 数值
+     * @param <D> 数值类型
      * @return 数值操作
      */
     public static <D extends Number> NumberOps<D> plus(D number) {

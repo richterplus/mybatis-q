@@ -264,7 +264,7 @@ public class GenCodeMojo extends AbstractMojo {
         getLog().info(path);
 
         input = getClassLoader().getResourceAsStream("mybatisq/QMapper.java.q");
-        content = IOUtils.toString(input, encoding).replace(Query.class.getPackage().getName(), genPackage);
+        content = IOUtils.toString(input, encoding).replace(Query.class.getPackage().getName() + ";", genPackage + ";");
         input.close();
         path = genPath + "/QMapper.java";
         FileUtils.write(new File(path), content, encoding);
@@ -329,6 +329,7 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append("import ").append(Join.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(DeleteQuery.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(Query.class.getName()).append(";").append(newLine(1));
+            builder.append("import ").append(Insert.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(Update.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(Table.class.getName()).append(";").append(newLine(1));
             String className = t.getMappedName() + "Table";
@@ -344,6 +345,9 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append(newLine(1)).append(space(4)).append("public static final ").append(className).append(" ").append(tableName).append(" = new ").append(className).append("();").append(newLine(1));
             builder.append(newLine(1)).append(space(4)).append("public Query<").append(className).append("> query() {").append(newLine(1));
             builder.append(space(8)).append("return new Query<>(").append(tableName).append(");").append(newLine(1));
+            builder.append(space(4)).append("}").append(newLine(1));
+            builder.append(newLine(1)).append(space(4)).append("public Insert<").append(className).append("> insert() {").append(newLine(1));
+            builder.append(space(8)).append("return new Insert<>(").append(tableName).append(");").append(newLine(1));
             builder.append(space(4)).append("}").append(newLine(1));
             builder.append(newLine(1)).append(space(4)).append("public Update<").append(className).append("> update() {").append(newLine(1));
             builder.append(space(8)).append("return new Update<>(").append(tableName).append(");").append(newLine(1));
@@ -401,6 +405,7 @@ public class GenCodeMojo extends AbstractMojo {
             });
 
             builder.append(space(4)).append("</resultMap>").append(newLine(2));
+
             builder.append(space(4)).append("<select id=\"count\" parameterType=\"com.github.mybatisq.Query\" resultType=\"java.lang.Integer\">").append(newLine(1));
             builder.append(space(8)).append("select count(*) <include refid=\"").append(genPackage).append(".QMapper.countFrom\"/>").append(newLine(1));
             builder.append(space(4)).append("</select>").append(newLine(1));
@@ -435,6 +440,13 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append(space(12)).append("</foreach>").append(newLine(1));
             builder.append(space(8)).append("</trim>").append(newLine(1));
             builder.append(space(4)).append("</insert>").append(newLine(1));
+
+            builder.append(newLine(1)).append(space(4)).append("<insert id=\"insertBySelect\" parameterType=\"com.github.mybatisq.Insert\">");
+            builder.append(newLine(1)).append(space(8)).append("insert `${table.name}`");
+            builder.append(newLine(1)).append(space(8)).append("<foreach collection=\"insertColumns\" item=\"c\" open=\"(\" close=\")\" separator=\",\">${c.name}</foreach>");
+            builder.append(newLine(1)).append(space(8)).append("select <foreach collection=\"selectedColumns\" item=\"col\" separator=\",\">${tableAlias}.`${col.name}`</foreach>");
+            builder.append(newLine(1)).append(space(8)).append("<include refid=\"").append(genPackage).append(".QMapper.selectFrom\"/>");
+            builder.append(newLine(1)).append(space(4)).append("</insert>").append(newLine(1));
 
             Optional<MappedColumn> keyColumn = t.getMappedColumns().stream().filter(MappedColumn::getIsPrimaryKey).findFirst();
             if (!keyColumn.isPresent()) {
@@ -503,6 +515,7 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append("import ").append(Param.class.getName()).append(";").append(newLine(2));
             builder.append("import ").append(DeleteQuery.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(Query.class.getName()).append(";").append(newLine(1));
+            builder.append("import ").append(Insert.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(Update.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(entityPackage).append(".").append(className).append(";").append(newLine(1));
             builder.append(newLine(1)).append("/**");
@@ -514,6 +527,7 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append(space(4)).append("List<").append(className).append("> select(Query<").append(className).append("Table> query);").append(newLine(2));
             builder.append(space(4)).append("int insert(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
             builder.append(space(4)).append("int batchInsert(@Param(\"list\") Collection<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+            builder.append(space(4)).append("int insertBySelect(Insert<").append(className).append("Table> insert);").append(newLine(2));
             builder.append(space(4)).append("int update(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
             builder.append(space(4)).append("int batchUpdate(@Param(\"list\") Collection<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
             builder.append(space(4)).append("int updateByBuilder(Update<").append(className).append("Table> update);").append(newLine(2));

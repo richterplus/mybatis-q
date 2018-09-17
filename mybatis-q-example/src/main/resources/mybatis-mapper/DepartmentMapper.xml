@@ -39,6 +39,13 @@
         </trim>
     </insert>
 
+    <insert id="insertBySelect" parameterType="com.github.mybatisq.Insert">
+        insert `${table.name}`
+        <foreach collection="insertColumns" item="c" open="(" close=")" separator=",">${c.name}</foreach>
+        select <foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.`${col.name}`</foreach>
+        <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    </insert>
+
     <update id="update" parameterType="com.github.mybatisq.entity.Department">
         <trim prefix="update `department` set" suffix="where `dept_id`=#{deptId}" suffixOverrides=",">
             <if test="deptNo != null">`dept_no`=#{deptNo},</if>
