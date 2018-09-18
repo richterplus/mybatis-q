@@ -75,6 +75,28 @@ public class EmployeeController {
                         .where(emp.serial_no.gt(0L)));
         */
 
+        List<Employee> employees = employeeMapper.select(emp.query().where(emp.emp_id.eq(1)));
+
+        employees = employeeMapper.select(
+                emp.query()
+                        .columns(emp.emp_id, emp.emp_name, emp.is_fulltime)
+                        .where(emp.height.ge(150f))
+                        .where(emp.weight.le(80d))
+                        .orderBy(emp.emp_no.asc())
+                        .orderBy(emp.create_date.desc())
+                        .limit(10).skip(20));
+
+        EmpDeptTable ed = EmpDeptTable.emp_dept;
+        DepartmentTable dept = DepartmentTable.department;
+
+        employees = employeeMapper.select(
+                emp.query()
+                        .join(emp.inner(ed)
+                                .on(emp.emp_id.eq(ed.emp_id))
+                                .and(ed.dept_id.gt(0)))
+                        .join(ed.inner(dept).on(ed.dept_id.eq(dept.dept_id)))
+                        .where(emp.emp_id.gt(0)));
+
         employeeMapper.insertBySelect(
                 emp.insert()
                         .columns(emp.emp_no, emp.emp_name, emp.is_fulltime, emp.gender, emp.create_date)
@@ -82,6 +104,8 @@ public class EmployeeController {
                                 .columns(emp.emp_no, emp.emp_name, emp.is_fulltime, emp.gender, emp.create_date)
                                 .where(emp.emp_id.gt(0))
                                 .limit(10)));
+
+        employeeMapper.deleteByQuery(emp.deleteQuery().where(emp.gender.eq(1)).where(emp.emp_no.startWith("A")));
 
         return "ok";
     }

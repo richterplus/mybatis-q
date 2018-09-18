@@ -132,6 +132,19 @@ public class Column<T extends Table, D> {
     }
 
     /**
+     * like '%value'
+     *
+     * @param value 查询值
+     * @return 查询项
+     */
+    public Where endWith(D value) {
+        if (!(value instanceof String)) {
+            throw new RuntimeException("LIKE is not supported on non-string values.");
+        }
+        return new Where(name, "endWith", value);
+    }
+
+    /**
      * like '%value%'
      *
      * @param value 查询值
