@@ -23,6 +23,7 @@ mybatis code generator / mybatis代码生成工具
     - [使用UpdateBuilder](#updateBuilder)
   - [DELETE删除](#delete)
     - [自定义WHERE条件](#deleteByQuery)
+- [添加自定义的xml映射](#custom)
 
 <a name="briefing"></a>
 
@@ -62,7 +63,7 @@ mybatis-q是一个基于maven插件方式工作的针对[mybatis](https://github
 <plugin>
     <groupId>com.github</groupId>
     <artifactId>mybatis-q-maven-plugin</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>mysql</groupId>
@@ -359,6 +360,72 @@ public class SampleUsage {
 }
 ```
 
+<a name="custom"></a>
+
+## 添加自定义的xml映射
+
+> 有时候，我们需要实现诸如select count(*), gender from employee where emp_id > 100 group by gender之类的mybatis-q模板无法支持的语句，此时需要自己编写xml映射文件
+
+我们以上面的例子为例，来编写一个自定义xml映射文件，首先，我们添加一个GenderCount类，用来映射数据
+
+```java
+package com.github.mybatisq.entity;
+
+public class GenderCount {
+    private Integer count; public Integer getCount() { return count; } public void setCount(Integer count) { this.count = count; }
+    private Integer gender; public Integer getGender() { return gender; } public void setGender(Integer gender) { this.gender = gender; }
+}
+```
+
+接下来编写xml映射文件
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.mybatisq.mapper.custom.EmployeeMapper2">
+    <resultMap id="genderCount" type="com.github.mybatisq.entity.GenderCount">
+        <result column="count" property="count"/>
+        <result column="gender" property="gender"/>
+    </resultMap>
+    <select id="countGroupByGender" parameterType="com.github.mybatisq.Query" resultMap="genderCount">
+        select count(*) as count, gender <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/> group by gender
+    </select>
+</mapper>
+```
+
+添加Mapper接口
+
+```java
+package com.github.mybatisq.mapper.custom;
+import java.util.List;
+import com.github.mybatisq.entity.GenderCount;
+import com.github.mybatisq.mapper.EmployeeTable;
+@Mapper
+public interface EmployeeMapper2 {
+    List<GenderCount> countGroupByGender(Query<EmployeeTable> query);
+}
+```
+
+使用Mapper接口
+
+```java
+//该示例用来展示如何使用自定义的Mapper
+public class SampleUsage {
+    
+    @Autowired
+    private EmployeeMapper2 employeeMapper2;
+    
+    //展示一些典型的示例
+    public void showcase() {
+        EmployeeTable emp = EmployeeTable.employee; //为employee表设置一个简短的别名，方便后面代码的撰写
+        
+        //delete from employee where gender = 1 and emp_no like 'A%'
+        List<GenderCount> genderCounts = employeeMapper2.countByGender(emp.query().where(emp.emp_id.gt(100)));
+    }
+}
+```
+
+> 在这里例子中，配合`com.github.mybatisq.Query`对象，我们复用了`QMapper.xml`预先定义好的`selectFrom`语句，仅仅需要自己编辑新的ResultMap和创建一个新的entity类，就能够复用大部分的模板查询功能
 
 
 
