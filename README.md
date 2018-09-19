@@ -1,5 +1,5 @@
-# mybatis-q 1.0-SNAPSHOT
-mybatis code generator / mybatis代码生成工具
+# Mybatis-Q 
+当前版本号：1.0-SNAPSHOT
 
 #### 目录
 
