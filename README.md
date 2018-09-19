@@ -151,8 +151,8 @@ CREATE TABLE `emp_post` (
 
 ### SELECT查询
 
-> mybatis-q为每张表生成`{表名}Mapper`接口，使用该接口中的方法执行SELECT查询
-> 在上面的示例中，工具已经生成了`EmployeeMapper`等5个Mapper
+> mybatis-q为每张表生成`{表名}Mapper`接口，使用该接口中的方法执行SELECT查询，
+> 在上面的示例中，工具已经生成了`EmployeeMapper`等5个Mapper，
 > 生成的代码模板是`类型安全`的，如果类型不匹配，则编译器会报错
 
 ```java
@@ -234,7 +234,7 @@ Query.join | 表连接 | .join(a.inner(b).on(a.id.eq(b.id)).and(b.quantity.ge(10
 
 #### 使用SELECT COUNT
 
-> 由于SELECT COUNT的功能与SELECT基本一致，直接使用Mapper.count方法即可，使用方式与Mapper.select完全相同，并且可以复用Query查询对象
+> 由于SELECT COUNT的功能与SELECT基本一致，直接使用Mapper.count方法即可，使用方式与Mapper.select完全相同，并且可以复用Query查询对象。
 > 如果在Query中指定了limit、skip、orderBy，Mapper.count方法会自动忽略这些设置
 
 <a name="insert"></a>
@@ -443,7 +443,7 @@ public class SampleUsage {
 }
 ```
 
-> 在这里例子中，配合`com.github.mybatisq.Query`对象，我们复用了`QMapper.xml`预先定义好的`selectFrom`语句，仅仅需要自己编辑新的ResultMap和创建一个新的entity类，就能够复用大部分的模板查询功能
+> 在这里例子中，配合`com.github.mybatisq.Query`对象，我们复用了`QMapper.xml`预先定义好的`selectFrom`语句，仅仅需要自己编辑新的ResultMap和创建一个新的entity类，就能够复用大部分的模板查询功能。
 > 在创建自定义的xml映射文件时，建议翻看QMapper.xml映射文件的源代码，以便尽可能的复用已有的SQL语句，从而复用大部分的SQL构建能力
 
 
