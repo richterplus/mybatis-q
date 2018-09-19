@@ -426,7 +426,7 @@ public class SampleUsage {
 ```
 
 > 在这里例子中，配合`com.github.mybatisq.Query`对象，我们复用了`QMapper.xml`预先定义好的`selectFrom`语句，仅仅需要自己编辑新的ResultMap和创建一个新的entity类，就能够复用大部分的模板查询功能
-
+> 在创建自定义的xml映射文件时，建议翻看QMapper.xml映射文件的源代码，以便尽可能的复用已有的SQL语句，从而复用大部分的SQL构建能力
 
 
 
