@@ -419,7 +419,7 @@ public class SampleUsage {
     public void showcase() {
         EmployeeTable emp = EmployeeTable.employee; //为employee表设置一个简短的别名，方便后面代码的撰写
         
-        //delete from employee where gender = 1 and emp_no like 'A%'
+        //select count(*), gender from employee where emp_id > 100 group by gender
         List<GenderCount> genderCounts = employeeMapper2.countByGender(emp.query().where(emp.emp_id.gt(100)));
     }
 }
