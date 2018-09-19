@@ -397,7 +397,7 @@ public class EmployeeCountByDepartment {
         <result column="dept_name" property="departmentName"/>
     </resultMap>
     <select id="countGroupByDeptName" parameterType="com.github.mybatisq.Query" resultMap="employeeCountByDepartment">
-        select count(*) as count, dept_name <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/> group by gender
+        select count(*) as count, dept_name <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/> group by dept_name
     </select>
 </mapper>
 ```
