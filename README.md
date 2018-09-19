@@ -364,16 +364,25 @@ public class SampleUsage {
 
 ## 添加自定义的xml映射
 
-> 有时候，我们需要实现诸如select count(*), gender from employee where emp_id > 100 group by gender之类的mybatis-q模板无法支持的语句，此时需要自己编写xml映射文件
+> 有时候，我们需要实现诸如
+> select count(*), d.dept_name from employee e
+> inner join emp_dept ed on e.emp_id=d.emp_id
+> inner join department d on ed.dept_id=d.dept_id
+> where e.emp_id>100 group by d.dept_name
+> 之类的mybatis-q模板无法支持的语句，此时需要自己编写xml映射文件
 
-我们以上面的例子为例，来编写一个自定义xml映射文件，首先，我们添加一个GenderCount类，用来映射数据
+我们以上面的例子为例，来编写一个自定义xml映射文件，首先，我们添加一个EmployeeCountByDepartment类，用来映射数据
 
 ```java
 package com.github.mybatisq.entity;
 
-public class GenderCount {
-    private Integer count; public Integer getCount() { return count; } public void setCount(Integer count) { this.count = count; }
-    private Integer gender; public Integer getGender() { return gender; } public void setGender(Integer gender) { this.gender = gender; }
+public class EmployeeCountByDepartment {
+    private Integer count;
+    public Integer getCount() { return count; }
+    public void setCount(Integer count) { this.count = count; }
+    private String departmentName;
+    public String getDepartmentName() { return departmentName; }
+    public void setDepartmentName(String departmentName) { this.departmentName = departmentName; }
 }
 ```
 
@@ -383,12 +392,12 @@ public class GenderCount {
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.github.mybatisq.mapper.custom.EmployeeMapper2">
-    <resultMap id="genderCount" type="com.github.mybatisq.entity.GenderCount">
+    <resultMap id="employeeCountByDepartment" type="com.github.mybatisq.entity.EmployeeCountByDepartment">
         <result column="count" property="count"/>
-        <result column="gender" property="gender"/>
+        <result column="dept_name" property="departmentName"/>
     </resultMap>
-    <select id="countGroupByGender" parameterType="com.github.mybatisq.Query" resultMap="genderCount">
-        select count(*) as count, gender <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/> group by gender
+    <select id="countGroupByDeptName" parameterType="com.github.mybatisq.Query" resultMap="employeeCountByDepartment">
+        select count(*) as count, dept_name <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/> group by gender
     </select>
 </mapper>
 ```
@@ -398,11 +407,11 @@ public class GenderCount {
 ```java
 package com.github.mybatisq.mapper.custom;
 import java.util.List;
-import com.github.mybatisq.entity.GenderCount;
+import com.github.mybatisq.entity.EmployeeCountByDepartment;
 import com.github.mybatisq.mapper.EmployeeTable;
 @Mapper
 public interface EmployeeMapper2 {
-    List<GenderCount> countGroupByGender(Query<EmployeeTable> query);
+    List<EmployeeCountByDepartment> countGroupByDeptName(Query<EmployeeTable> query);
 }
 ```
 
@@ -417,10 +426,19 @@ public class SampleUsage {
     
     //展示一些典型的示例
     public void showcase() {
-        EmployeeTable emp = EmployeeTable.employee; //为employee表设置一个简短的别名，方便后面代码的撰写
+        EmployeeTable e = EmployeeTable.employee;
+        EmpDeptTable ed = EmpDeptTable.empDept;
+        DepartmentTable d = DepartmentTable.department;
         
-        //select count(*), gender from employee where emp_id > 100 group by gender
-        List<GenderCount> genderCounts = employeeMapper2.countByGender(emp.query().where(emp.emp_id.gt(100)));
+        // select count(*), d.dept_name from employee e
+        // inner join emp_dept ed on e.emp_id=d.emp_id
+        // inner join department d on ed.dept_id=d.dept_id
+        // where e.emp_id>100 group by d.dept_name
+        List<EmployeeCountByDepartment> counts = employeeMapper2.countGroupByDeptName(
+                emp.query()
+                        .join(e.inner(ed).on(e.emp_id.eq(ed.emp_id)))
+                        .join(ed.inner(d).on(ed.dept_id.eq(d.dept_id)))
+                        .where(emp.emp_id.gt(100)));
     }
 }
 ```
