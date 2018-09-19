@@ -51,7 +51,7 @@ mybatis-q是一个基于maven插件方式工作的针对[mybatis](https://github
 <dependency>
     <groupId>com.github</groupId>
     <artifactId>mybatis-q-core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
 
