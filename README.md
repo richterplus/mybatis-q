@@ -216,7 +216,7 @@ Column.startWith | 字符串以指定的字符开始 | a.name.startWith("王") |
 Column.endWith | 字符串以指定的字符结尾 | a.name.endWith("国") | a.name like '%国'
 Column.contains | 字符串包含指定的字符 | a.name.contains("中") | a.name like '%中%'
 Column.isNull | 为空 | a.alias.isNull() | a.alias is null
-Column.notNull | 不为空
+Column.notNull | 不为空 | a.alias.notNull() | a.alias is not null
 Column.asc | 升序排序 | a.create_date.asc() | order by a.create_date asc
 Column.desc | 降序排序 | a.create_date.desc() | order by a.create_date desc
 Query.limit和Query.skip | 分页 | .limit(10).skip(20) | limit 20, 10
