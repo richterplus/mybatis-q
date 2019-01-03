@@ -47,12 +47,12 @@ public class DepartmentTable extends Table {
     /**
      * 部门编号
      */
-    public Column<DepartmentTable, java.lang.String> dept_no = new Column<>("dept_no");
+    public Column<DepartmentTable, String> dept_no = new Column<>("dept_no");
 
     /**
      * 部门名称
      */
-    public Column<DepartmentTable, java.lang.String> dept_name = new Column<>("dept_name");
+    public Column<DepartmentTable, String> dept_name = new Column<>("dept_name");
 
     /**
      * 创建日期

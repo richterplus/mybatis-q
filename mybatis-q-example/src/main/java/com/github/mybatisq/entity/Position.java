@@ -15,12 +15,12 @@ public class Position {
     /**
      * 岗位编号
      */
-    private java.lang.String postNo;
+    private String postNo;
 
     /**
      * 岗位名称
      */
-    private java.lang.String postName;
+    private String postName;
 
     /**
      * 获取岗位id
@@ -42,7 +42,7 @@ public class Position {
      * 获取岗位编号
      * @return 岗位编号
      */
-    public java.lang.String getPostNo() {
+    public String getPostNo() {
         return postNo;
     }
 
@@ -50,7 +50,7 @@ public class Position {
      * 设置岗位编号
      * @param postNo 岗位编号
      */
-    public void setPostNo(java.lang.String postNo) {
+    public void setPostNo(String postNo) {
         this.postNo = postNo;
     }
 
@@ -58,7 +58,7 @@ public class Position {
      * 获取岗位名称
      * @return 岗位名称
      */
-    public java.lang.String getPostName() {
+    public String getPostName() {
         return postName;
     }
 
@@ -66,7 +66,7 @@ public class Position {
      * 设置岗位名称
      * @param postName 岗位名称
      */
-    public void setPostName(java.lang.String postName) {
+    public void setPostName(String postName) {
         this.postName = postName;
     }
 

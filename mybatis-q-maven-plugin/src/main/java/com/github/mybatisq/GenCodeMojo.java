@@ -1,20 +1,5 @@
 package com.github.mybatisq;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +13,16 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author richterplus
@@ -80,7 +75,7 @@ public class GenCodeMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject project;
 
-    private DbTypeMapper dbTypeMapper;
+    private DatabaseProcessor databaseProcessor;
 
     private ClassLoader classLoader;
 
@@ -144,10 +139,6 @@ public class GenCodeMojo extends AbstractMojo {
         return alias;
     }
 
-    private String generateMappedName(String originalName) {
-        return Stream.of(originalName.split("[_-]")).filter(s -> s.length() > 0).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1)).reduce((a, b) -> a + b).orElse("");
-    }
-
     private String lowerCaseFirstChar(String str) {
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
@@ -181,78 +172,24 @@ public class GenCodeMojo extends AbstractMojo {
                 .map(c -> {
                     MappedTable table = new MappedTable();
                     table.setOriginalName(c.getSimpleName());
-                    table.setMappedName(generateMappedName(table.getOriginalName()));
+                    table.setMappedName(NamingUtils.generateMappedName(table.getOriginalName()));
                     table.setMappedColumns(Stream.of(c.getDeclaredFields()).map(f -> {
                         MappedColumn column = new MappedColumn();
                         column.setOriginalName(f.getName());
-                        column.setMappedName(generateMappedName(column.getOriginalName()));
+                        column.setMappedName(NamingUtils.generateMappedName(column.getOriginalName()));
                         column.setDataType(f.getType().getName().replace("java.lang.", ""));
+                        column.setIsPrimaryKey(f.isAnnotationPresent(Key.class));
+                        column.setIsAutoIncrement(f.isAnnotationPresent(AutoIncrement.class));
                         return column;
                     }).collect(Collectors.toList()));
                     return table;
                 }).collect(Collectors.toList());
 
-        tables.forEach(t -> {
-            t.getMappedColumns().get(0).setIsPrimaryKey(true);
-            t.getMappedColumns().get(0).setIsAutoIncrement(true);
-        });
         return tables;
     }
 
-    private List<MappedTable> getTablesForDatabaseFist() throws MojoFailureException {
-        List<MappedTable> tables;
-        Connection conn;
-        Statement statement;
-        ResultSet resultSet;
-        try {
-            Class.forName(datasource.getDriverClassName());
-            conn = DriverManager.getConnection(datasource.getUrl(), datasource.getUsername(), datasource.getPassword());
-            statement = conn.createStatement();
-            resultSet = statement.executeQuery("show table status");
-            tables = new ArrayList<>();
-            while (resultSet.next()) {
-                MappedTable table = new MappedTable();
-                table.setOriginalName(resultSet.getString("Name"));
-                table.setMappedName(generateMappedName(table.getOriginalName()));
-                table.setComment(resultSet.getString("Comment"));
-                table.setMappedColumns(new ArrayList<>());
-                tables.add(table);
-            }
-            resultSet.close();
-            statement.close();
-
-            if (includeEntityNames != null && includeEntityNames.size() > 0) {
-                tables = tables.stream().filter(t -> includeEntityNames.contains(t.getMappedName())).collect(Collectors.toList());
-            }
-
-            if (excludeEntityNames != null && excludeEntityNames.size() > 0) {
-                tables = tables.stream().filter(t -> !excludeEntityNames.contains(t.getMappedName())).collect(Collectors.toList());
-            }
-
-            for (MappedTable table : tables) {
-                statement = conn.createStatement();
-                resultSet = statement.executeQuery("show full columns from `" + table.getOriginalName() + "`");
-                while (resultSet.next()) {
-                    MappedColumn column = new MappedColumn();
-                    column.setComment(resultSet.getString("Comment"));
-                    column.setDataType(dbTypeMapper.mapDbTypeToJavaType(resultSet.getString("Type")));
-                    column.setIsAutoIncrement(resultSet.getString("Extra").contains("auto_increment"));
-                    column.setIsPrimaryKey(resultSet.getString("Key").contains("PRI"));
-                    column.setOriginalName(resultSet.getString("Field"));
-                    column.setMappedName(generateMappedName(column.getOriginalName()));
-                    table.getMappedColumns().add(column);
-                }
-                resultSet.close();
-                statement.close();
-            }
-
-            resultSet.close();
-            statement.close();
-            conn.close();
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new MojoFailureException("Failed to initialize datasource driver class", e);
-        }
-        return tables;
+    private List<MappedTable> getTablesForDatabaseFist() {
+        return databaseProcessor.getMappedTables(includeEntityNames, excludeEntityNames);
     }
 
     private void copyQMapperFiles() throws MojoExecutionException, IOException {
@@ -553,7 +490,7 @@ public class GenCodeMojo extends AbstractMojo {
         getLog().info("entity package: " + entityPackage);
         getLog().info("gen package: " + genPackage);
 
-        dbTypeMapper = new MysqlDbTypeMapper();
+        databaseProcessor = DatabaseProcessorFactory.createMapperFromDatasource(datasource);
 
         includeEntityNames = Stream.of(StringUtils.defaultIfEmpty(includeEntities, "").split(",")).map(String::trim).filter(e -> e.length() > 0).collect(Collectors.toSet());
         excludeEntityNames = Stream.of(StringUtils.defaultIfEmpty(excludeEntities, "").split(",")).map(String::trim).filter(e -> e.length() > 0).collect(Collectors.toSet());

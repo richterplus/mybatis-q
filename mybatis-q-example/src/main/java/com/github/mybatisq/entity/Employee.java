@@ -15,12 +15,12 @@ public class Employee {
     /**
      * 工号
      */
-    private java.lang.String empNo;
+    private String empNo;
 
     /**
      * 员工姓名
      */
-    private java.lang.String empName;
+    private String empName;
 
     /**
      * 是否全职
@@ -82,7 +82,7 @@ public class Employee {
      * 获取工号
      * @return 工号
      */
-    public java.lang.String getEmpNo() {
+    public String getEmpNo() {
         return empNo;
     }
 
@@ -90,7 +90,7 @@ public class Employee {
      * 设置工号
      * @param empNo 工号
      */
-    public void setEmpNo(java.lang.String empNo) {
+    public void setEmpNo(String empNo) {
         this.empNo = empNo;
     }
 
@@ -98,7 +98,7 @@ public class Employee {
      * 获取员工姓名
      * @return 员工姓名
      */
-    public java.lang.String getEmpName() {
+    public String getEmpName() {
         return empName;
     }
 
@@ -106,7 +106,7 @@ public class Employee {
      * 设置员工姓名
      * @param empName 员工姓名
      */
-    public void setEmpName(java.lang.String empName) {
+    public void setEmpName(String empName) {
         this.empName = empName;
     }
 

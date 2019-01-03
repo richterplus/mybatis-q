@@ -47,10 +47,10 @@ public class PositionTable extends Table {
     /**
      * 岗位编号
      */
-    public Column<PositionTable, java.lang.String> post_no = new Column<>("post_no");
+    public Column<PositionTable, String> post_no = new Column<>("post_no");
 
     /**
      * 岗位名称
      */
-    public Column<PositionTable, java.lang.String> post_name = new Column<>("post_name");
+    public Column<PositionTable, String> post_name = new Column<>("post_name");
 }

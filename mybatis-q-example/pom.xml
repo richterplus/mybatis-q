@@ -30,9 +30,9 @@
             <version>1.3.2</version>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.12</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -74,9 +74,9 @@
                 <version>1.0-SNAPSHOT</version>
                 <dependencies>
                     <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>8.0.12</version>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>42.2.5</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -84,9 +84,9 @@
                     <genPackage>com.github.mybatisq.mapper</genPackage>
                     <mapperFolder>mybatis-mapper</mapperFolder>
                     <datasource>
-                        <driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>
-                        <url>jdbc:mysql://127.0.0.1:3306/mybatis-q?useSSL=false&amp;serverTimezone=Asia/Shanghai&amp;allowPublicKeyRetrieval=true</url>
-                        <username>root</username>
+                        <driverClassName>org.postgresql.Driver</driverClassName>
+                        <url>jdbc:postgresql://127.0.0.1/mybatis-q</url>
+                        <username>mybatisq</username>
                         <password>123456</password>
                     </datasource>
                 </configuration>

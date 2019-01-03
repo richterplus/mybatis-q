@@ -19,6 +19,7 @@
                 <if test="w.operator == 'in'">`${j.tableAlias2}`.`${w.columnName}` in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
                 <if test="w.operator == 'notIn'">`${j.tableAlias2}`.`${w.columnName}` not in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
                 <if test="w.operator == 'startWith'">`${j.tableAlias2}`.`${w.columnName}` like concat(#{w.queryValue},'%')</if>
+                <if test="w.operator == 'endWith'">`${j.tableAlias2}`.`${w.columnName}` like concat('%',#{w.queryValue})</if>
                 <if test="w.operator == 'contains'">`${j.tableAlias2}`.`${w.columnName}` like concat('%',#{w.queryValue},'%')</if>
                 <if test="w.operator == 'isNull'">`${j.tableAlias2}`.`${w.columnName}` is null</if>
                 <if test="w.operator == 'notNull'">`${j.tableAlias2}`.`${w.columnName}` is not null</if>
@@ -37,6 +38,7 @@
             <if test="w.operator == 'in'">`${tableAlias}`.`${w.columnName}` in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
             <if test="w.operator == 'notIn'">`${tableAlias}`.`${w.columnName}` not in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
             <if test="w.operator == 'startWith'">`${tableAlias}`.`${w.columnName}` like concat(#{w.queryValue},'%')</if>
+            <if test="w.operator == 'endWith'">`${tableAlias}`.`${w.columnName}` like concat('%',#{w.queryValue})</if>
             <if test="w.operator == 'contains'">`${tableAlias}`.`${w.columnName}` like concat('%',#{w.queryValue},'%')</if>
             <if test="w.operator == 'isNull'">`${tableAlias}`.`${w.columnName}` is null</if>
             <if test="w.operator == 'notNull'">`${tableAlias}`.`${w.columnName}` is not null</if>
@@ -54,6 +56,7 @@
             <if test="w.operator == 'in'">`${w.columnName}` in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
             <if test="w.operator == 'notIn'">`${w.columnName}` not in<foreach collection="w.queryValue" item="val" open=" (" close=")" separator=",">#{val}</foreach></if>
             <if test="w.operator == 'startWith'">`${w.columnName}` like concat(#{w.queryValue},'%')</if>
+            <if test="w.operator == 'endWith'">`${w.columnName}` like concat('%',#{w.queryValue})</if>
             <if test="w.operator == 'contains'">`${w.columnName}` like concat('%',#{w.queryValue},'%')</if>
             <if test="w.operator == 'isNull'">`${w.columnName}` is null</if>
             <if test="w.operator == 'notNull'">`${w.columnName}` is not null</if>

@@ -106,20 +106,22 @@ mvn mybatis-q:gencode
 > 本文档中的举例都基于以下数据库示例
 
 ```sql
-CREATE TABLE `department` (
-  `dept_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '部门id',
-  `dept_no` varchar(45) NOT NULL COMMENT '部门编号',
-  `dept_name` varchar(45) NOT NULL COMMENT '部门名称',
-  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  PRIMARY KEY (`dept_id`)
+-- mysql
+CREATE TABLE department (
+  dept_id int NOT NULL AUTO_INCREMENT COMMENT '部门id',
+  dept_no varchar(45) NOT NULL COMMENT '部门编号',
+  dept_name varchar(45) NOT NULL COMMENT '部门名称',
+  create_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
+  PRIMARY KEY (dept_id)
 ) COMMENT='部门';
+
 CREATE TABLE `employee` (
-  `emp_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '员工id',
+  `emp_id` int NOT NULL AUTO_INCREMENT COMMENT '员工id',
   `emp_no` varchar(45) NOT NULL COMMENT '工号',
   `emp_name` varchar(45) NOT NULL COMMENT '员工姓名',
-  `is_fulltime` bit(1) NOT NULL COMMENT '是否全职',
+  `is_fulltime` bit NOT NULL COMMENT '是否全职',
   `serial_no` bigint(20) DEFAULT NULL COMMENT '序列号',
-  `gender` int(11) NOT NULL COMMENT '性别（1:男，2:女）',
+  `gender` int NOT NULL COMMENT '性别（1:男，2:女）',
   `birthday` datetime DEFAULT NULL COMMENT '出生年月',
   `height` float DEFAULT NULL COMMENT '身高',
   `weight` double DEFAULT NULL COMMENT '体重',
@@ -127,24 +129,104 @@ CREATE TABLE `employee` (
   `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
   PRIMARY KEY (`emp_id`)
 ) COMMENT='人员';
+
 CREATE TABLE `position` (
-  `post_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '岗位id',
+  `post_id` int NOT NULL AUTO_INCREMENT COMMENT '岗位id',
   `post_no` varchar(45) NOT NULL COMMENT '岗位编号',
   `post_name` varchar(45) NOT NULL COMMENT '岗位名称',
   PRIMARY KEY (`post_id`)
 ) COMMENT='岗位';
+
 CREATE TABLE `emp_dept` (
-  `ed_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `emp_id` int(11) NOT NULL COMMENT '员工id',
-  `dept_id` int(11) NOT NULL COMMENT '部门id',
+  `ed_id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `emp_id` int NOT NULL COMMENT '员工id',
+  `dept_id` int NOT NULL COMMENT '部门id',
   PRIMARY KEY (`ed_id`)
 ) COMMENT='员工所在部门';
+
 CREATE TABLE `emp_post` (
-  `ep_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `emp_id` int(11) NOT NULL COMMENT '员工id',
-  `post_id` int(11) NOT NULL COMMENT '职位id',
+  `ep_id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `emp_id` int NOT NULL COMMENT '员工id',
+  `post_id` int NOT NULL COMMENT '职位id',
   PRIMARY KEY (`ep_id`)
 ) COMMENT='员工职位';
+```
+
+```sql
+-- postgresql
+CREATE TABLE department (
+  dept_id serial NOT NULL,
+  dept_no varchar(45) NOT NULL,
+  dept_name varchar(45) NOT NULL,
+  create_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (dept_id)
+);
+COMMENT ON TABLE department IS '部门';
+COMMENT ON COLUMN department.dept_id IS '部门id';
+COMMENT ON COLUMN department.dept_no IS '部门编号';
+COMMENT ON COLUMN department.dept_name IS '部门名称';
+COMMENT ON COLUMN department.create_date IS '创建日期';
+
+CREATE TABLE employee (
+  emp_id serial NOT NULL,
+  emp_no varchar(45) NOT NULL,
+  emp_name varchar(45) NOT NULL,
+  is_fulltime boolean NOT NULL,
+  serial_no bigint DEFAULT NULL,
+  gender int NOT NULL,
+  birthday timestamp DEFAULT NULL,
+  height real DEFAULT NULL,
+  weight double precision DEFAULT NULL,
+  salary decimal(10,2) DEFAULT NULL,
+  create_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (emp_id)
+);
+COMMENT ON TABLE employee IS '人员';
+COMMENT ON COLUMN employee.emp_id IS '员工id';
+COMMENT ON COLUMN employee.emp_no IS '工号';
+COMMENT ON COLUMN employee.emp_name IS '员工姓名';
+COMMENT ON COLUMN employee.is_fulltime IS '是否全职';
+COMMENT ON COLUMN employee.serial_no IS '序列号';
+COMMENT ON COLUMN employee.gender IS '性别（1:男，2:女）';
+COMMENT ON COLUMN employee.birthday IS '出生年月';
+COMMENT ON COLUMN employee.height IS '身高';
+COMMENT ON COLUMN employee.weight IS '体重';
+COMMENT ON COLUMN employee.salary IS '薪资';
+COMMENT ON COLUMN employee.create_date IS '创建日期';
+
+CREATE TABLE position (
+  post_id serial NOT NULL,
+  post_no varchar(45) NOT NULL,
+  post_name varchar(45) NOT NULL,
+  PRIMARY KEY (post_id)
+);
+COMMENT ON TABLE position IS '岗位';
+COMMENT ON COLUMN position.post_id IS '岗位id';
+COMMENT ON COLUMN position.post_no IS '岗位编号';
+COMMENT ON COLUMN position.post_name IS '岗位名称';
+
+CREATE TABLE emp_dept (
+  ed_id serial NOT NULL,
+  emp_id int NOT NULL,
+  dept_id int NOT NULL,
+  PRIMARY KEY (ed_id)
+);
+COMMENT ON TABLE emp_dept IS '员工所在部门';
+COMMENT ON COLUMN emp_dept.ed_id IS 'id';
+COMMENT ON COLUMN emp_dept.emp_id IS '员工id';
+COMMENT ON COLUMN emp_dept.dept_id IS '部门id';
+
+CREATE TABLE emp_post (
+  ep_id serial NOT NULL,
+  emp_id int NOT NULL,
+  post_id int NOT NULL,
+  PRIMARY KEY (ep_id)
+);
+COMMENT ON TABLE emp_post IS '员工职位';
+COMMENT ON COLUMN emp_post.ep_id IS 'id';
+COMMENT ON COLUMN emp_post.emp_id IS '员工id';
+COMMENT ON COLUMN emp_post.post_id IS '职位id';
+
 ```
 
 <a name="select"></a>

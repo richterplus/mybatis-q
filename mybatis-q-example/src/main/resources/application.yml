@@ -1,8 +1,8 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/mybatis-q?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
-    username: root
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1/mybatis-q
+    username: mybatisq
     password: 123456
   jackson:
     serialization:

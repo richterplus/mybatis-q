@@ -47,12 +47,12 @@ public class EmployeeTable extends Table {
     /**
      * 工号
      */
-    public Column<EmployeeTable, java.lang.String> emp_no = new Column<>("emp_no");
+    public Column<EmployeeTable, String> emp_no = new Column<>("emp_no");
 
     /**
      * 员工姓名
      */
-    public Column<EmployeeTable, java.lang.String> emp_name = new Column<>("emp_name");
+    public Column<EmployeeTable, String> emp_name = new Column<>("emp_name");
 
     /**
      * 是否全职

@@ -154,7 +154,7 @@ public class Column<T extends Table, D> {
         if (!(value instanceof String)) {
             throw new RuntimeException("LIKE is not supported on non-string values.");
         }
-        return new Where(name, "contains", value);
+        return new Where(name, "contains", "%" + value + "%");
     }
 
     /**

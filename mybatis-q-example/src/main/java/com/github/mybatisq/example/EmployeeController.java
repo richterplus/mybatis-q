@@ -1,6 +1,5 @@
 package com.github.mybatisq.example;
 
-import com.github.mybatisq.NumberOps;
 import com.github.mybatisq.entity.Employee;
 import com.github.mybatisq.mapper.*;
 import org.apache.commons.lang3.time.DateUtils;
