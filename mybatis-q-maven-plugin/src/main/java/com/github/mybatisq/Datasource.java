@@ -8,6 +8,10 @@ import org.apache.maven.plugins.annotations.Parameter;
  */
 public class Datasource {
 
+    public static final String MYSQL = "mysql";
+
+    public static final String POSTGRESQL = "postgresql";
+
     /**
      * 数据源驱动类
      */

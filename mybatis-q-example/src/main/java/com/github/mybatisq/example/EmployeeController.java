@@ -127,7 +127,7 @@ public class EmployeeController {
                 .join(e.inner(ed).on(e.emp_id.eq(ed.emp_id)))
                 .join(e.inner(ep).on(e.emp_id.eq(ep.emp_id)))
                 .join(ed.inner(d).on(ed.dept_id.eq(d.dept_id)).and(d.dept_id.ge(0)))
-                .where(e.birthday.gt(new Date())));
+                .where(e.birthday.lt(new Date())).limit(10).skip(0));
     }
 
     @PostMapping
