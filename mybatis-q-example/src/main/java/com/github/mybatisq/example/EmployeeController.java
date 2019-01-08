@@ -18,6 +18,8 @@ import java.util.List;
 @RequestMapping("emp")
 public class EmployeeController {
 
+    /*
+
     @Autowired
     private EmployeeMapper employeeMapper;
 
@@ -45,34 +47,6 @@ public class EmployeeController {
     @GetMapping("test")
     public String test() throws ParseException {
         EmployeeTable emp = EmployeeTable.employee;
-
-        /*
-        List<Employee> employees = new ArrayList<>(10);
-
-        for (int i = 0; i < 10; i++) {
-            Employee employee = new Employee();
-            fillEmployeeData(employee, i);
-            employees.add(employee);
-        }
-        employeeMapper.batchInsert(employees);
-
-        for (int i = 0; i < employees.size(); i++) {
-            fillEmployeeData(employees.get(i), i + 1000);
-        }
-        employeeMapper.batchUpdate(employees);
-
-        employeeMapper.deleteByQuery(emp.deleteQuery().where(emp.emp_id.gt(0)));
-        employeeMapper.batchDelete(employees.stream().map(Employee::getEmpId).collect(Collectors.toList()));
-        */
-
-        /*
-        employeeMapper.updateByBuilder(
-                emp.update()
-                        .set(emp.create_date, new Date())
-                        .set(emp.serial_no, NumberOps.plus(10L))
-                        .where(emp.emp_id.gt(10))
-                        .where(emp.serial_no.gt(0L)));
-        */
 
         List<Employee> employees = employeeMapper.select(emp.query().where(emp.emp_id.eq(1)));
 
@@ -151,4 +125,5 @@ public class EmployeeController {
         employeeMapper.insert(employee);
         return employee;
     }
+    */
 }

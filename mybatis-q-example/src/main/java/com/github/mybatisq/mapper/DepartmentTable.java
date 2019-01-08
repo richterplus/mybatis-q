@@ -14,48 +14,36 @@ import com.github.mybatisq.Table;
 public class DepartmentTable extends Table {
 
     private DepartmentTable() {
-        super("department", "d");
+        super("Department", "D");
     }
 
-    public static final DepartmentTable department = new DepartmentTable();
+    public static final DepartmentTable Department = new DepartmentTable();
 
     public Query<DepartmentTable> query() {
-        return new Query<>(department);
+        return new Query<>(Department);
     }
 
     public Insert<DepartmentTable> insert() {
-        return new Insert<>(department);
+        return new Insert<>(Department);
     }
 
     public Update<DepartmentTable> update() {
-        return new Update<>(department);
+        return new Update<>(Department);
     }
 
     public DeleteQuery<DepartmentTable> deleteQuery() {
-        return new DeleteQuery<>(department);
+        return new DeleteQuery<>(Department);
     }
 
     public <T extends Table> Join<DepartmentTable, T> inner(T table) {
         return new Join<>("inner", this, table);
     }
 
-    /**
-     * 部门id
-     */
-    public Column<DepartmentTable, Integer> dept_id = new Column<>("dept_id");
+    public Column<DepartmentTable, Integer> deptId = new Column<>("deptId");
 
-    /**
-     * 部门编号
-     */
-    public Column<DepartmentTable, String> dept_no = new Column<>("dept_no");
+    public Column<DepartmentTable, String> deptNo = new Column<>("deptNo");
 
-    /**
-     * 部门名称
-     */
-    public Column<DepartmentTable, String> dept_name = new Column<>("dept_name");
+    public Column<DepartmentTable, String> deptName = new Column<>("deptName");
 
-    /**
-     * 创建日期
-     */
-    public Column<DepartmentTable, java.util.Date> create_date = new Column<>("create_date");
+    public Column<DepartmentTable, java.util.Date> createDate = new Column<>("createDate");
 }

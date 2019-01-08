@@ -2,17 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.github.mybatisq.mapper.EmployeeMapper">
     <resultMap type="com.github.mybatisq.entity.Employee" id="employee">
-        <id column="emp_id" property="empId"/>
-        <result column="emp_no" property="empNo"/>
-        <result column="emp_name" property="empName"/>
-        <result column="is_fulltime" property="isFulltime"/>
-        <result column="serial_no" property="serialNo"/>
+        <id column="empId" property="empId"/>
+        <result column="empNo" property="empNo"/>
+        <result column="empName" property="empName"/>
+        <result column="isFulltime" property="isFulltime"/>
+        <result column="serialNo" property="serialNo"/>
         <result column="gender" property="gender"/>
         <result column="birthday" property="birthday"/>
         <result column="height" property="height"/>
         <result column="weight" property="weight"/>
         <result column="salary" property="salary"/>
-        <result column="create_date" property="createDate"/>
+        <result column="createDate" property="createDate"/>
     </resultMap>
 
     <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
@@ -20,22 +20,22 @@
     </select>
 
     <select id="select" parameterType="com.github.mybatisq.Query" resultMap="employee">
-        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.emp_id,${tableAlias}.emp_no,${tableAlias}.emp_name,${tableAlias}.is_fulltime,${tableAlias}.serial_no,${tableAlias}.gender,${tableAlias}.birthday,${tableAlias}.height,${tableAlias}.weight,${tableAlias}.salary,${tableAlias}.create_date</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.empId,${tableAlias}.empNo,${tableAlias}.empName,${tableAlias}.isFulltime,${tableAlias}.serialNo,${tableAlias}.gender,${tableAlias}.birthday,${tableAlias}.height,${tableAlias}.weight,${tableAlias}.salary,${tableAlias}.createDate</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
     </select>
 
     <insert id="insert" parameterType="com.github.mybatisq.entity.Employee" useGeneratedKeys="true" keyProperty="empId">
-        <trim prefix="insert into employee (" suffix=")" suffixOverrides=",">
-            <if test="empId != null">emp_id,</if>
-            <if test="empNo != null">emp_no,</if>
-            <if test="empName != null">emp_name,</if>
-            <if test="isFulltime != null">is_fulltime,</if>
-            <if test="serialNo != null">serial_no,</if>
+        <trim prefix="insert into Employee (" suffix=")" suffixOverrides=",">
+            <if test="empId != null">empId,</if>
+            <if test="empNo != null">empNo,</if>
+            <if test="empName != null">empName,</if>
+            <if test="isFulltime != null">isFulltime,</if>
+            <if test="serialNo != null">serialNo,</if>
             <if test="gender != null">gender,</if>
             <if test="birthday != null">birthday,</if>
             <if test="height != null">height,</if>
             <if test="weight != null">weight,</if>
             <if test="salary != null">salary,</if>
-            <if test="createDate != null">create_date,</if>
+            <if test="createDate != null">createDate,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="empId != null">#{empId},</if>
@@ -53,7 +53,7 @@
     </insert>
 
     <insert id="batchInsert" useGeneratedKeys="true" keyProperty="empId">
-        <trim prefix="insert into employee (emp_no,emp_name,is_fulltime,serial_no,gender,birthday,height,weight,salary,create_date) values ">
+        <trim prefix="insert into Employee (empNo,empName,isFulltime,serialNo,gender,birthday,height,weight,salary,createDate) values ">
             <foreach collection="list" item="item" separator=",">
                 (#{item.empNo},#{item.empName},#{item.isFulltime},#{item.serialNo},#{item.gender},#{item.birthday},#{item.height},#{item.weight},#{item.salary},#{item.createDate})
             </foreach>
@@ -68,51 +68,51 @@
     </insert>
 
     <update id="update" parameterType="com.github.mybatisq.entity.Employee">
-        <trim prefix="update employee set" suffix="where emp_id=#{empId}" suffixOverrides=",">
-            <if test="empNo != null">emp_no=#{empNo},</if>
-            <if test="empName != null">emp_name=#{empName},</if>
-            <if test="isFulltime != null">is_fulltime=#{isFulltime},</if>
-            <if test="serialNo != null">serial_no=#{serialNo},</if>
+        <trim prefix="update Employee set" suffix="where empId=#{empId}" suffixOverrides=",">
+            <if test="empNo != null">empNo=#{empNo},</if>
+            <if test="empName != null">empName=#{empName},</if>
+            <if test="isFulltime != null">isFulltime=#{isFulltime},</if>
+            <if test="serialNo != null">serialNo=#{serialNo},</if>
             <if test="gender != null">gender=#{gender},</if>
             <if test="birthday != null">birthday=#{birthday},</if>
             <if test="height != null">height=#{height},</if>
             <if test="weight != null">weight=#{weight},</if>
             <if test="salary != null">salary=#{salary},</if>
-            <if test="createDate != null">create_date=#{createDate},</if>
+            <if test="createDate != null">createDate=#{createDate},</if>
         </trim>
     </update>
 
     <update id="batchUpdate">
-        <trim prefix="update employee set" suffixOverrides=",">
-            <foreach collection="entityList" item="item" open="emp_no=case emp_id " close=" end," separator=" ">when #{item.empId} then #{empNo}</foreach>
-            <foreach collection="entityList" item="item" open="emp_name=case emp_id " close=" end," separator=" ">when #{item.empId} then #{empName}</foreach>
-            <foreach collection="entityList" item="item" open="is_fulltime=case emp_id " close=" end," separator=" ">when #{item.empId} then #{isFulltime}</foreach>
-            <foreach collection="entityList" item="item" open="serial_no=case emp_id " close=" end," separator=" ">when #{item.empId} then #{serialNo}</foreach>
-            <foreach collection="entityList" item="item" open="gender=case emp_id " close=" end," separator=" ">when #{item.empId} then #{gender}</foreach>
-            <foreach collection="entityList" item="item" open="birthday=case emp_id " close=" end," separator=" ">when #{item.empId} then #{birthday}</foreach>
-            <foreach collection="entityList" item="item" open="height=case emp_id " close=" end," separator=" ">when #{item.empId} then #{height}</foreach>
-            <foreach collection="entityList" item="item" open="weight=case emp_id " close=" end," separator=" ">when #{item.empId} then #{weight}</foreach>
-            <foreach collection="entityList" item="item" open="salary=case emp_id " close=" end," separator=" ">when #{item.empId} then #{salary}</foreach>
-            <foreach collection="entityList" item="item" open="create_date=case emp_id " close=" end," separator=" ">when #{item.empId} then #{createDate}</foreach>
+        <trim prefix="update Employee set" suffixOverrides=",">
+            <foreach collection="entityList" item="item" open="empNo=case empId " close=" end," separator=" ">when #{item.empId} then #{empNo}</foreach>
+            <foreach collection="entityList" item="item" open="empName=case empId " close=" end," separator=" ">when #{item.empId} then #{empName}</foreach>
+            <foreach collection="entityList" item="item" open="isFulltime=case empId " close=" end," separator=" ">when #{item.empId} then #{isFulltime}</foreach>
+            <foreach collection="entityList" item="item" open="serialNo=case empId " close=" end," separator=" ">when #{item.empId} then #{serialNo}</foreach>
+            <foreach collection="entityList" item="item" open="gender=case empId " close=" end," separator=" ">when #{item.empId} then #{gender}</foreach>
+            <foreach collection="entityList" item="item" open="birthday=case empId " close=" end," separator=" ">when #{item.empId} then #{birthday}</foreach>
+            <foreach collection="entityList" item="item" open="height=case empId " close=" end," separator=" ">when #{item.empId} then #{height}</foreach>
+            <foreach collection="entityList" item="item" open="weight=case empId " close=" end," separator=" ">when #{item.empId} then #{weight}</foreach>
+            <foreach collection="entityList" item="item" open="salary=case empId " close=" end," separator=" ">when #{item.empId} then #{salary}</foreach>
+            <foreach collection="entityList" item="item" open="createDate=case empId " close=" end," separator=" ">when #{item.empId} then #{createDate}</foreach>
         </trim>
-        <foreach collection="list" item="item" open="where emp_id in (" close=")" separator=",">#{item.empId}</foreach>
+        <foreach collection="list" item="item" open="where empId in (" close=")" separator=",">#{item.empId}</foreach>
     </update>
 
     <update id="updateByBuilder" parameterType="com.github.mybatisq.Update">
-        <trim prefix="update employee">
+        <trim prefix="update Employee">
             <include refid="com.github.mybatisq.mapper.QMapper.updateBuilder"/>
         </trim>
     </update>
 
     <delete id="delete">
-        delete from employee where emp_id=#{empId}
+        delete from Employee where empId=#{empId}
     </delete>
 
     <delete id="batchDelete">
-        <trim prefix="delete from employee where emp_id in (" suffix=")"><foreach collection="empIdList" separator="," item="item">#{item}</foreach></trim>
+        <trim prefix="delete from Employee where empId in (" suffix=")"><foreach collection="empIdList" separator="," item="item">#{item}</foreach></trim>
     </delete>
 
     <delete id="deleteByQuery" parameterType="com.github.mybatisq.DeleteQuery">
-        <trim prefix="delete from employee"><include refid="com.github.mybatisq.mapper.QMapper.deleteWhere"/></trim>
+        <trim prefix="delete from Employee"><include refid="com.github.mybatisq.mapper.QMapper.deleteWhere"/></trim>
     </delete>
 </mapper>

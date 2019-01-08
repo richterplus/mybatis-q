@@ -146,6 +146,7 @@ public class GenCodeMojo extends AbstractMojo {
 
     private List<MappedTable> getTablesForCodeFirst() throws MojoExecutionException, MojoFailureException {
         List<MappedTable> tables;
+
         URL classPath = getClassLoader().getResource(entityPackage.replace(".", "/"));
         if (classPath == null) {
             getLog().error("Failed to load classpath");
@@ -155,6 +156,14 @@ public class GenCodeMojo extends AbstractMojo {
         File file = new File(classPath.getFile());
         if (file.listFiles() == null) {
             return null;
+        }
+
+        try {
+            getClassLoader().loadClass(Key.class.getName());
+            getClassLoader().loadClass(AutoIncrement.class.getName());
+            getClassLoader().loadClass(Ignore.class.getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
 
         List<Class<?>> classes = new ArrayList<>();

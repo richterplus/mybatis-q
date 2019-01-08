@@ -1,5 +1,7 @@
 package com.github.mybatisq.entity;
 
+import com.github.mybatisq.AutoIncrement;
+import com.github.mybatisq.Key;
 
 /**
  * 部门
@@ -10,6 +12,8 @@ public class Department {
     /**
      * 部门id
      */
+    @Key
+    @AutoIncrement
     private Integer deptId;
 
     /**

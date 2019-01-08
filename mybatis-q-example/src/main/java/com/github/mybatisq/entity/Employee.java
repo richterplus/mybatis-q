@@ -1,6 +1,9 @@
 package com.github.mybatisq.entity;
 
 
+import com.github.mybatisq.AutoIncrement;
+import com.github.mybatisq.Key;
+
 /**
  * 人员
  * @author richterplus
@@ -10,6 +13,8 @@ public class Employee {
     /**
      * 员工id
      */
+    @Key
+    @AutoIncrement
     private Integer empId;
 
     /**

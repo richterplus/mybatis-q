@@ -1,6 +1,9 @@
 package com.github.mybatisq.entity;
 
 
+import com.github.mybatisq.AutoIncrement;
+import com.github.mybatisq.Key;
+
 /**
  * 岗位
  * @author richterplus
@@ -10,6 +13,8 @@ public class Position {
     /**
      * 岗位id
      */
+    @Key
+    @AutoIncrement
     private Integer postId;
 
     /**

@@ -14,43 +14,34 @@ import com.github.mybatisq.Table;
 public class EmpPostTable extends Table {
 
     private EmpPostTable() {
-        super("emp_post", "e0");
+        super("EmpPost", "E1");
     }
 
-    public static final EmpPostTable emp_post = new EmpPostTable();
+    public static final EmpPostTable EmpPost = new EmpPostTable();
 
     public Query<EmpPostTable> query() {
-        return new Query<>(emp_post);
+        return new Query<>(EmpPost);
     }
 
     public Insert<EmpPostTable> insert() {
-        return new Insert<>(emp_post);
+        return new Insert<>(EmpPost);
     }
 
     public Update<EmpPostTable> update() {
-        return new Update<>(emp_post);
+        return new Update<>(EmpPost);
     }
 
     public DeleteQuery<EmpPostTable> deleteQuery() {
-        return new DeleteQuery<>(emp_post);
+        return new DeleteQuery<>(EmpPost);
     }
 
     public <T extends Table> Join<EmpPostTable, T> inner(T table) {
         return new Join<>("inner", this, table);
     }
 
-    /**
-     * id
-     */
-    public Column<EmpPostTable, Integer> ep_id = new Column<>("ep_id");
+    public Column<EmpPostTable, Integer> epId = new Column<>("epId");
 
-    /**
-     * 员工id
-     */
-    public Column<EmpPostTable, Integer> emp_id = new Column<>("emp_id");
+    public Column<EmpPostTable, Integer> empId = new Column<>("empId");
 
-    /**
-     * 职位id
-     */
-    public Column<EmpPostTable, Integer> post_id = new Column<>("post_id");
+    public Column<EmpPostTable, Integer> postId = new Column<>("postId");
 }

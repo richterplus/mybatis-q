@@ -14,83 +14,50 @@ import com.github.mybatisq.Table;
 public class EmployeeTable extends Table {
 
     private EmployeeTable() {
-        super("employee", "e1");
+        super("Employee", "E0");
     }
 
-    public static final EmployeeTable employee = new EmployeeTable();
+    public static final EmployeeTable Employee = new EmployeeTable();
 
     public Query<EmployeeTable> query() {
-        return new Query<>(employee);
+        return new Query<>(Employee);
     }
 
     public Insert<EmployeeTable> insert() {
-        return new Insert<>(employee);
+        return new Insert<>(Employee);
     }
 
     public Update<EmployeeTable> update() {
-        return new Update<>(employee);
+        return new Update<>(Employee);
     }
 
     public DeleteQuery<EmployeeTable> deleteQuery() {
-        return new DeleteQuery<>(employee);
+        return new DeleteQuery<>(Employee);
     }
 
     public <T extends Table> Join<EmployeeTable, T> inner(T table) {
         return new Join<>("inner", this, table);
     }
 
-    /**
-     * 员工id
-     */
-    public Column<EmployeeTable, Integer> emp_id = new Column<>("emp_id");
+    public Column<EmployeeTable, Integer> empId = new Column<>("empId");
 
-    /**
-     * 工号
-     */
-    public Column<EmployeeTable, String> emp_no = new Column<>("emp_no");
+    public Column<EmployeeTable, String> empNo = new Column<>("empNo");
 
-    /**
-     * 员工姓名
-     */
-    public Column<EmployeeTable, String> emp_name = new Column<>("emp_name");
+    public Column<EmployeeTable, String> empName = new Column<>("empName");
 
-    /**
-     * 是否全职
-     */
-    public Column<EmployeeTable, Boolean> is_fulltime = new Column<>("is_fulltime");
+    public Column<EmployeeTable, Boolean> isFulltime = new Column<>("isFulltime");
 
-    /**
-     * 序列号
-     */
-    public Column<EmployeeTable, Long> serial_no = new Column<>("serial_no");
+    public Column<EmployeeTable, Long> serialNo = new Column<>("serialNo");
 
-    /**
-     * 性别（1:男，2:女）
-     */
     public Column<EmployeeTable, Integer> gender = new Column<>("gender");
 
-    /**
-     * 出生年月
-     */
     public Column<EmployeeTable, java.util.Date> birthday = new Column<>("birthday");
 
-    /**
-     * 身高
-     */
     public Column<EmployeeTable, Float> height = new Column<>("height");
 
-    /**
-     * 体重
-     */
     public Column<EmployeeTable, Double> weight = new Column<>("weight");
 
-    /**
-     * 薪资
-     */
     public Column<EmployeeTable, java.math.BigDecimal> salary = new Column<>("salary");
 
-    /**
-     * 创建日期
-     */
-    public Column<EmployeeTable, java.util.Date> create_date = new Column<>("create_date");
+    public Column<EmployeeTable, java.util.Date> createDate = new Column<>("createDate");
 }

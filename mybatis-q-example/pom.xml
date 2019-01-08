@@ -83,12 +83,14 @@
                     <entityPackage>com.github.mybatisq.entity</entityPackage>
                     <genPackage>com.github.mybatisq.mapper</genPackage>
                     <mapperFolder>mybatis-mapper</mapperFolder>
+                    <!--
                     <datasource>
                         <driverClassName>org.postgresql.Driver</driverClassName>
                         <url>jdbc:postgresql://127.0.0.1/mybatis-q</url>
                         <username>mybatisq</username>
                         <password>123456</password>
                     </datasource>
+                    -->
                 </configuration>
             </plugin>
         </plugins>

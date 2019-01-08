@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.github.mybatisq.mapper.PositionMapper">
     <resultMap type="com.github.mybatisq.entity.Position" id="position">
-        <id column="post_id" property="postId"/>
-        <result column="post_no" property="postNo"/>
-        <result column="post_name" property="postName"/>
+        <id column="postId" property="postId"/>
+        <result column="postNo" property="postNo"/>
+        <result column="postName" property="postName"/>
     </resultMap>
 
     <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
@@ -12,14 +12,14 @@
     </select>
 
     <select id="select" parameterType="com.github.mybatisq.Query" resultMap="position">
-        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.post_id,${tableAlias}.post_no,${tableAlias}.post_name</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.postId,${tableAlias}.postNo,${tableAlias}.postName</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
     </select>
 
     <insert id="insert" parameterType="com.github.mybatisq.entity.Position" useGeneratedKeys="true" keyProperty="postId">
-        <trim prefix="insert into position (" suffix=")" suffixOverrides=",">
-            <if test="postId != null">post_id,</if>
-            <if test="postNo != null">post_no,</if>
-            <if test="postName != null">post_name,</if>
+        <trim prefix="insert into Position (" suffix=")" suffixOverrides=",">
+            <if test="postId != null">postId,</if>
+            <if test="postNo != null">postNo,</if>
+            <if test="postName != null">postName,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="postId != null">#{postId},</if>
@@ -29,7 +29,7 @@
     </insert>
 
     <insert id="batchInsert" useGeneratedKeys="true" keyProperty="postId">
-        <trim prefix="insert into position (post_no,post_name) values ">
+        <trim prefix="insert into Position (postNo,postName) values ">
             <foreach collection="list" item="item" separator=",">
                 (#{item.postNo},#{item.postName})
             </foreach>
@@ -44,35 +44,35 @@
     </insert>
 
     <update id="update" parameterType="com.github.mybatisq.entity.Position">
-        <trim prefix="update position set" suffix="where post_id=#{postId}" suffixOverrides=",">
-            <if test="postNo != null">post_no=#{postNo},</if>
-            <if test="postName != null">post_name=#{postName},</if>
+        <trim prefix="update Position set" suffix="where postId=#{postId}" suffixOverrides=",">
+            <if test="postNo != null">postNo=#{postNo},</if>
+            <if test="postName != null">postName=#{postName},</if>
         </trim>
     </update>
 
     <update id="batchUpdate">
-        <trim prefix="update position set" suffixOverrides=",">
-            <foreach collection="entityList" item="item" open="post_no=case post_id " close=" end," separator=" ">when #{item.postId} then #{postNo}</foreach>
-            <foreach collection="entityList" item="item" open="post_name=case post_id " close=" end," separator=" ">when #{item.postId} then #{postName}</foreach>
+        <trim prefix="update Position set" suffixOverrides=",">
+            <foreach collection="entityList" item="item" open="postNo=case postId " close=" end," separator=" ">when #{item.postId} then #{postNo}</foreach>
+            <foreach collection="entityList" item="item" open="postName=case postId " close=" end," separator=" ">when #{item.postId} then #{postName}</foreach>
         </trim>
-        <foreach collection="list" item="item" open="where post_id in (" close=")" separator=",">#{item.postId}</foreach>
+        <foreach collection="list" item="item" open="where postId in (" close=")" separator=",">#{item.postId}</foreach>
     </update>
 
     <update id="updateByBuilder" parameterType="com.github.mybatisq.Update">
-        <trim prefix="update position">
+        <trim prefix="update Position">
             <include refid="com.github.mybatisq.mapper.QMapper.updateBuilder"/>
         </trim>
     </update>
 
     <delete id="delete">
-        delete from position where post_id=#{postId}
+        delete from Position where postId=#{postId}
     </delete>
 
     <delete id="batchDelete">
-        <trim prefix="delete from position where post_id in (" suffix=")"><foreach collection="postIdList" separator="," item="item">#{item}</foreach></trim>
+        <trim prefix="delete from Position where postId in (" suffix=")"><foreach collection="postIdList" separator="," item="item">#{item}</foreach></trim>
     </delete>
 
     <delete id="deleteByQuery" parameterType="com.github.mybatisq.DeleteQuery">
-        <trim prefix="delete from position"><include refid="com.github.mybatisq.mapper.QMapper.deleteWhere"/></trim>
+        <trim prefix="delete from Position"><include refid="com.github.mybatisq.mapper.QMapper.deleteWhere"/></trim>
     </delete>
 </mapper>

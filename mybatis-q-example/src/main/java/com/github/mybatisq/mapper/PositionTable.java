@@ -14,43 +14,34 @@ import com.github.mybatisq.Table;
 public class PositionTable extends Table {
 
     private PositionTable() {
-        super("position", "p");
+        super("Position", "P");
     }
 
-    public static final PositionTable position = new PositionTable();
+    public static final PositionTable Position = new PositionTable();
 
     public Query<PositionTable> query() {
-        return new Query<>(position);
+        return new Query<>(Position);
     }
 
     public Insert<PositionTable> insert() {
-        return new Insert<>(position);
+        return new Insert<>(Position);
     }
 
     public Update<PositionTable> update() {
-        return new Update<>(position);
+        return new Update<>(Position);
     }
 
     public DeleteQuery<PositionTable> deleteQuery() {
-        return new DeleteQuery<>(position);
+        return new DeleteQuery<>(Position);
     }
 
     public <T extends Table> Join<PositionTable, T> inner(T table) {
         return new Join<>("inner", this, table);
     }
 
-    /**
-     * 岗位id
-     */
-    public Column<PositionTable, Integer> post_id = new Column<>("post_id");
+    public Column<PositionTable, Integer> postId = new Column<>("postId");
 
-    /**
-     * 岗位编号
-     */
-    public Column<PositionTable, String> post_no = new Column<>("post_no");
+    public Column<PositionTable, String> postNo = new Column<>("postNo");
 
-    /**
-     * 岗位名称
-     */
-    public Column<PositionTable, String> post_name = new Column<>("post_name");
+    public Column<PositionTable, String> postName = new Column<>("postName");
 }

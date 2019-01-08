@@ -14,43 +14,34 @@ import com.github.mybatisq.Table;
 public class EmpDeptTable extends Table {
 
     private EmpDeptTable() {
-        super("emp_dept", "e");
+        super("EmpDept", "E");
     }
 
-    public static final EmpDeptTable emp_dept = new EmpDeptTable();
+    public static final EmpDeptTable EmpDept = new EmpDeptTable();
 
     public Query<EmpDeptTable> query() {
-        return new Query<>(emp_dept);
+        return new Query<>(EmpDept);
     }
 
     public Insert<EmpDeptTable> insert() {
-        return new Insert<>(emp_dept);
+        return new Insert<>(EmpDept);
     }
 
     public Update<EmpDeptTable> update() {
-        return new Update<>(emp_dept);
+        return new Update<>(EmpDept);
     }
 
     public DeleteQuery<EmpDeptTable> deleteQuery() {
-        return new DeleteQuery<>(emp_dept);
+        return new DeleteQuery<>(EmpDept);
     }
 
     public <T extends Table> Join<EmpDeptTable, T> inner(T table) {
         return new Join<>("inner", this, table);
     }
 
-    /**
-     * id
-     */
-    public Column<EmpDeptTable, Integer> ed_id = new Column<>("ed_id");
+    public Column<EmpDeptTable, Integer> edId = new Column<>("edId");
 
-    /**
-     * 员工id
-     */
-    public Column<EmpDeptTable, Integer> emp_id = new Column<>("emp_id");
+    public Column<EmpDeptTable, Integer> empId = new Column<>("empId");
 
-    /**
-     * 部门id
-     */
-    public Column<EmpDeptTable, Integer> dept_id = new Column<>("dept_id");
+    public Column<EmpDeptTable, Integer> deptId = new Column<>("deptId");
 }
