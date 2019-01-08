@@ -180,6 +180,7 @@ public class GenCodeMojo extends AbstractMojo {
 
         tables = classes.stream().filter(
                 c -> (includeEntityNames.size() == 0 || includeEntityNames.contains(c.getSimpleName())) && (excludeEntityNames.size() == 0 || !excludeEntityNames.contains(c.getSimpleName())))
+                .filter(c -> !c.isAnnotationPresent(Ignore.class))
                 .map(c -> {
                     List<Field> fields = Arrays.asList(c.getDeclaredFields());
                     Class<?> s = c.getSuperclass();
