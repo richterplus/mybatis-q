@@ -162,6 +162,7 @@ public class GenCodeMojo extends AbstractMojo {
             getClassLoader().loadClass(Key.class.getName());
             getClassLoader().loadClass(AutoIncrement.class.getName());
             getClassLoader().loadClass(Ignore.class.getName());
+            getClassLoader().loadClass(MapTo.class.getName());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -187,12 +188,14 @@ public class GenCodeMojo extends AbstractMojo {
                         s = s.getSuperclass();
                     }
 
+                    MapTo tMapTo = c.getAnnotation(MapTo.class);
                     MappedTable table = new MappedTable();
-                    table.setOriginalName(c.getSimpleName());
+                    table.setOriginalName(tMapTo == null ? c.getSimpleName() : StringUtils.defaultIfEmpty(tMapTo.value(), c.getSimpleName()));
                     table.setMappedName(NamingUtils.generateMappedName(table.getOriginalName()));
                     table.setMappedColumns(fields.stream().filter(f -> !f.isAnnotationPresent(Ignore.class)).map(f -> {
+                        MapTo cMapTo = f.getAnnotation(MapTo.class);
                         MappedColumn column = new MappedColumn();
-                        column.setOriginalName(f.getName());
+                        column.setOriginalName(cMapTo == null ? f.getName() : StringUtils.defaultIfEmpty(cMapTo.value(), f.getName()));
                         column.setMappedName(NamingUtils.generateMappedName(column.getOriginalName()));
                         column.setDataType(f.getType().getName().replace("java.lang.", ""));
                         column.setIsPrimaryKey(f.isAnnotationPresent(Key.class));

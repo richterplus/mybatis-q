@@ -3,11 +3,13 @@ package com.github.mybatisq.entity;
 
 import com.github.mybatisq.AutoIncrement;
 import com.github.mybatisq.Key;
+import com.github.mybatisq.MapTo;
 
 /**
  * 人员
  * @author richterplus
  */
+@MapTo("employee")
 public class Employee {
 
     /**
@@ -15,56 +17,67 @@ public class Employee {
      */
     @Key
     @AutoIncrement
+    @MapTo("emp_id")
     private Integer empId;
 
     /**
      * 工号
      */
+    @MapTo("emp_no")
     private String empNo;
 
     /**
      * 员工姓名
      */
+    @MapTo("emp_name")
     private String empName;
 
     /**
      * 是否全职
      */
+    @MapTo("is_fulltime")
     private Boolean isFulltime;
 
     /**
      * 序列号
      */
+    @MapTo("serial_no")
     private Long serialNo;
 
     /**
      * 性别（1:男，2:女）
      */
+    @MapTo("gender")
     private Integer gender;
 
     /**
      * 出生年月
      */
+    @MapTo("birthday")
     private java.util.Date birthday;
 
     /**
      * 身高
      */
+    @MapTo("height")
     private Float height;
 
     /**
      * 体重
      */
+    @MapTo("weight")
     private Double weight;
 
     /**
      * 薪资
      */
+    @MapTo("salary")
     private java.math.BigDecimal salary;
 
     /**
      * 创建日期
      */
+    @MapTo("create_date")
     private java.util.Date createDate;
 
     /**

@@ -14,40 +14,40 @@ import com.github.mybatisq.Table;
 public class EmployeeTable extends Table {
 
     private EmployeeTable() {
-        super("Employee", "E0");
+        super("employee", "e0");
     }
 
-    public static final EmployeeTable Employee = new EmployeeTable();
+    public static final EmployeeTable employee = new EmployeeTable();
 
     public Query<EmployeeTable> query() {
-        return new Query<>(Employee);
+        return new Query<>(employee);
     }
 
     public Insert<EmployeeTable> insert() {
-        return new Insert<>(Employee);
+        return new Insert<>(employee);
     }
 
     public Update<EmployeeTable> update() {
-        return new Update<>(Employee);
+        return new Update<>(employee);
     }
 
     public DeleteQuery<EmployeeTable> deleteQuery() {
-        return new DeleteQuery<>(Employee);
+        return new DeleteQuery<>(employee);
     }
 
     public <T extends Table> Join<EmployeeTable, T> inner(T table) {
         return new Join<>("inner", this, table);
     }
 
-    public Column<EmployeeTable, Integer> empId = new Column<>("empId");
+    public Column<EmployeeTable, Integer> emp_id = new Column<>("emp_id");
 
-    public Column<EmployeeTable, String> empNo = new Column<>("empNo");
+    public Column<EmployeeTable, String> emp_no = new Column<>("emp_no");
 
-    public Column<EmployeeTable, String> empName = new Column<>("empName");
+    public Column<EmployeeTable, String> emp_name = new Column<>("emp_name");
 
-    public Column<EmployeeTable, Boolean> isFulltime = new Column<>("isFulltime");
+    public Column<EmployeeTable, Boolean> is_fulltime = new Column<>("is_fulltime");
 
-    public Column<EmployeeTable, Long> serialNo = new Column<>("serialNo");
+    public Column<EmployeeTable, Long> serial_no = new Column<>("serial_no");
 
     public Column<EmployeeTable, Integer> gender = new Column<>("gender");
 
@@ -59,5 +59,5 @@ public class EmployeeTable extends Table {
 
     public Column<EmployeeTable, java.math.BigDecimal> salary = new Column<>("salary");
 
-    public Column<EmployeeTable, java.util.Date> createDate = new Column<>("createDate");
+    public Column<EmployeeTable, java.util.Date> create_date = new Column<>("create_date");
 }

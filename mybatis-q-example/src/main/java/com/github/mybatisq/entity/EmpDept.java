@@ -3,11 +3,13 @@ package com.github.mybatisq.entity;
 
 import com.github.mybatisq.AutoIncrement;
 import com.github.mybatisq.Key;
+import com.github.mybatisq.MapTo;
 
 /**
  * 员工所在部门
  * @author richterplus
  */
+@MapTo("emp_dept")
 public class EmpDept {
 
     /**
@@ -15,16 +17,19 @@ public class EmpDept {
      */
     @Key
     @AutoIncrement
+    @MapTo("ed_id")
     private Integer edId;
 
     /**
      * 员工id
      */
+    @MapTo("emp_id")
     private Integer empId;
 
     /**
      * 部门id
      */
+    @MapTo("dept_id")
     private Integer deptId;
 
     /**

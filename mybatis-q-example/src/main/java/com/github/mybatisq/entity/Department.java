@@ -2,11 +2,13 @@ package com.github.mybatisq.entity;
 
 import com.github.mybatisq.AutoIncrement;
 import com.github.mybatisq.Key;
+import com.github.mybatisq.MapTo;
 
 /**
  * 部门
  * @author richterplus
  */
+@MapTo("department")
 public class Department {
 
     /**
@@ -14,21 +16,25 @@ public class Department {
      */
     @Key
     @AutoIncrement
+    @MapTo("dept_id")
     private Integer deptId;
 
     /**
      * 部门编号
      */
+    @MapTo("dept_no")
     private String deptNo;
 
     /**
      * 部门名称
      */
+    @MapTo("dept_name")
     private String deptName;
 
     /**
      * 创建日期
      */
+    @MapTo("create_date")
     private java.util.Date createDate;
 
     /**

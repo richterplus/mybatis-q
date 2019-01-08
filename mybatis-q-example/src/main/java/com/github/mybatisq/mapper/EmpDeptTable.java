@@ -14,34 +14,34 @@ import com.github.mybatisq.Table;
 public class EmpDeptTable extends Table {
 
     private EmpDeptTable() {
-        super("EmpDept", "E");
+        super("emp_dept", "e");
     }
 
-    public static final EmpDeptTable EmpDept = new EmpDeptTable();
+    public static final EmpDeptTable emp_dept = new EmpDeptTable();
 
     public Query<EmpDeptTable> query() {
-        return new Query<>(EmpDept);
+        return new Query<>(emp_dept);
     }
 
     public Insert<EmpDeptTable> insert() {
-        return new Insert<>(EmpDept);
+        return new Insert<>(emp_dept);
     }
 
     public Update<EmpDeptTable> update() {
-        return new Update<>(EmpDept);
+        return new Update<>(emp_dept);
     }
 
     public DeleteQuery<EmpDeptTable> deleteQuery() {
-        return new DeleteQuery<>(EmpDept);
+        return new DeleteQuery<>(emp_dept);
     }
 
     public <T extends Table> Join<EmpDeptTable, T> inner(T table) {
         return new Join<>("inner", this, table);
     }
 
-    public Column<EmpDeptTable, Integer> edId = new Column<>("edId");
+    public Column<EmpDeptTable, Integer> ed_id = new Column<>("ed_id");
 
-    public Column<EmpDeptTable, Integer> empId = new Column<>("empId");
+    public Column<EmpDeptTable, Integer> emp_id = new Column<>("emp_id");
 
-    public Column<EmpDeptTable, Integer> deptId = new Column<>("deptId");
+    public Column<EmpDeptTable, Integer> dept_id = new Column<>("dept_id");
 }

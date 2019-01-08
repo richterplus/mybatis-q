@@ -3,11 +3,13 @@ package com.github.mybatisq.entity;
 
 import com.github.mybatisq.AutoIncrement;
 import com.github.mybatisq.Key;
+import com.github.mybatisq.MapTo;
 
 /**
  * 岗位
  * @author richterplus
  */
+@MapTo("position")
 public class Position {
 
     /**
@@ -15,16 +17,19 @@ public class Position {
      */
     @Key
     @AutoIncrement
+    @MapTo("post_id")
     private Integer postId;
 
     /**
      * 岗位编号
      */
+    @MapTo("post_no")
     private String postNo;
 
     /**
      * 岗位名称
      */
+    @MapTo("post_name")
     private String postName;
 
     /**
