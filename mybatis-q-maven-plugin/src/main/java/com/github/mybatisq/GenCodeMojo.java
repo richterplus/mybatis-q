@@ -17,6 +17,7 @@ import org.apache.maven.project.MavenProject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -170,10 +171,17 @@ public class GenCodeMojo extends AbstractMojo {
         tables = classes.stream().filter(
                 c -> (includeEntityNames.size() == 0 || includeEntityNames.contains(c.getSimpleName())) && (excludeEntityNames.size() == 0 || !excludeEntityNames.contains(c.getSimpleName())))
                 .map(c -> {
+                    List<Field> fields = Arrays.asList(c.getDeclaredFields());
+                    Class<?> s = c.getSuperclass();
+                    while (s != null) {
+                        fields.addAll(Arrays.asList(s.getDeclaredFields()));
+                        s = s.getSuperclass();
+                    }
+
                     MappedTable table = new MappedTable();
                     table.setOriginalName(c.getSimpleName());
                     table.setMappedName(NamingUtils.generateMappedName(table.getOriginalName()));
-                    table.setMappedColumns(Stream.of(c.getDeclaredFields()).map(f -> {
+                    table.setMappedColumns(fields.stream().filter(f -> !f.isAnnotationPresent(Ignore.class)).map(f -> {
                         MappedColumn column = new MappedColumn();
                         column.setOriginalName(f.getName());
                         column.setMappedName(NamingUtils.generateMappedName(column.getOriginalName()));
@@ -194,12 +202,17 @@ public class GenCodeMojo extends AbstractMojo {
 
     private void copyQMapperFiles() throws MojoExecutionException, IOException {
         String fileName = "QMapper.xml";
-        if (datasource.getUrl().contains(Datasource.MYSQL)) {
-            fileName = "QMapper-MySQL.xml";
-        } else if (datasource.getUrl().contains(Datasource.POSTGRESQL)) {
-            fileName = "QMapper-PostgreSQL.xml";
+        if (datasource != null) {
+            if (datasource.getUrl().contains(Datasource.MYSQL)) {
+                fileName = "QMapper-MySQL.xml";
+            } else if (datasource.getUrl().contains(Datasource.POSTGRESQL)) {
+                fileName = "QMapper-PostgreSQL.xml";
+            }
         }
         InputStream input = getClassLoader().getResourceAsStream("mybatisq/" + fileName);
+        if (input == null) {
+            throw new RuntimeException("Cannot load QMapper xml file.");
+        }
         String content = IOUtils.toString(input, encoding).replace(Query.class.getPackage().getName(), genPackage);
         input.close();
         String path = mapperPath + "/QMapper.xml";
@@ -207,6 +220,9 @@ public class GenCodeMojo extends AbstractMojo {
         getLog().info(path);
 
         input = getClassLoader().getResourceAsStream("mybatisq/QMapper.java.q");
+        if (input == null) {
+            throw new RuntimeException("Cannot load QMapper java file.");
+        }
         content = IOUtils.toString(input, encoding).replace(Query.class.getPackage().getName() + ";", genPackage + ";");
         input.close();
         path = genPath + "/QMapper.java";
@@ -220,12 +236,14 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append("package ").append(entityPackage).append(";").append(newLine(2));
             String className = t.getMappedName();
             builder.append(newLine(1)).append("/**");
-            builder.append(newLine(1)).append(" * ").append(t.getComment());
+            if (StringUtils.isNotEmpty(t.getComment())) {
+                builder.append(newLine(1)).append(" * ").append(t.getComment());
+            }
             builder.append(newLine(1)).append(" * @author richterplus");
             builder.append(newLine(1)).append(" */");
             builder.append(newLine(1)).append("public class ").append(className).append(" {").append(newLine(2));
             t.getMappedColumns().forEach(c -> {
-                if (c.getComment() != null && c.getComment().length() > 0) {
+                if (StringUtils.isNotEmpty(c.getComment())) {
                     builder.append(space(4)).append("/**").append(newLine(1));
                     builder.append(space(4)).append(" * ").append(c.getComment()).append(newLine(1));
                     builder.append(space(4)).append(" */").append(newLine(1));
@@ -233,7 +251,7 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(space(4)).append("private ").append(c.getDataType()).append(" ").append(lowerCaseFirstChar(c.getMappedName())).append(";").append(newLine(2));
             });
             t.getMappedColumns().forEach(c -> {
-                if (c.getComment() != null && c.getComment().length() > 0) {
+                if (StringUtils.isNotEmpty(c.getComment())) {
                     builder.append(space(4)).append("/**").append(newLine(1));
                     builder.append(space(4)).append(" * 获取").append(c.getComment()).append(newLine(1));
                     builder.append(space(4)).append(" * @return ").append(c.getComment()).append(newLine(1));
@@ -242,7 +260,7 @@ public class GenCodeMojo extends AbstractMojo {
                 builder.append(space(4)).append("public ").append(c.getDataType()).append(" get").append(c.getMappedName()).append("() {").append(newLine(1));
                 builder.append(space(8)).append("return ").append(lowerCaseFirstChar(c.getMappedName())).append(";").append(newLine(1));
                 builder.append(space(4)).append("}").append(newLine(2));
-                if (c.getComment() != null && c.getComment().length() > 0) {
+                if (StringUtils.isNotEmpty(c.getComment())) {
                     builder.append(space(4)).append("/**").append(newLine(1));
                     builder.append(space(4)).append(" * 设置").append(c.getComment()).append(newLine(1));
                     builder.append(space(4)).append(" * @param ").append(lowerCaseFirstChar(c.getMappedName())).append(" ").append(c.getComment()).append(newLine(1));
@@ -496,8 +514,6 @@ public class GenCodeMojo extends AbstractMojo {
         getLog().info("entity package: " + entityPackage);
         getLog().info("gen package: " + genPackage);
 
-        databaseProcessor = DatabaseProcessorFactory.createMapperFromDatasource(datasource);
-
         includeEntityNames = Stream.of(StringUtils.defaultIfEmpty(includeEntities, "").split(",")).map(String::trim).filter(e -> e.length() > 0).collect(Collectors.toSet());
         excludeEntityNames = Stream.of(StringUtils.defaultIfEmpty(excludeEntities, "").split(",")).map(String::trim).filter(e -> e.length() > 0).collect(Collectors.toSet());
 
@@ -508,6 +524,7 @@ public class GenCodeMojo extends AbstractMojo {
         if (datasource == null) {
             tables = getTablesForCodeFirst();
         } else {
+            databaseProcessor = DatabaseProcessorFactory.createMapperFromDatasource(datasource);
             tables = getTablesForDatabaseFist();
             genEntities = true;
         }
