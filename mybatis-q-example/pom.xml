@@ -83,6 +83,7 @@
                     <entityPackage>com.github.mybatisq.entity</entityPackage>
                     <genPackage>com.github.mybatisq.mapper</genPackage>
                     <mapperFolder>mybatis-mapper</mapperFolder>
+                    <database>PostgreSQL</database>
                     <!--
                     <datasource>
                         <driverClassName>org.postgresql.Driver</driverClassName>

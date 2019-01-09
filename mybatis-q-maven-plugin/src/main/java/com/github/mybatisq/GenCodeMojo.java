@@ -68,6 +68,12 @@ public class GenCodeMojo extends AbstractMojo {
     private String mapperFolder;
 
     /**
+     * 数据库名称（仅在code-first模式下识别此参数）
+     */
+    @Parameter
+    private String database;
+
+    /**
      * 文件编码（默认UTF-8）
      */
     @Parameter(defaultValue = "UTF-8")
@@ -215,7 +221,15 @@ public class GenCodeMojo extends AbstractMojo {
 
     private void copyQMapperFiles() throws MojoExecutionException, IOException {
         String fileName = "QMapper.xml";
-        if (datasource != null) {
+        if (datasource == null) {
+            if (database != null) {
+                if ("mysql".equals(database.toLowerCase())) {
+                    fileName = "QMapper-MySQL.xml";
+                } else if ("postgresql".equals(database.toLowerCase())) {
+                    fileName = "QMapper-PostgreSQL.xml";
+                }
+            }
+        } else {
             if (datasource.getUrl().contains(Datasource.MYSQL)) {
                 fileName = "QMapper-MySQL.xml";
             } else if (datasource.getUrl().contains(Datasource.POSTGRESQL)) {
