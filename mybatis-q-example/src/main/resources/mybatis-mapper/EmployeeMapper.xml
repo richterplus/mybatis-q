@@ -15,17 +15,45 @@
         <result column="create_date" property="createDate"/>
     </resultMap>
 
-    <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
-        select count(*) <include refid="com.github.mybatisq.mapper.QMapper.countFrom"/>
+    <select id="count" parameterType="com.github.mybatisq.mapper.core.Query" resultType="java.lang.Integer">
+        select count(*) <include refid="com.github.mybatisq.mapper.core.BaseMapper.countFrom"/>
     </select>
 
-    <select id="select" parameterType="com.github.mybatisq.Query" resultMap="employee">
-        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.emp_id,${tableAlias}.emp_no,${tableAlias}.emp_name,${tableAlias}.is_fulltime,${tableAlias}.serial_no,${tableAlias}.gender,${tableAlias}.birthday,${tableAlias}.height,${tableAlias}.weight,${tableAlias}.salary,${tableAlias}.create_date</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    <select id="select" parameterType="com.github.mybatisq.mapper.core.Query" resultMap="employee">
+        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.emp_id,${tableAlias}.emp_no,${tableAlias}.emp_name,${tableAlias}.is_fulltime,${tableAlias}.serial_no,${tableAlias}.gender,${tableAlias}.birthday,${tableAlias}.height,${tableAlias}.weight,${tableAlias}.salary,${tableAlias}.create_date</if> <include refid="com.github.mybatisq.mapper.core.BaseMapper.selectFrom"/>
     </select>
 
     <insert id="insert" parameterType="com.github.mybatisq.entity.Employee" useGeneratedKeys="true" keyProperty="empId">
         <trim prefix="insert into employee (" suffix=")" suffixOverrides=",">
-            <if test="empId != null">emp_id,</if>
+            emp_id,
+            emp_no,
+            emp_name,
+            is_fulltime,
+            serial_no,
+            gender,
+            birthday,
+            height,
+            weight,
+            salary,
+            create_date,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{empId},
+            #{empNo},
+            #{empName},
+            #{isFulltime},
+            #{serialNo},
+            #{gender},
+            #{birthday},
+            #{height},
+            #{weight},
+            #{salary},
+            #{createDate},
+        </trim>
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.github.mybatisq.entity.Employee" useGeneratedKeys="true" keyProperty="empId">
+        <trim prefix="insert into employee (" suffix=")" suffixOverrides=",">
             <if test="empNo != null">emp_no,</if>
             <if test="empName != null">emp_name,</if>
             <if test="isFulltime != null">is_fulltime,</if>
@@ -38,7 +66,6 @@
             <if test="createDate != null">create_date,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="empId != null">#{empId},</if>
             <if test="empNo != null">#{empNo},</if>
             <if test="empName != null">#{empName},</if>
             <if test="isFulltime != null">#{isFulltime},</if>
@@ -60,14 +87,22 @@
         </trim>
     </insert>
 
-    <insert id="insertBySelect" parameterType="com.github.mybatisq.Insert">
-        insert ${table.name}
-        <foreach collection="insertColumns" item="c" open="(" close=")" separator=",">${c.name}</foreach>
-        select <foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach>
-        <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
-    </insert>
-
     <update id="update" parameterType="com.github.mybatisq.entity.Employee">
+        <trim prefix="update employee set" suffix="where emp_id=#{empId}" suffixOverrides=",">
+            emp_no=#{empNo},
+            emp_name=#{empName},
+            is_fulltime=#{isFulltime},
+            serial_no=#{serialNo},
+            gender=#{gender},
+            birthday=#{birthday},
+            height=#{height},
+            weight=#{weight},
+            salary=#{salary},
+            create_date=#{createDate},
+        </trim>
+    </update>
+
+    <update id="updateSelective" parameterType="com.github.mybatisq.entity.Employee">
         <trim prefix="update employee set" suffix="where emp_id=#{empId}" suffixOverrides=",">
             <if test="empNo != null">emp_no=#{empNo},</if>
             <if test="empName != null">emp_name=#{empName},</if>
@@ -98,9 +133,9 @@
         <foreach collection="list" item="item" open="where emp_id in (" close=")" separator=",">#{item.empId}</foreach>
     </update>
 
-    <update id="updateByBuilder" parameterType="com.github.mybatisq.Update">
+    <update id="updateByBuilder" parameterType="com.github.mybatisq.mapper.core.Update">
         <trim prefix="update employee">
-            <include refid="com.github.mybatisq.mapper.QMapper.updateBuilder"/>
+            <include refid="com.github.mybatisq.mapper.BaseMapper.updateBuilder"/>
         </trim>
     </update>
 
@@ -112,7 +147,7 @@
         <trim prefix="delete from employee where emp_id in (" suffix=")"><foreach collection="empIdList" separator="," item="item">#{item}</foreach></trim>
     </delete>
 
-    <delete id="deleteByQuery" parameterType="com.github.mybatisq.DeleteQuery">
-        <trim prefix="delete from employee"><include refid="com.github.mybatisq.mapper.QMapper.deleteWhere"/></trim>
+    <delete id="deleteByQuery" parameterType="com.github.mybatisq.mapper.core.DeleteQuery">
+        <trim prefix="delete from employee"><include refid="com.github.mybatisq.mapper.BaseMapper.deleteWhere"/></trim>
     </delete>
 </mapper>

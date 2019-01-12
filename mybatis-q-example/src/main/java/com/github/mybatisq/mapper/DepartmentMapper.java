@@ -6,14 +6,14 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.github.mybatisq.DeleteQuery;
-import com.github.mybatisq.Query;
-import com.github.mybatisq.Insert;
-import com.github.mybatisq.Update;
+import com.github.mybatisq.mapper.core.DeleteQuery;
+import com.github.mybatisq.mapper.core.Query;
+import com.github.mybatisq.mapper.core.Update;
+import com.github.mybatisq.mapper.table.DepartmentTable;
 import com.github.mybatisq.entity.Department;
 
 /**
- * @author richterplus
+ * @author chenjie
  */
 @Mapper
 public interface DepartmentMapper {
@@ -24,13 +24,15 @@ public interface DepartmentMapper {
 
     int insert(Department department);
 
-    int batchInsert(@Param("list") Collection<Department> department);
+    int insertSelective(Department department);
 
-    int insertBySelect(Insert<DepartmentTable> insert);
+    int batchInsert(@Param("list") Collection<Department> departmentList);
 
     int update(Department department);
 
-    int batchUpdate(@Param("list") Collection<Department> department);
+    int updateSelective(Department department);
+
+    int batchUpdate(@Param("list") Collection<Department> departmentList);
 
     int updateByBuilder(Update<DepartmentTable> update);
 

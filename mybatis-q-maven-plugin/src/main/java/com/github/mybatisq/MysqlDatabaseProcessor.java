@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * Mysql数据类型映射器
- * @author richterplus
+ * @author chenjie
  */
 public class MysqlDatabaseProcessor implements DatabaseProcessor {
 

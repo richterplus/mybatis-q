@@ -7,22 +7,33 @@
         <result column="post_name" property="postName"/>
     </resultMap>
 
-    <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
-        select count(*) <include refid="com.github.mybatisq.mapper.QMapper.countFrom"/>
+    <select id="count" parameterType="com.github.mybatisq.mapper.core.Query" resultType="java.lang.Integer">
+        select count(*) <include refid="com.github.mybatisq.mapper.core.BaseMapper.countFrom"/>
     </select>
 
-    <select id="select" parameterType="com.github.mybatisq.Query" resultMap="position">
-        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.post_id,${tableAlias}.post_no,${tableAlias}.post_name</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    <select id="select" parameterType="com.github.mybatisq.mapper.core.Query" resultMap="position">
+        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.post_id,${tableAlias}.post_no,${tableAlias}.post_name</if> <include refid="com.github.mybatisq.mapper.core.BaseMapper.selectFrom"/>
     </select>
 
     <insert id="insert" parameterType="com.github.mybatisq.entity.Position" useGeneratedKeys="true" keyProperty="postId">
         <trim prefix="insert into position (" suffix=")" suffixOverrides=",">
-            <if test="postId != null">post_id,</if>
+            post_id,
+            post_no,
+            post_name,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{postId},
+            #{postNo},
+            #{postName},
+        </trim>
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.github.mybatisq.entity.Position" useGeneratedKeys="true" keyProperty="postId">
+        <trim prefix="insert into position (" suffix=")" suffixOverrides=",">
             <if test="postNo != null">post_no,</if>
             <if test="postName != null">post_name,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="postId != null">#{postId},</if>
             <if test="postNo != null">#{postNo},</if>
             <if test="postName != null">#{postName},</if>
         </trim>
@@ -36,14 +47,14 @@
         </trim>
     </insert>
 
-    <insert id="insertBySelect" parameterType="com.github.mybatisq.Insert">
-        insert ${table.name}
-        <foreach collection="insertColumns" item="c" open="(" close=")" separator=",">${c.name}</foreach>
-        select <foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach>
-        <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
-    </insert>
-
     <update id="update" parameterType="com.github.mybatisq.entity.Position">
+        <trim prefix="update position set" suffix="where post_id=#{postId}" suffixOverrides=",">
+            post_no=#{postNo},
+            post_name=#{postName},
+        </trim>
+    </update>
+
+    <update id="updateSelective" parameterType="com.github.mybatisq.entity.Position">
         <trim prefix="update position set" suffix="where post_id=#{postId}" suffixOverrides=",">
             <if test="postNo != null">post_no=#{postNo},</if>
             <if test="postName != null">post_name=#{postName},</if>
@@ -58,9 +69,9 @@
         <foreach collection="list" item="item" open="where post_id in (" close=")" separator=",">#{item.postId}</foreach>
     </update>
 
-    <update id="updateByBuilder" parameterType="com.github.mybatisq.Update">
+    <update id="updateByBuilder" parameterType="com.github.mybatisq.mapper.core.Update">
         <trim prefix="update position">
-            <include refid="com.github.mybatisq.mapper.QMapper.updateBuilder"/>
+            <include refid="com.github.mybatisq.mapper.BaseMapper.updateBuilder"/>
         </trim>
     </update>
 
@@ -72,7 +83,7 @@
         <trim prefix="delete from position where post_id in (" suffix=")"><foreach collection="postIdList" separator="," item="item">#{item}</foreach></trim>
     </delete>
 
-    <delete id="deleteByQuery" parameterType="com.github.mybatisq.DeleteQuery">
-        <trim prefix="delete from position"><include refid="com.github.mybatisq.mapper.QMapper.deleteWhere"/></trim>
+    <delete id="deleteByQuery" parameterType="com.github.mybatisq.mapper.core.DeleteQuery">
+        <trim prefix="delete from position"><include refid="com.github.mybatisq.mapper.BaseMapper.deleteWhere"/></trim>
     </delete>
 </mapper>

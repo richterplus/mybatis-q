@@ -8,23 +8,36 @@
         <result column="create_date" property="createDate"/>
     </resultMap>
 
-    <select id="count" parameterType="com.github.mybatisq.Query" resultType="java.lang.Integer">
-        select count(*) <include refid="com.github.mybatisq.mapper.QMapper.countFrom"/>
+    <select id="count" parameterType="com.github.mybatisq.mapper.core.Query" resultType="java.lang.Integer">
+        select count(*) <include refid="com.github.mybatisq.mapper.core.BaseMapper.countFrom"/>
     </select>
 
-    <select id="select" parameterType="com.github.mybatisq.Query" resultMap="department">
-        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.dept_id,${tableAlias}.dept_no,${tableAlias}.dept_name,${tableAlias}.create_date</if> <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
+    <select id="select" parameterType="com.github.mybatisq.mapper.core.Query" resultMap="department">
+        select <if test="selectedColumns.size > 0"><foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach></if><if test="selectedColumns.size == 0">${tableAlias}.dept_id,${tableAlias}.dept_no,${tableAlias}.dept_name,${tableAlias}.create_date</if> <include refid="com.github.mybatisq.mapper.core.BaseMapper.selectFrom"/>
     </select>
 
     <insert id="insert" parameterType="com.github.mybatisq.entity.Department" useGeneratedKeys="true" keyProperty="deptId">
         <trim prefix="insert into department (" suffix=")" suffixOverrides=",">
-            <if test="deptId != null">dept_id,</if>
+            dept_id,
+            dept_no,
+            dept_name,
+            create_date,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{deptId},
+            #{deptNo},
+            #{deptName},
+            #{createDate},
+        </trim>
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.github.mybatisq.entity.Department" useGeneratedKeys="true" keyProperty="deptId">
+        <trim prefix="insert into department (" suffix=")" suffixOverrides=",">
             <if test="deptNo != null">dept_no,</if>
             <if test="deptName != null">dept_name,</if>
             <if test="createDate != null">create_date,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="deptId != null">#{deptId},</if>
             <if test="deptNo != null">#{deptNo},</if>
             <if test="deptName != null">#{deptName},</if>
             <if test="createDate != null">#{createDate},</if>
@@ -39,14 +52,15 @@
         </trim>
     </insert>
 
-    <insert id="insertBySelect" parameterType="com.github.mybatisq.Insert">
-        insert ${table.name}
-        <foreach collection="insertColumns" item="c" open="(" close=")" separator=",">${c.name}</foreach>
-        select <foreach collection="selectedColumns" item="col" separator=",">${tableAlias}.${col.name}</foreach>
-        <include refid="com.github.mybatisq.mapper.QMapper.selectFrom"/>
-    </insert>
-
     <update id="update" parameterType="com.github.mybatisq.entity.Department">
+        <trim prefix="update department set" suffix="where dept_id=#{deptId}" suffixOverrides=",">
+            dept_no=#{deptNo},
+            dept_name=#{deptName},
+            create_date=#{createDate},
+        </trim>
+    </update>
+
+    <update id="updateSelective" parameterType="com.github.mybatisq.entity.Department">
         <trim prefix="update department set" suffix="where dept_id=#{deptId}" suffixOverrides=",">
             <if test="deptNo != null">dept_no=#{deptNo},</if>
             <if test="deptName != null">dept_name=#{deptName},</if>
@@ -63,9 +77,9 @@
         <foreach collection="list" item="item" open="where dept_id in (" close=")" separator=",">#{item.deptId}</foreach>
     </update>
 
-    <update id="updateByBuilder" parameterType="com.github.mybatisq.Update">
+    <update id="updateByBuilder" parameterType="com.github.mybatisq.mapper.core.Update">
         <trim prefix="update department">
-            <include refid="com.github.mybatisq.mapper.QMapper.updateBuilder"/>
+            <include refid="com.github.mybatisq.mapper.BaseMapper.updateBuilder"/>
         </trim>
     </update>
 
@@ -77,7 +91,7 @@
         <trim prefix="delete from department where dept_id in (" suffix=")"><foreach collection="deptIdList" separator="," item="item">#{item}</foreach></trim>
     </delete>
 
-    <delete id="deleteByQuery" parameterType="com.github.mybatisq.DeleteQuery">
-        <trim prefix="delete from department"><include refid="com.github.mybatisq.mapper.QMapper.deleteWhere"/></trim>
+    <delete id="deleteByQuery" parameterType="com.github.mybatisq.mapper.core.DeleteQuery">
+        <trim prefix="delete from department"><include refid="com.github.mybatisq.mapper.BaseMapper.deleteWhere"/></trim>
     </delete>
 </mapper>

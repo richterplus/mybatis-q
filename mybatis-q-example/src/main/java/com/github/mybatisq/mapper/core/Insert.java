@@ -1,4 +1,4 @@
-package com.github.mybatisq;
+package com.github.mybatisq.mapper.core;
 
 import java.util.Arrays;
 import java.util.Collection;

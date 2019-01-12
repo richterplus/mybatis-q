@@ -1,4 +1,4 @@
-package com.github.mybatisq;
+package com.github.mybatisq.mapper.core;
 
 /**
  * 日期操作

@@ -6,14 +6,14 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.github.mybatisq.DeleteQuery;
-import com.github.mybatisq.Query;
-import com.github.mybatisq.Insert;
-import com.github.mybatisq.Update;
+import com.github.mybatisq.mapper.core.DeleteQuery;
+import com.github.mybatisq.mapper.core.Query;
+import com.github.mybatisq.mapper.core.Update;
+import com.github.mybatisq.mapper.table.EmployeeTable;
 import com.github.mybatisq.entity.Employee;
 
 /**
- * @author richterplus
+ * @author chenjie
  */
 @Mapper
 public interface EmployeeMapper {
@@ -24,13 +24,15 @@ public interface EmployeeMapper {
 
     int insert(Employee employee);
 
-    int batchInsert(@Param("list") Collection<Employee> employee);
+    int insertSelective(Employee employee);
 
-    int insertBySelect(Insert<EmployeeTable> insert);
+    int batchInsert(@Param("list") Collection<Employee> employeeList);
 
     int update(Employee employee);
 
-    int batchUpdate(@Param("list") Collection<Employee> employee);
+    int updateSelective(Employee employee);
+
+    int batchUpdate(@Param("list") Collection<Employee> employeeList);
 
     int updateByBuilder(Update<EmployeeTable> update);
 

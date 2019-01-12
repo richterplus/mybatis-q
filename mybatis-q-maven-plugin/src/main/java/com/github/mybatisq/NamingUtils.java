@@ -4,7 +4,7 @@ import java.util.stream.Stream;
 
 /**
  * 命名工具类
- * @author richterplus
+ * @author chenjie
  */
 public class NamingUtils {
 

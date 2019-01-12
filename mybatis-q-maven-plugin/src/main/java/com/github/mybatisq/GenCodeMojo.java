@@ -14,6 +14,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * @author richterplus
+ * @author chenjie
  */
 @Mojo(name = "gencode", requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class GenCodeMojo extends AbstractMojo {
@@ -165,10 +167,10 @@ public class GenCodeMojo extends AbstractMojo {
         }
 
         try {
-            getClassLoader().loadClass(Key.class.getName());
-            getClassLoader().loadClass(AutoIncrement.class.getName());
-            getClassLoader().loadClass(Ignore.class.getName());
-            getClassLoader().loadClass(MapTo.class.getName());
+            getClassLoader().loadClass(Id.class.getName());
+            getClassLoader().loadClass(GeneratedValue.class.getName());
+            getClassLoader().loadClass(javax.persistence.Table.class.getName());
+            getClassLoader().loadClass(javax.persistence.Column.class.getName());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -186,7 +188,6 @@ public class GenCodeMojo extends AbstractMojo {
 
         tables = classes.stream().filter(
                 c -> (includeEntityNames.size() == 0 || includeEntityNames.contains(c.getSimpleName())) && (excludeEntityNames.size() == 0 || !excludeEntityNames.contains(c.getSimpleName())))
-                .filter(c -> !c.isAnnotationPresent(Ignore.class))
                 .map(c -> {
                     List<Field> fields = Arrays.asList(c.getDeclaredFields());
                     Class<?> s = c.getSuperclass();
@@ -195,18 +196,18 @@ public class GenCodeMojo extends AbstractMojo {
                         s = s.getSuperclass();
                     }
 
-                    MapTo tMapTo = c.getAnnotation(MapTo.class);
+                    javax.persistence.Table tMapTo = c.getAnnotation(javax.persistence.Table.class);
                     MappedTable table = new MappedTable();
-                    table.setOriginalName(tMapTo == null ? c.getSimpleName() : StringUtils.defaultIfEmpty(tMapTo.value(), c.getSimpleName()));
+                    table.setOriginalName(tMapTo == null ? c.getSimpleName() : StringUtils.defaultIfEmpty(tMapTo.name(), c.getSimpleName()));
                     table.setMappedName(NamingUtils.generateMappedName(table.getOriginalName()));
-                    table.setMappedColumns(fields.stream().filter(f -> !f.isAnnotationPresent(Ignore.class)).map(f -> {
-                        MapTo cMapTo = f.getAnnotation(MapTo.class);
+                    table.setMappedColumns(fields.stream().map(f -> {
+                        javax.persistence.Column cMapTo = f.getAnnotation(javax.persistence.Column.class);
                         MappedColumn column = new MappedColumn();
-                        column.setOriginalName(cMapTo == null ? f.getName() : StringUtils.defaultIfEmpty(cMapTo.value(), f.getName()));
+                        column.setOriginalName(cMapTo == null ? f.getName() : StringUtils.defaultIfEmpty(cMapTo.name(), f.getName()));
                         column.setMappedName(NamingUtils.generateMappedName(column.getOriginalName()));
                         column.setDataType(f.getType().getName().replace("java.lang.", ""));
-                        column.setIsPrimaryKey(f.isAnnotationPresent(Key.class));
-                        column.setIsAutoIncrement(f.isAnnotationPresent(AutoIncrement.class));
+                        column.setIsPrimaryKey(f.isAnnotationPresent(Id.class));
+                        column.setIsAutoIncrement(f.isAnnotationPresent(GeneratedValue.class));
                         return column;
                     }).collect(Collectors.toList()));
                     return table;
@@ -220,41 +221,48 @@ public class GenCodeMojo extends AbstractMojo {
     }
 
     private void copyQMapperFiles() throws MojoExecutionException, IOException {
-        String fileName = "QMapper.xml";
+        String fileName = "BaseMapper.xml";
         if (datasource == null) {
             if (database != null) {
                 if ("mysql".equals(database.toLowerCase())) {
-                    fileName = "QMapper-MySQL.xml";
+                    fileName = "BaseMapper-MySQL.xml";
                 } else if ("postgresql".equals(database.toLowerCase())) {
-                    fileName = "QMapper-PostgreSQL.xml";
+                    fileName = "BaseMapper-PostgreSQL.xml";
                 }
             }
         } else {
             if (datasource.getUrl().contains(Datasource.MYSQL)) {
-                fileName = "QMapper-MySQL.xml";
+                fileName = "BaseMapper-MySQL.xml";
             } else if (datasource.getUrl().contains(Datasource.POSTGRESQL)) {
-                fileName = "QMapper-PostgreSQL.xml";
+                fileName = "BaseMapper-PostgreSQL.xml";
             }
         }
         InputStream input = getClassLoader().getResourceAsStream("mybatisq/" + fileName);
         if (input == null) {
-            throw new RuntimeException("Cannot load QMapper xml file.");
+            throw new RuntimeException("Cannot load BaseMapper xml file.");
         }
-        String content = IOUtils.toString(input, encoding).replace(Query.class.getPackage().getName(), genPackage);
+        String content = IOUtils.toString(input, encoding).replace(Query.class.getPackage().getName(), genPackage + ".core");
         input.close();
-        String path = mapperPath + "/QMapper.xml";
+        String path = mapperPath + "/BaseMapper.xml";
         FileUtils.write(new File(path), content, encoding);
         getLog().info(path);
 
-        input = getClassLoader().getResourceAsStream("mybatisq/QMapper.java.q");
-        if (input == null) {
-            throw new RuntimeException("Cannot load QMapper java file.");
-        }
-        content = IOUtils.toString(input, encoding).replace(Query.class.getPackage().getName() + ";", genPackage + ";");
-        input.close();
-        path = genPath + "/QMapper.java";
-        FileUtils.write(new File(path), content, encoding);
-        getLog().info(path);
+        Stream.of("BaseMapper", "Column", "DateOps", "DeleteQuery"/*, "Insert"*/, "Join", "NumberOps", "On", "OrderBy", "Query", "Setter", "Table", "Update", "Where").forEach(c -> {
+            try {
+                InputStream inp = getClassLoader().getResourceAsStream(String.format("mybatisq/%s.java.q", c));
+                if (inp == null) {
+                    throw new RuntimeException(String.format("Cannot load %s java file.", c));
+                }
+                String cont = IOUtils.toString(inp, encoding).replace(Query.class.getPackage().getName() + ";", genPackage + ".core;");
+                inp.close();
+                String pa = String.format("%s/core/%s.java", genPath, c);
+                FileUtils.write(new File(pa), cont, encoding);
+                getLog().info(pa);
+            } catch (MojoExecutionException | IOException e) {
+                throw new RuntimeException(e);
+            }
+            
+        });
     }
 
     private void genEntities(Collection<MappedTable> tables) {
@@ -266,7 +274,7 @@ public class GenCodeMojo extends AbstractMojo {
             if (StringUtils.isNotEmpty(t.getComment())) {
                 builder.append(newLine(1)).append(" * ").append(t.getComment());
             }
-            builder.append(newLine(1)).append(" * @author richterplus");
+            builder.append(newLine(1)).append(" * @author chenjie");
             builder.append(newLine(1)).append(" */");
             builder.append(newLine(1)).append("public class ").append(className).append(" {").append(newLine(2));
             t.getMappedColumns().forEach(c -> {
@@ -312,19 +320,19 @@ public class GenCodeMojo extends AbstractMojo {
     private void genTables(List<MappedTable> tables) {
         tables.forEach(t -> {
             final StringBuilder builder = new StringBuilder();
-            builder.append("package ").append(genPackage).append(";").append(newLine(2));
-            builder.append("import ").append(Column.class.getName()).append(";").append(newLine(1));
-            builder.append("import ").append(Join.class.getName()).append(";").append(newLine(1));
-            builder.append("import ").append(DeleteQuery.class.getName()).append(";").append(newLine(1));
-            builder.append("import ").append(Query.class.getName()).append(";").append(newLine(1));
-            builder.append("import ").append(Insert.class.getName()).append(";").append(newLine(1));
-            builder.append("import ").append(Update.class.getName()).append(";").append(newLine(1));
-            builder.append("import ").append(Table.class.getName()).append(";").append(newLine(1));
+            builder.append("package ").append(genPackage).append(".table;").append(newLine(2));
+            builder.append("import ").append(genPackage).append(".core.").append(Column.class.getSimpleName()).append(";").append(newLine(1));
+            builder.append("import ").append(genPackage).append(".core.").append(Join.class.getSimpleName()).append(";").append(newLine(1));
+            builder.append("import ").append(genPackage).append(".core.").append(DeleteQuery.class.getSimpleName()).append(";").append(newLine(1));
+            builder.append("import ").append(genPackage).append(".core.").append(Query.class.getSimpleName()).append(";").append(newLine(1));
+            // builder.append("import ").append(genPackage).append(".core.").append(Insert.class.getSimpleName()).append(";").append(newLine(1));
+            builder.append("import ").append(genPackage).append(".core.").append(Update.class.getSimpleName()).append(";").append(newLine(1));
+            builder.append("import ").append(genPackage).append(".core.").append(Table.class.getSimpleName()).append(";").append(newLine(1));
             String className = t.getMappedName() + "Table";
             String tableName = t.getOriginalName();
             String tableAlias = alias(tableName);
             builder.append(newLine(1)).append("/**");
-            builder.append(newLine(1)).append(" * @author richterplus");
+            builder.append(newLine(1)).append(" * @author chenjie");
             builder.append(newLine(1)).append(" */");
             builder.append(newLine(1)).append("public class ").append(className).append(" extends Table {").append(newLine(1));
             builder.append(newLine(1)).append(space(4)).append("private ").append(className).append("() {").append(newLine(1));
@@ -334,16 +342,18 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append(newLine(1)).append(space(4)).append("public Query<").append(className).append("> query() {").append(newLine(1));
             builder.append(space(8)).append("return new Query<>(").append(tableName).append(");").append(newLine(1));
             builder.append(space(4)).append("}").append(newLine(1));
+            /*
             builder.append(newLine(1)).append(space(4)).append("public Insert<").append(className).append("> insert() {").append(newLine(1));
             builder.append(space(8)).append("return new Insert<>(").append(tableName).append(");").append(newLine(1));
             builder.append(space(4)).append("}").append(newLine(1));
+            */
             builder.append(newLine(1)).append(space(4)).append("public Update<").append(className).append("> update() {").append(newLine(1));
             builder.append(space(8)).append("return new Update<>(").append(tableName).append(");").append(newLine(1));
             builder.append(space(4)).append("}").append(newLine(1));
             builder.append(newLine(1)).append(space(4)).append("public DeleteQuery<").append(className).append("> deleteQuery() {").append(newLine(1));
             builder.append(space(8)).append("return new DeleteQuery<>(").append(tableName).append(");").append(newLine(1));
             builder.append(space(4)).append("}").append(newLine(1));
-            builder.append(newLine(1)).append(space(4)).append("public <T extends Table> Join<").append(className).append(", T> inner(T table) {").append(newLine(1));
+            builder.append(newLine(1)).append(space(4)).append("public <T extends Table> Join<").append(className).append(", T> join(T table) {").append(newLine(1));
             builder.append(space(8)).append("return new Join<>(\"inner\", this, table);").append(newLine(1));
             builder.append(space(4)).append("}").append(newLine(1));
             t.getMappedColumns().forEach(c -> {
@@ -356,7 +366,7 @@ public class GenCodeMojo extends AbstractMojo {
             });
             builder.append("}");
             String fileContent = builder.toString();
-            String filePath = genPath + "/" + className + ".java";
+            String filePath = genPath + "/table/" + className + ".java";
             try {
                 FileUtils.write(new File(filePath), fileContent, encoding);
             } catch (IOException e) {
@@ -394,31 +404,42 @@ public class GenCodeMojo extends AbstractMojo {
 
             builder.append(space(4)).append("</resultMap>").append(newLine(2));
 
-            builder.append(space(4)).append("<select id=\"count\" parameterType=\"com.github.mybatisq.Query\" resultType=\"java.lang.Integer\">").append(newLine(1));
-            builder.append(space(8)).append("select count(*) <include refid=\"").append(genPackage).append(".QMapper.countFrom\"/>").append(newLine(1));
+            builder.append(space(4)).append("<select id=\"count\" parameterType=\"").append(genPackage).append(".core.").append(Query.class.getSimpleName()).append("\" resultType=\"java.lang.Integer\">").append(newLine(1));
+            builder.append(space(8)).append("select count(*) <include refid=\"").append(genPackage).append(".core.BaseMapper.countFrom\"/>").append(newLine(1));
             builder.append(space(4)).append("</select>").append(newLine(1));
 
-            builder.append(newLine(1)).append(space(4)).append("<select id=\"select\" parameterType=\"com.github.mybatisq.Query\" resultMap=\"").append(lowerCaseFirstChar(className)).append("\">").append(newLine(1));
+            builder.append(newLine(1)).append(space(4)).append("<select id=\"select\" parameterType=\"").append(genPackage).append(".core.").append(Query.class.getSimpleName()).append("\" resultMap=\"").append(lowerCaseFirstChar(className)).append("\">").append(newLine(1));
             builder.append(space(8)).append("select ");
             builder.append("<if test=\"selectedColumns.size > 0\"><foreach collection=\"selectedColumns\" item=\"col\" separator=\",\">${tableAlias}.${col.name}</foreach></if>");
             builder.append("<if test=\"selectedColumns.size == 0\">");
             t.getMappedColumns().stream().map(c -> "${tableAlias}." + c.getOriginalName() + "").reduce((a, b) -> a + "," + b).ifPresent(builder::append);
-            builder.append("</if> <include refid=\"").append(genPackage).append(".QMapper.selectFrom\"/>").append(newLine(1));
+            builder.append("</if> <include refid=\"").append(genPackage).append(".core.BaseMapper.selectFrom\"/>").append(newLine(1));
             builder.append(space(4)).append("</select>").append(newLine(1));
 
             builder.append(newLine(1)).append(space(4)).append("<insert id=\"insert\" parameterType=\"").append(entityPackage).append(".").append(className).append("\" useGeneratedKeys=\"true\"");
             t.getMappedColumns().stream().filter(c -> c.getIsAutoIncrement() && c.getIsPrimaryKey()).findFirst().ifPresent(c -> builder.append(" keyProperty=\"").append(lowerCaseFirstChar(c.getMappedName())).append("\""));
             builder.append(">").append(newLine(1));
             builder.append(space(8)).append("<trim prefix=\"insert into ").append(tableName).append(" (\" suffix=\")\" suffixOverrides=\",\">\n");
-            t.getMappedColumns().forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">").append(c.getOriginalName()).append(",</if>").append(newLine(1)));
+            t.getMappedColumns().forEach(c -> builder.append(space(12)).append(c.getOriginalName()).append(",").append(newLine(1)));
             builder.append(space(8)).append("</trim>").append(newLine(1));
             builder.append(space(8)).append("<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">").append(newLine(1));
-            t.getMappedColumns().forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">#{").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
+            t.getMappedColumns().forEach(c -> builder.append(space(12)).append("#{").append(lowerCaseFirstChar(c.getMappedName())).append("},").append(newLine(1)));
             builder.append(space(8)).append("</trim>").append(newLine(1));
             builder.append(space(4)).append("</insert>").append(newLine(1));
 
-            builder.append(newLine(1)).append(space(4)).append("<insert id=\"batchInsert\" useGeneratedKeys=\"true\"");
-            t.getMappedColumns().stream().filter(c -> c.getIsAutoIncrement() && c.getIsPrimaryKey()).findFirst().ifPresent(c -> builder.append(" keyProperty=\"").append(lowerCaseFirstChar(c.getMappedName())).append("\""));
+            builder.append(newLine(1)).append(space(4)).append("<insert id=\"insertSelective\" parameterType=\"").append(entityPackage).append(".").append(className).append("\"");
+            t.getMappedColumns().stream().filter(c -> c.getIsAutoIncrement()).findFirst().ifPresent(c -> builder.append(" useGeneratedKeys=\"true\" keyProperty=\"").append(lowerCaseFirstChar(c.getMappedName())).append("\""));
+            builder.append(">").append(newLine(1));
+            builder.append(space(8)).append("<trim prefix=\"insert into ").append(tableName).append(" (\" suffix=\")\" suffixOverrides=\",\">\n");
+            t.getMappedColumns().stream().filter(c -> !c.getIsAutoIncrement()).forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">").append(c.getOriginalName()).append(",</if>").append(newLine(1)));
+            builder.append(space(8)).append("</trim>").append(newLine(1));
+            builder.append(space(8)).append("<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">").append(newLine(1));
+            t.getMappedColumns().stream().filter(c -> !c.getIsAutoIncrement()).forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">#{").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
+            builder.append(space(8)).append("</trim>").append(newLine(1));
+            builder.append(space(4)).append("</insert>").append(newLine(1));
+
+            builder.append(newLine(1)).append(space(4)).append("<insert id=\"batchInsert\"");
+            t.getMappedColumns().stream().filter(c -> c.getIsAutoIncrement()).findFirst().ifPresent(c -> builder.append(" useGeneratedKeys=\"true\" keyProperty=\"").append(lowerCaseFirstChar(c.getMappedName())).append("\""));
             builder.append(">");
             builder.append(newLine(1)).append(space(8)).append("<trim prefix=\"insert into ").append(tableName).append(" (");
             builder.append(t.getMappedColumns().stream().filter(c -> !c.getIsAutoIncrement()).map(c -> "" + c.getOriginalName() + "").reduce((a, b) -> String.join(",", a, b)).orElse(""));
@@ -429,12 +450,14 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append(space(8)).append("</trim>").append(newLine(1));
             builder.append(space(4)).append("</insert>").append(newLine(1));
 
-            builder.append(newLine(1)).append(space(4)).append("<insert id=\"insertBySelect\" parameterType=\"com.github.mybatisq.Insert\">");
+            /*
+            builder.append(newLine(1)).append(space(4)).append("<insert id=\"insertBySelect\" parameterType=\"").append(genPackage).append(".core.").append(Insert.class.getSimpleName()).append("\">");
             builder.append(newLine(1)).append(space(8)).append("insert ${table.name}");
             builder.append(newLine(1)).append(space(8)).append("<foreach collection=\"insertColumns\" item=\"c\" open=\"(\" close=\")\" separator=\",\">${c.name}</foreach>");
             builder.append(newLine(1)).append(space(8)).append("select <foreach collection=\"selectedColumns\" item=\"col\" separator=\",\">${tableAlias}.${col.name}</foreach>");
-            builder.append(newLine(1)).append(space(8)).append("<include refid=\"").append(genPackage).append(".QMapper.selectFrom\"/>");
+            builder.append(newLine(1)).append(space(8)).append("<include refid=\"").append(genPackage).append(".BaseMapper.selectFrom\"/>");
             builder.append(newLine(1)).append(space(4)).append("</insert>").append(newLine(1));
+            */
 
             Optional<MappedColumn> keyColumn = t.getMappedColumns().stream().filter(MappedColumn::getIsPrimaryKey).findFirst();
             if (!keyColumn.isPresent()) {
@@ -442,6 +465,12 @@ public class GenCodeMojo extends AbstractMojo {
             }
 
             builder.append(newLine(1)).append(space(4)).append("<update id=\"update\" parameterType=\"").append(entityPackage).append(".").append(className).append("\">").append(newLine(1));
+            builder.append(space(8)).append("<trim prefix=\"update ").append(tableName).append(" set\" suffix=\"where ").append(keyColumn.get().getOriginalName()).append("=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}\" suffixOverrides=\",\">").append(newLine(1));
+            t.getMappedColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(space(12)).append(c.getOriginalName()).append("=#{").append(lowerCaseFirstChar(c.getMappedName())).append("},").append(newLine(1)));
+            builder.append(space(8)).append("</trim>").append(newLine(1));
+            builder.append(space(4)).append("</update>").append(newLine(1));
+
+            builder.append(newLine(1)).append(space(4)).append("<update id=\"updateSelective\" parameterType=\"").append(entityPackage).append(".").append(className).append("\">").append(newLine(1));
             builder.append(space(8)).append("<trim prefix=\"update ").append(tableName).append(" set\" suffix=\"where ").append(keyColumn.get().getOriginalName()).append("=#{").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}\" suffixOverrides=\",\">").append(newLine(1));
             t.getMappedColumns().stream().filter(c -> !c.getIsPrimaryKey()).forEach(c -> builder.append(space(12)).append("<if test=\"").append(lowerCaseFirstChar(c.getMappedName())).append(" != null\">").append(c.getOriginalName()).append("=#{").append(lowerCaseFirstChar(c.getMappedName())).append("},</if>").append(newLine(1)));
             builder.append(space(8)).append("</trim>").append(newLine(1));
@@ -454,9 +483,9 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append(newLine(1)).append(space(8)).append("<foreach collection=\"list\" item=\"item\" open=\"where ").append(keyColumn.get().getOriginalName()).append(" in (\" close=\")\" separator=\",\">#{item.").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("}").append("</foreach>");
             builder.append(newLine(1)).append(space(4)).append("</update>").append(newLine(1));
 
-            builder.append(newLine(1)).append(space(4)).append("<update id=\"updateByBuilder\" parameterType=\"").append(Update.class.getName()).append("\">").append(newLine(1));
+            builder.append(newLine(1)).append(space(4)).append("<update id=\"updateByBuilder\" parameterType=\"").append(genPackage).append(".core.").append(Update.class.getSimpleName()).append("\">").append(newLine(1));
             builder.append(space(8)).append("<trim prefix=\"update ").append(tableName).append("\">").append(newLine(1));
-            builder.append(space(12)).append("<include refid=\"").append(genPackage).append(".QMapper.updateBuilder\"/>").append(newLine(1));
+            builder.append(space(12)).append("<include refid=\"").append(genPackage).append(".BaseMapper.updateBuilder\"/>").append(newLine(1));
             builder.append(space(8)).append("</trim>").append(newLine(1));
             builder.append(space(4)).append("</update>").append(newLine(1));
 
@@ -468,8 +497,8 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append(space(8)).append("<trim prefix=\"delete from ").append(tableName).append(" where ").append(keyColumn.get().getOriginalName()).append(" in (\" suffix=\")\"><foreach collection=\"").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("List\" separator=\",\" item=\"item\">#{item}</foreach></trim>").append(newLine(1));
             builder.append(space(4)).append("</delete>").append(newLine(1));
 
-            builder.append(newLine(1)).append(space(4)).append("<delete id=\"deleteByQuery\" parameterType=\"com.github.mybatisq.DeleteQuery\">").append(newLine(1));
-            builder.append(space(8)).append("<trim prefix=\"delete from ").append(tableName).append("\"><include refid=\"").append(genPackage).append(".QMapper.deleteWhere\"/></trim>").append(newLine(1));
+            builder.append(newLine(1)).append(space(4)).append("<delete id=\"deleteByQuery\" parameterType=\"").append(genPackage).append(".core.").append(DeleteQuery.class.getSimpleName()).append("\">").append(newLine(1));
+            builder.append(space(8)).append("<trim prefix=\"delete from ").append(tableName).append("\"><include refid=\"").append(genPackage).append(".BaseMapper.deleteWhere\"/></trim>").append(newLine(1));
             builder.append(space(4)).append("</delete>").append(newLine(1));
 
             builder.append("</mapper>");
@@ -501,23 +530,26 @@ public class GenCodeMojo extends AbstractMojo {
             builder.append("import ").append(List.class.getName()).append(";").append(newLine(2));
             builder.append("import ").append(Mapper.class.getName()).append(";").append(newLine(1));
             builder.append("import ").append(Param.class.getName()).append(";").append(newLine(2));
-            builder.append("import ").append(DeleteQuery.class.getName()).append(";").append(newLine(1));
-            builder.append("import ").append(Query.class.getName()).append(";").append(newLine(1));
-            builder.append("import ").append(Insert.class.getName()).append(";").append(newLine(1));
-            builder.append("import ").append(Update.class.getName()).append(";").append(newLine(1));
+            builder.append("import ").append(genPackage).append(".core.").append(DeleteQuery.class.getSimpleName()).append(";").append(newLine(1));
+            builder.append("import ").append(genPackage).append(".core.").append(Query.class.getSimpleName()).append(";").append(newLine(1));
+            // builder.append("import ").append(genPackage).append(".core.").append(Insert.class.getSimpleName()).append(";").append(newLine(1));
+            builder.append("import ").append(genPackage).append(".core.").append(Update.class.getSimpleName()).append(";").append(newLine(1));
+            builder.append("import ").append(genPackage).append(".table.").append(className).append("Table;").append(newLine(1));
             builder.append("import ").append(entityPackage).append(".").append(className).append(";").append(newLine(1));
             builder.append(newLine(1)).append("/**");
-            builder.append(newLine(1)).append(" * @author richterplus");
+            builder.append(newLine(1)).append(" * @author chenjie");
             builder.append(newLine(1)).append(" */");
             builder.append(newLine(1)).append("@Mapper").append(newLine(1));
             builder.append("public interface ").append(className).append("Mapper {").append(newLine(2));
             builder.append(space(4)).append("int count(Query<").append(className).append("Table> query);").append(newLine(2));
             builder.append(space(4)).append("List<").append(className).append("> select(Query<").append(className).append("Table> query);").append(newLine(2));
             builder.append(space(4)).append("int insert(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
-            builder.append(space(4)).append("int batchInsert(@Param(\"list\") Collection<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
-            builder.append(space(4)).append("int insertBySelect(Insert<").append(className).append("Table> insert);").append(newLine(2));
+            builder.append(space(4)).append("int insertSelective(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+            builder.append(space(4)).append("int batchInsert(@Param(\"list\") Collection<").append(className).append("> ").append(lowerCaseFirstChar(className)).append("List);").append(newLine(2));
+            // builder.append(space(4)).append("int insertBySelect(Insert<").append(className).append("Table> insert);").append(newLine(2));
             builder.append(space(4)).append("int update(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
-            builder.append(space(4)).append("int batchUpdate(@Param(\"list\") Collection<").append(className).append("> ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+            builder.append(space(4)).append("int updateSelective(").append(className).append(" ").append(lowerCaseFirstChar(className)).append(");").append(newLine(2));
+            builder.append(space(4)).append("int batchUpdate(@Param(\"list\") Collection<").append(className).append("> ").append(lowerCaseFirstChar(className)).append("List);").append(newLine(2));
             builder.append(space(4)).append("int updateByBuilder(Update<").append(className).append("Table> update);").append(newLine(2));
             builder.append(space(4)).append("int delete(@Param(\"").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("\") ").append(keyColumn.get().getDataType()).append(" ").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append(");").append(newLine(2));
             builder.append(space(4)).append("int batchDelete(@Param(\"").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("List\") Collection<").append(keyColumn.get().getDataType()).append("> ").append(lowerCaseFirstChar(keyColumn.get().getMappedName())).append("List);").append(newLine(2));
@@ -576,7 +608,7 @@ public class GenCodeMojo extends AbstractMojo {
             genMappers(tables);
         } catch (IOException e) {
             getLog().error(e);
-            throw new MojoFailureException("Failed to close input stream: com/github/mybatisq/QMapper.xml");
+            throw new MojoFailureException("Failed to close input stream: com/github/mybatisq/BaseMapper.xml");
         }
     }
 }

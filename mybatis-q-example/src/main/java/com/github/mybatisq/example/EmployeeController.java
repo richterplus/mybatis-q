@@ -1,18 +1,10 @@
 package com.github.mybatisq.example;
 
-import com.github.mybatisq.entity.Employee;
-import com.github.mybatisq.mapper.*;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author richterplus
+ * @author chenjie
  */
 @RestController
 @RequestMapping("emp")

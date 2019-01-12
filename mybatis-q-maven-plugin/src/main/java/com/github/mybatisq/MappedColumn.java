@@ -2,7 +2,7 @@ package com.github.mybatisq;
 
 /**
  * 列
- * @author richterplus
+ * @author chenjie
  */
 public class MappedColumn {
     

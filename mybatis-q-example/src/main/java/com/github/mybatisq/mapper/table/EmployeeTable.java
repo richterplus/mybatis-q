@@ -1,15 +1,14 @@
-package com.github.mybatisq.mapper;
+package com.github.mybatisq.mapper.table;
 
-import com.github.mybatisq.Column;
-import com.github.mybatisq.Join;
-import com.github.mybatisq.DeleteQuery;
-import com.github.mybatisq.Query;
-import com.github.mybatisq.Insert;
-import com.github.mybatisq.Update;
-import com.github.mybatisq.Table;
+import com.github.mybatisq.mapper.core.Column;
+import com.github.mybatisq.mapper.core.Join;
+import com.github.mybatisq.mapper.core.DeleteQuery;
+import com.github.mybatisq.mapper.core.Query;
+import com.github.mybatisq.mapper.core.Update;
+import com.github.mybatisq.mapper.core.Table;
 
 /**
- * @author richterplus
+ * @author chenjie
  */
 public class EmployeeTable extends Table {
 
@@ -23,10 +22,6 @@ public class EmployeeTable extends Table {
         return new Query<>(employee);
     }
 
-    public Insert<EmployeeTable> insert() {
-        return new Insert<>(employee);
-    }
-
     public Update<EmployeeTable> update() {
         return new Update<>(employee);
     }
@@ -35,7 +30,7 @@ public class EmployeeTable extends Table {
         return new DeleteQuery<>(employee);
     }
 
-    public <T extends Table> Join<EmployeeTable, T> inner(T table) {
+    public <T extends Table> Join<EmployeeTable, T> join(T table) {
         return new Join<>("inner", this, table);
     }
 

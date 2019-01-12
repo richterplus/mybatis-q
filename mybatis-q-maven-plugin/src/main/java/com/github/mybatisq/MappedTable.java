@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 表
- * @author richterplus
+ * @author chenjie
  */
 public class MappedTable {
     

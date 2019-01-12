@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.github.mybatisq.QMapper">
+<mapper namespace="com.github.mybatisq.mapper.core.BaseMapper">
     <sql id="from">from "${tableName}" "${tableAlias}"</sql>
     <sql id="join">
         <foreach collection="joins" item="j" separator=" ">
@@ -78,19 +78,19 @@
         <if test="skip != null">offset ${skip}</if>
     </sql>
     <sql id="countFrom">
-        <include refid="com.github.mybatisq.QMapper.from"/>
-        <include refid="com.github.mybatisq.QMapper.join"/>
-        <include refid="com.github.mybatisq.QMapper.where"/>
+        <include refid="com.github.mybatisq.mapper.core.BaseMapper.from"/>
+        <include refid="com.github.mybatisq.mapper.core.BaseMapper.join"/>
+        <include refid="com.github.mybatisq.mapper.core.BaseMapper.where"/>
     </sql>
     <sql id="selectFrom">
-        <include refid="com.github.mybatisq.QMapper.from"/>
-        <include refid="com.github.mybatisq.QMapper.join"/>
-        <include refid="com.github.mybatisq.QMapper.where"/>
-        <include refid="com.github.mybatisq.QMapper.orderBy"/>
-        <include refid="com.github.mybatisq.QMapper.limit"/>
+        <include refid="com.github.mybatisq.mapper.core.BaseMapper.from"/>
+        <include refid="com.github.mybatisq.mapper.core.BaseMapper.join"/>
+        <include refid="com.github.mybatisq.mapper.core.BaseMapper.where"/>
+        <include refid="com.github.mybatisq.mapper.core.BaseMapper.orderBy"/>
+        <include refid="com.github.mybatisq.mapper.core.BaseMapper.limit"/>
     </sql>
     <sql id="updateBuilder">
-        <include refid="com.github.mybatisq.QMapper.setter"/>
-        <include refid="com.github.mybatisq.QMapper.deleteWhere"/>
+        <include refid="com.github.mybatisq.mapper.core.BaseMapper.setter"/>
+        <include refid="com.github.mybatisq.mapper.core.BaseMapper.deleteWhere"/>
     </sql>
 </mapper>

@@ -1,12 +1,12 @@
-package com.github.mybatisq.mapper;
+package com.github.mybatisq.mapper.core;
 
 import org.apache.ibatis.annotations.Mapper;
 
 /**
  * mybatis-q核心mapper
- * @author richterplus
+ * @author chenjie
  */
 @Mapper
-public interface QMapper {
+public interface BaseMapper {
 
 }

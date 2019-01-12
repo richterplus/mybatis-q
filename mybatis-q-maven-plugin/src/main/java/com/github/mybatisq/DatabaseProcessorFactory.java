@@ -2,7 +2,7 @@ package com.github.mybatisq;
 
 /**
  * 数据库处理器工厂
- * @author richterplus
+ * @author chenjie
  */
 public class DatabaseProcessorFactory {
 

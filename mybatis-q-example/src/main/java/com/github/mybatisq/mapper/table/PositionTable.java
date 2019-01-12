@@ -1,15 +1,14 @@
-package com.github.mybatisq.mapper;
+package com.github.mybatisq.mapper.table;
 
-import com.github.mybatisq.Column;
-import com.github.mybatisq.Join;
-import com.github.mybatisq.DeleteQuery;
-import com.github.mybatisq.Query;
-import com.github.mybatisq.Insert;
-import com.github.mybatisq.Update;
-import com.github.mybatisq.Table;
+import com.github.mybatisq.mapper.core.Column;
+import com.github.mybatisq.mapper.core.Join;
+import com.github.mybatisq.mapper.core.DeleteQuery;
+import com.github.mybatisq.mapper.core.Query;
+import com.github.mybatisq.mapper.core.Update;
+import com.github.mybatisq.mapper.core.Table;
 
 /**
- * @author richterplus
+ * @author chenjie
  */
 public class PositionTable extends Table {
 
@@ -23,10 +22,6 @@ public class PositionTable extends Table {
         return new Query<>(position);
     }
 
-    public Insert<PositionTable> insert() {
-        return new Insert<>(position);
-    }
-
     public Update<PositionTable> update() {
         return new Update<>(position);
     }
@@ -35,7 +30,7 @@ public class PositionTable extends Table {
         return new DeleteQuery<>(position);
     }
 
-    public <T extends Table> Join<PositionTable, T> inner(T table) {
+    public <T extends Table> Join<PositionTable, T> join(T table) {
         return new Join<>("inner", this, table);
     }
 

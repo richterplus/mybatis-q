@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 数据库处理器
- * @author richterplus
+ * @author chenjie
  */
 public interface DatabaseProcessor {
 
